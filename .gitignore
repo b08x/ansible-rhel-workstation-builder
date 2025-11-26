@@ -1,0 +1,11 @@
+.qodo
+managed_context/
+test_suite_analysis
+.vscode/
+
+*.swp
+*.pyc
+
+# emacs projectile
+.projectile
+**/logs/

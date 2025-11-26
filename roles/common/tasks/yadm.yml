@@ -1,0 +1,10 @@
+---
+
+- name: Install yadm for dotfile management
+  ansible.builtin.get_url:
+    url: "https://github.com/yadm-dev/yadm/raw/master/yadm"
+    dest: "/usr/local/bin/yadm"
+    mode: "0755"
+    owner: "{{ user.name }}"
+    group: "{{ user.group | default(user.name) }}"
+  tags: ["yadm"]

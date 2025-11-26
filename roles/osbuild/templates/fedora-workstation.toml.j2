@@ -1,0 +1,15 @@
+name = "Fedora Workstation"
+description = "A Fedora Workstation image built with osbuild"
+version = "1.0.0"
+distribution = "fedora-{{ fedora_version }}"
+
+{% for group in groups %}
+[[groups]]
+name = "{{ group.name }}"
+
+{% for package in packages.common %}
+[[packages]]
+name = {{ package.name }}
+version = "{{ package.version }}"
+{% endfor %}
+

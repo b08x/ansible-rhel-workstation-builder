@@ -1,0 +1,64 @@
+---
+- name: Configure Postfix to use Gmail as SMTP relay on RHEL-based systems
+  hosts: localhost
+  become: yes
+  vars_files:
+    - vars/secrets.yml
+
+  tasks:
+    - name: Ensure necessary packages are installed (RHEL/CentOS/Rocky)
+      ansible.builtin.dnf:
+        name:
+          - postfix
+          - mailx
+          - cyrus-sasl-plain
+          - ca-certificates
+        state: present
+
+    - name: Create the sasl_passwd file with Gmail credentials
+      ansible.builtin.copy:
+        content: |
+          [smtp.gmail.com]:587 {{ gmail_username }}:{{ gmail_app_password }}
+        dest: /etc/postfix/sasl_passwd
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Create the postfix SASL password database (postmap)
+      ansible.builtin.command: postmap /etc/postfix/sasl_passwd
+      # Use 'creates' to ensure this only runs if the .db file doesn't exist already
+      args:
+        creates: /etc/postfix/sasl_passwd.db
+
+    - name: Configure Postfix main.cf for Gmail relay
+      ansible.builtin.lineinfile:
+        path: /etc/postfix/main.cf
+        regexp: "^{{ item.setting }} ="
+        line: "{{ item.setting }} = {{ item.value }}"
+        state: present
+      loop:
+        - { setting: "relayhost", value: "[smtp.gmail.com]:587" }
+        - { setting: "smtp_sasl_auth_enable", value: "yes" }
+        - {
+            setting: "smtp_sasl_password_maps",
+            value: "hash:/etc/postfix/sasl_passwd",
+          }
+        - { setting: "smtp_sasl_security_options", value: "noanonymous" }
+        - { setting: "smtp_use_tls", value: "yes" }
+        - {
+            setting: "smtp_tls_CAfile",
+            value: "/etc/pki/tls/certs/ca-bundle.crt",
+          }
+
+    - name: Send a test email after configuration (optional verification)
+      ansible.builtin.command:
+        # 'mailx' package provides the 'mail' command
+        cmd: >-
+          echo "Ansible deployed Postfix test email on RHEL system" | mail -s
+          "Postfix Ansible Configuration Test (RHEL)" recipient_email@example.com
+
+  handlers:
+    - name: Restart postfix
+      ansible.builtin.service:
+        name: postfix
+        state: restarted

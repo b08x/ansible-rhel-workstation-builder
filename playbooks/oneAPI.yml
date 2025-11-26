@@ -1,0 +1,52 @@
+---
+- name: Install Intel oneAPI MKL
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Display ansible_distribution
+      ansible.builtin.debug:
+        msg: |
+          The host {{ inventory_hostname }} has {{ ansible_distribution }} {{ ansible_distribution_major_version }} installed,
+          which belongs to the {{ ansible_os_family }} OS family
+      tags: ["always"]
+
+  tasks:
+    - name: Import Intel oneAPI GPG Key
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+        validate_certs: true
+
+    - name: Add Intel openAPI Repository
+      ansible.builtin.yum_repository:
+        name: oneAPI
+        description: "Intel® oneAPI repository"
+        baseurl: https://yum.repos.intel.com/oneapi
+        enabled: true
+        gpgcheck: true
+        gpgkey: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+
+    - name: Update Package Cache
+      ansible.builtin.dnf:
+        update_cache: true
+
+    - name: Install Intel oneAPI MKL
+      ansible.builtin.dnf:
+        name: intel-oneapi-mkl-devel
+        state: present
+
+    - name: Create oneAPI Environment Profile Script
+      ansible.builtin.copy:
+        dest: /etc/profile.d/intel-oneapi.sh
+        content: |
+          #!/bin/bash
+          # Initialize Intel oneAPI environment variables on login
+          if [ -f /opt/intel/oneapi/setvars.sh ]; then
+              source /opt/intel/oneapi/setvars.sh --force > /dev/null 2>&1
+          fi
+        mode: "0755"
+        owner: root
+        group: root

@@ -1,0 +1,17 @@
+---
+- name: Configure Networked Storage
+  hosts: localhost
+  become: true
+  gather_facts: true
+  vars:
+    path:
+      - "{{ lookup('env','HOME') }}/.local/bin"
+    nas_nfs_exports:
+      - path: "{{ user.home }}"
+        create_dir: no
+        is_root: no
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path|join(':') }}"
+
+  roles:
+    - { role: nas, tags: ["nas"] }
