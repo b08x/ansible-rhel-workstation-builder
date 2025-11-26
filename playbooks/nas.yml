@@ -6,6 +6,9 @@
   vars:
     path:
       - "{{ lookup('env','HOME') }}/.local/bin"
+    user:
+      name: b08x
+      home: /home/b08x
     nas_nfs_exports:
       - path: "{{ user.home }}"
         create_dir: no

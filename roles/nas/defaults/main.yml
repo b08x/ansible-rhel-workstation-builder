@@ -82,6 +82,36 @@ nas_nfs_firewall_ports: []
 #   - "2049/udp"
 
 # =============================================================================
+# NFS Firewall Port Configuration
+# =============================================================================
+
+# Fixed NFS service ports for explicit firewall rules and /etc/nfs.conf
+# These ports are configured to avoid conflicts and ephemeral ranges
+# Override these in host_vars/ or group_vars/ for environment-specific needs
+#
+# The NFS role uses a hybrid firewall approach:
+# 1. Firewalld services (nfs, mountd, rpc-bind) for comprehensive coverage
+# 2. Explicit port rules for fixed daemon ports in /etc/nfs.conf
+#
+# This prevents ephemeral port issues and improves firewall manageability
+firewall:
+  nfs:
+    ports:
+      # RPC and core NFS ports (managed by firewalld services)
+      rpcbind: 111          # RPC port mapper (both TCP/UDP)
+      nfs: 2049             # Main NFS server port (both TCP/UDP)
+
+      # NFS auxiliary daemon ports (require explicit configuration)
+      lockd:
+        tcp: 32803          # NFS lock manager TCP port
+        udp: 32769          # NFS lock manager UDP port
+      mountd: 892           # NFS mount daemon port (both TCP/UDP)
+      statd: 662            # NFS status monitor port (both TCP/UDP)
+
+      # RDMA support (if enabled in /etc/nfs.conf)
+      rdma: 20049           # NFS over RDMA port
+
+# =============================================================================
 # Samba Configuration
 # =============================================================================
 
