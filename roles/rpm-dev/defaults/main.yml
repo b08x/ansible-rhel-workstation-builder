@@ -9,15 +9,15 @@ rpm_dev_user:
 
 # Mock configuration
 mock_config:
-  enable_network: false
-  enable_bootstrap: true
-  use_host_resolv: false
+  enable_network: True
+  enable_bootstrap: True
+  use_host_resolv: False
   cache_topdir: /var/cache/mock
-  root_cache_enable: true
-  yum_cache_enable: true
-  dnf_cache_enable: true
-  cleanup_on_success: true
-  cleanup_on_failure: false
+  root_cache_enable: True
+  yum_cache_enable: True
+  dnf_cache_enable: True
+  cleanup_on_success: True
+  cleanup_on_failure: False
 
 # RPM build environment setup
 rpm_build:

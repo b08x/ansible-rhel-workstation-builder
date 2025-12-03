@@ -72,6 +72,17 @@
   when: rpm_dev_setup_mock | bool
   tags: ["rpm-dev", "mock-config"]
   notify: "Clear mock cache"
+
+- name: "Deploy custom mock template"
+  ansible.builtin.copy:
+    src: etc/mock/templates/custom-fedora-branched.tpl
+    dest: /etc/mock/templates/custom-fedora-branched.tpl
+    owner: root
+    group: root
+    mode: "0644"
+  when: rpm_dev_setup_mock | bool
+  tags: ["rpm-dev", "mock-config"]
+  notify: "Clear mock cache"
 # - name: "Initialize mock cache for default targets"
 #   ansible.builtin.command:
 #     cmd: "mock -r {{ item }} --init"
