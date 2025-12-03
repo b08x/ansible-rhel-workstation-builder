@@ -1,0 +1,18 @@
+---
+- name: Dev Workstation Base
+  hosts: localhost
+  gather_facts: true
+  become: true
+  vars:
+    path:
+      - "{{ lookup('env','HOME') }}/.cargo/bin"
+      - "{{ lookup('env','HOME') }}/.local/bin"
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path|join(':') }}"
+  pre_tasks:
+    - name: Display ansible_distribution
+      ansible.builtin.debug:
+        msg: |
+          The host {{ inventory_hostname }} has {{ ansible_distribution }} {{ ansible_distribution_major_version }} installed,
+          which belongs to the {{ ansible_os_family }} OS family
+      tags: ["always"]

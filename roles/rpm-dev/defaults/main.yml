@@ -28,7 +28,7 @@ rpm_build:
   directories:
     - BUILD
     - RPMS
-    - SOURCES  
+    - SOURCES
     - SPECS
     - SRPMS
 
@@ -36,6 +36,8 @@ rpm_build:
 mock_targets:
   - fedora-42-x86_64
   - fedora-42-aarch64
+  - fedora-43-x86_64
+  - fedora-43-aarch64
 
 # Package installation control
 rpm_dev_install_packages: true

@@ -1,7 +1,8 @@
 ---
 - name: Configure Postfix to use Gmail as SMTP relay on RHEL-based systems
   hosts: localhost
-  become: yes
+  become: true
+  gather_facts: true
   vars_files:
     - vars/secrets.yml
 

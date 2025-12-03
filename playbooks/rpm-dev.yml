@@ -1,0 +1,28 @@
+---
+- name: Configure rpm-dev host
+  hosts: localhost
+  become: true
+  gather_facts: true
+  vars:
+    path:
+      - "{{ lookup('env','HOME') }}/.local/bin"
+    rpm_dev_user:
+      name: b08x
+      home: /home/b08x
+      groups: ["mock"]
+    rpm_build:
+      create_directories: true
+      setup_macros: true
+      home_dir: "{{ rpm_dev_user.home }}"
+      build_dir: "{{ rpm_dev_user.home }}/rpmbuild"
+      directories:
+        - BUILD
+        - RPMS
+        - SOURCES
+        - SPECS
+        - SRPMS
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path|join(':') }}"
+
+  roles:
+    - { role: rpm-dev, tags: ["rpm-dev"] }

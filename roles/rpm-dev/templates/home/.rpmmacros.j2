@@ -12,8 +12,8 @@
 %packager {{ rpm_dev_user.name }} <{{ rpm_dev_user.name }}@{{ ansible_fqdn }}>
 
 # Distribution specific macros
-%dist .fc42
-%fedora 42
+%dist .fc{{ ansible_distribution_major_version }}
+%fedora {{ ansible_distribution_major_version }}
 
 # Build options
 %_smp_mflags -j%(nproc)

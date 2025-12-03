@@ -33,9 +33,9 @@
   ansible.builtin.file:
     path: "{{ rpm_build.build_dir }}/{{ item }}"
     state: directory
-    owner: "{{ user.name }}"
-    group: "{{ user.name }}"
-    mode: '0755'
+    owner: "{{ rpm_dev_user.name }}"
+    group: "{{ rpm_dev_user.name }}"
+    mode: "0755"
   become: false
   loop: "{{ rpm_build.directories }}"
   when: rpm_dev_setup_directories | bool
@@ -45,9 +45,9 @@
   ansible.builtin.template:
     src: home/.rpmmacros.j2
     dest: "{{ rpm_build.home_dir }}/.rpmmacros"
-    owner: "{{ user.name }}"
-    group: "{{ user.name }}"
-    mode: '0644'
+    owner: "{{ rpm_dev_user.name }}"
+    group: "{{ rpm_dev_user.name }}"
+    mode: "0644"
   become: false
   when: rpm_build.setup_macros | bool
   tags: ["rpm-dev", "configuration"]
@@ -58,27 +58,26 @@
     state: directory
     owner: root
     group: mock
-    mode: '0775'
+    mode: "0775"
   when: rpm_dev_setup_mock | bool
   tags: ["rpm-dev", "mock-setup"]
 
 - name: "Deploy custom mock configuration"
   ansible.builtin.template:
-    src: etc/mock/custom-fedora-42.cfg.j2
-    dest: /etc/mock/custom-fedora-42-{{ ansible_architecture }}.cfg
+    src: etc/mock/custom-fedora-{{ ansible_distribution_major_version }}.cfg.j2
+    dest: /etc/mock/custom-fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}.cfg
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   when: rpm_dev_setup_mock | bool
   tags: ["rpm-dev", "mock-config"]
   notify: "Clear mock cache"
-
 # - name: "Initialize mock cache for default targets"
 #   ansible.builtin.command:
 #     cmd: "mock -r {{ item }} --init"
 #   loop: "{{ mock_targets }}"
 #   become: true
-#   when: 
+#   when:
 #     - rpm_dev_setup_mock | bool
 #     - mock_config.root_cache_enable | bool
 #   tags: ["rpm-dev", "mock-init"]
