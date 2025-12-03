@@ -1,3 +1,17 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# tasks file for common
+# ============================================================================
+# Common Configuration
+# Provides foundational system setup for RedHat family distributions
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# System Configuration
+# ----------------------------------------------------------------------------
+
+- name: Set system timezone
+  ansible.builtin.command: "timedatectl set-timezone {{ timezone }}"
+  register: timezone_result
+  changed_when: timezone_result.rc == 0
+  failed_when: timezone_result.rc != 0
+  tags: ["timezone"]
