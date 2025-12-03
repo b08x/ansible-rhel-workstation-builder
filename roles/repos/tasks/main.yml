@@ -1,0 +1,74 @@
+#SPDX-License-Identifier: MIT-0
+---
+# ============================================================================
+# RPM repository configuration
+# Provides rpm repository setup for RedHat family distributions
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# DNF Performance Optimization
+# ----------------------------------------------------------------------------
+
+- name: Optimize DNF configuration
+  block:
+    - name: Configure DNF for better performance
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/dnf.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        backup: true
+      loop:
+        - regexp: "^fastestmirror="
+          line: "fastestmirror=1"
+        - regexp: "^max_parallel_downloads="
+          line: "max_parallel_downloads=10"
+        - regexp: "^clean_requirements_on_remove="
+          line: "clean_requirements_on_remove=True"
+      tags: ["dnf_config"]
+  rescue:
+    - name: Log DNF configuration failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to configure DNF settings.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          DNF may still function with default settings.
+      tags: ["dnf_config"]
+
+    - name: Mark DNF configuration as failed
+      ansible.builtin.set_fact:
+        dnf_config_failed: true
+      tags: ["dnf_config"]
+
+  tags: ["dnf_configuration"]
+
+# ----------------------------------------------------------------------------
+# Repository Configuration
+# ----------------------------------------------------------------------------
+
+- name: Include distribution-specific repository tasks
+  ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
+  when:
+    - enable_third_party_repos | default(true)
+  tags: ["repos"]
+
+# ----------------------------------------------------------------------------
+# Package Cache Management
+# ----------------------------------------------------------------------------
+
+- name: Update package cache
+  block:
+    - name: Refresh DNF package cache
+      ansible.builtin.dnf:
+        update_cache: true
+      tags: ["cache_update"]
+
+  rescue:
+    - name: Log cache update failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to update package cache.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          You may need to run 'dnf clean all && dnf makecache' manually.
+      tags: ["cache_update"]
+
+  tags: ["cache"]

@@ -1,5 +1,4 @@
 ---
-
 groups:
   - name: "development-tools"
   - name: "container-management"
@@ -118,8 +117,6 @@ packages:
       version: "*"
     - name: "podman-compose"
       version: "*"
-
-
 
 customizations:
   timezone:

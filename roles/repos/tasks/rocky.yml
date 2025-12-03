@@ -1,0 +1,101 @@
+---
+# ============================================================================
+# Rocky/RHEL Repository and DNF Configuration
+# Sets up EPEL, PowerTools/CRB, RPM Fusion and optimizes DNF
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Repository Configuration
+# ----------------------------------------------------------------------------
+
+- name: Configure RHEL family repositories
+  block:
+    - name: Install EPEL repository
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
+      tags: ["epel"]
+
+    - name: Enable PowerTools/CRB and additional repositories
+      ansible.builtin.shell: |
+        # Enable PowerTools (Rocky 8) or CRB (Rocky 9+)
+        dnf config-manager --set-enabled powertools 2>/dev/null || \
+        dnf config-manager --set-enabled crb
+
+        # Enable additional repositories
+        dnf config-manager --set-enabled plus
+        dnf config-manager --set-enabled rt
+      changed_when: false
+      tags: ["powertools", "crb"]
+
+    - name: Install RPM Fusion Free repository
+      ansible.builtin.dnf:
+        name: "https://download1.rpmfusion.org/free/el/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      tags: ["rpmfusion"]
+
+    - name: Install RPM Fusion Non-Free repository
+      ansible.builtin.dnf:
+        name: "https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      tags: ["rpmfusion"]
+
+  rescue:
+    - name: Log repository setup failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to set up repositories.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          This might be due to network connectivity issues or repository availability.
+      tags: ["repo_setup"]
+
+    - name: Mark repository setup as failed
+      ansible.builtin.set_fact:
+        repository_setup_failed: true
+      tags: ["repo_setup"]
+
+  tags: ["repositories"]
+
+# ----------------------------------------------------------------------------
+# DNF Performance Optimization
+# ----------------------------------------------------------------------------
+
+- name: Set DNF Repository Priorities
+  block:
+    - name: Configure repository priorities
+      ansible.builtin.shell: |
+        # Base system repositories (highest priority)
+        dnf config-manager --save --setopt="baseos.priority=10"
+        dnf config-manager --save --setopt="appstream.priority=10"
+
+        # EPEL and RT repositories
+        dnf config-manager --save --setopt="epel.priority=20"
+        dnf config-manager --save --setopt="rt.priority=20"
+
+        # PowerTools/CRB and Plus repositories
+        dnf config-manager --save --setopt="powertools.priority=30" 2>/dev/null || \
+        dnf config-manager --save --setopt="crb.priority=30"
+        dnf config-manager --save --setopt="plus.priority=30"
+
+        # RPM Fusion repositories (lowest priority)
+        dnf config-manager --save --setopt="rpmfusion-*.priority=40"
+      changed_when: false
+      tags: ["repo_priorities"]
+
+  rescue:
+    - name: Log DNF configuration failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to configure DNF settings.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          DNF may still function with default settings.
+      tags: ["dnf_config"]
+
+    - name: Mark DNF configuration as failed
+      ansible.builtin.set_fact:
+        dnf_config_failed: true
+      tags: ["dnf_config"]
+
+  tags: ["dnf_configuration"]

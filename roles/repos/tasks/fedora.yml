@@ -1,0 +1,83 @@
+---
+# ============================================================================
+# Fedora Repository and DNF Configuration
+# Sets up third-party repositories and optimizes DNF performance
+# ============================================================================
+
+- name: Install repository management prerequisites
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python3-libdnf5
+    - fedora-workstation-repositories
+  tags: ["packages", "packages__repos"]
+
+# ----------------------------------------------------------------------------
+# Repository Configuration
+# ----------------------------------------------------------------------------
+
+- name: Configure third-party repositories
+  block:
+    - name: Install RPM Fusion Free repository
+      ansible.builtin.dnf:
+        name: "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      tags: ["rpmfusion"]
+
+    - name: Install RPM Fusion Non-Free repository
+      ansible.builtin.dnf:
+        name: "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        state: present
+        disable_gpg_check: true
+      tags: ["rpmfusion"]
+
+    - name: Enable Google Chrome repository
+      ansible.builtin.command: dnf config-manager setopt google-chrome.enabled=1
+      changed_when: false
+      tags: ["google_chrome"]
+
+  rescue:
+    - name: Log repository setup failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to set up repositories.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          This might be due to network connectivity issues or repository availability.
+      tags: ["repo_setup"]
+
+    - name: Mark repository setup as failed
+      ansible.builtin.set_fact:
+        repository_setup_failed: true
+      tags: ["repo_setup"]
+
+  tags: ["repositories"]
+
+# ----------------------------------------------------------------------------
+# DNF Performance Optimization
+# ----------------------------------------------------------------------------
+
+- name: Set DNF Repository Priorities
+  block:
+    - name: Set repository priorities
+      ansible.builtin.shell: |
+        dnf config-manager setopt "rpmfusion-*.priority=40"
+      changed_when: false
+      tags: ["repo_priorities"]
+
+  rescue:
+    - name: Log DNF configuration failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to configure DNF settings.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          DNF may still function with default settings.
+      tags: ["dnf_config"]
+
+    - name: Mark DNF configuration as failed
+      ansible.builtin.set_fact:
+        dnf_config_failed: true
+      tags: ["dnf_config"]
+
+  tags: ["dnf_configuration"]
