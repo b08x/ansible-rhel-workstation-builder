@@ -12,7 +12,7 @@ This collection enforces **consistent, reproducible, and secure** configurations
 
 ## Structure
 
-```
+```shell
 ansible_new/
 ├── playbooks/          # Workflow-specific automation
 │   ├── rpm-dev.yml     # RPM development environment
@@ -31,13 +31,13 @@ ansible_new/
 
 ## Key Roles
 
-| Role          | Purpose                                                                 | Dependencies          |
-|---------------|-------------------------------------------------------------------------|-----------------------|
-| **common**    | Baseline system configuration (GRUB, timezone, locale, rc.local)       | None                  |
-| **repos**     | DNF/YUM repository management and optimization                          | None                  |
-| **rpm-dev**   | RPM development environment (Mock, rpm-build, rpmdevtools)             | common, repos         |
-| **nas**       | Network-attached storage (NFS, Samba, Rsync)                           | None                  |
-| **zsh**       | ZSH shell customization (Oh My Zsh, plugins, themes)                   | common                |
+| Role        | Purpose                                                          | Dependencies  |
+|-------------|------------------------------------------------------------------|---------------|
+| **common**  | Baseline system configuration (GRUB, timezone, locale, rc.local) | None          |
+| **repos**   | DNF/YUM repository management and optimization                   | None          |
+| **rpm-dev** | RPM development environment (Mock, rpm-build, rpmdevtools)       | common, repos |
+| **nas**     | Network-attached storage (NFS, Samba, Rsync)                     | None          |
+| **zsh**     | ZSH shell customization (Oh My Zsh, plugins, themes)             | common        |
 
 ## Quick Start
 
@@ -87,12 +87,12 @@ ansible-playbook playbooks/rpm-dev.yml --check --diff
 
 ## Anti-Patterns
 
-| Anti-Pattern               | Risk                                  | Solution                          |
-|----------------------------|---------------------------------------|-----------------------------------|
-| Unencrypted secrets        | Credential exposure                   | Use Ansible Vault                |
-| Hardcoded values           | Reduced reusability                   | Use `vars/` or `templates/`      |
-| SMB1 protocol              | Security vulnerabilities              | Override with `SMB2` or higher   |
-| Monolithic tasks           | Poor readability/maintainability      | Split into reusable tasks        |
+| Anti-Pattern        | Risk                             | Solution                       |
+|---------------------|----------------------------------|--------------------------------|
+| Unencrypted secrets | Credential exposure              | Use Ansible Vault              |
+| Hardcoded values    | Reduced reusability              | Use `vars/` or `templates/`    |
+| SMB1 protocol       | Security vulnerabilities         | Override with `SMB2` or higher |
+| Monolithic tasks    | Poor readability/maintainability | Split into reusable tasks      |
 
 ## Workflow Integration
 

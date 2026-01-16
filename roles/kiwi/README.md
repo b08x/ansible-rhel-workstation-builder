@@ -1,5 +1,7 @@
 # Ansible Role: kiwi
 
+https://deepwiki.com/OSInside/kiwi/
+
 Automate the generation of custom Fedora 43 Workstation ISO images using KIWI NG with support for AI/HPC toolchains, proprietary GPU drivers, and hybrid desktop environments.
 
 ## Table of Contents
@@ -42,13 +44,13 @@ The role follows the "configuration-repository" pattern from the existing `osbui
 
 ### Supported Components
 
-| Component | Variable | Description |
-|-----------|----------|-------------|
-| GNOME Workstation | `kiwi_enable_gnome` | Full GNOME 49 desktop environment |
-| Sway WM | `kiwi_enable_sway` | i3-compatible Wayland compositor |
-| NVIDIA Drivers | `kiwi_enable_nvidia` | Proprietary drivers via akmods |
-| Intel oneAPI | `kiwi_enable_oneapi` | DPC++ compilers and MKL libraries |
-| Podman | Always enabled | Container runtime with Buildah/Skopeo |
+| Component         | Variable             | Description                           |
+|-------------------|----------------------|---------------------------------------|
+| GNOME Workstation | `kiwi_enable_gnome`  | Full GNOME 49 desktop environment     |
+| Sway WM           | `kiwi_enable_sway`   | i3-compatible Wayland compositor      |
+| NVIDIA Drivers    | `kiwi_enable_nvidia` | Proprietary drivers via akmods        |
+| Intel oneAPI      | `kiwi_enable_oneapi` | DPC++ compilers and MKL libraries     |
+| Podman            | Always enabled       | Container runtime with Buildah/Skopeo |
 
 ## Requirements
 
@@ -293,15 +295,15 @@ ansible-playbook playbooks/build-kiwi-iso.yml --tags kiwi-build
 
 ### Timeline
 
-| Phase | Duration | Notes |
-|-------|----------|-------|
-| Prerequisites | 2-5 min | Download KIWI packages |
-| Template Rendering | <1 min | Fast |
-| Package Download | 15-30 min | Depends on bandwidth (~20GB) |
-| Chroot Setup | 10-20 min | Install packages, run config.sh |
-| Image Creation | 15-30 min | Squashfs compression |
-| ISO Assembly | 5-10 min | Create bootable ISO |
-| **Total** | **45-90 min** | Varies by system |
+| Phase              | Duration      | Notes                           |
+|--------------------|---------------|---------------------------------|
+| Prerequisites      | 2-5 min       | Download KIWI packages          |
+| Template Rendering | <1 min        | Fast                            |
+| Package Download   | 15-30 min     | Depends on bandwidth (~20GB)    |
+| Chroot Setup       | 10-20 min     | Install packages, run config.sh |
+| Image Creation     | 15-30 min     | Squashfs compression            |
+| ISO Assembly       | 5-10 min      | Create bootable ISO             |
+| **Total**          | **45-90 min** | Varies by system                |
 
 ### First Boot (Important!)
 
@@ -496,13 +498,13 @@ KIWI Build Phases:
 
 ## Comparison: OSBuild vs KIWI NG
 
-| Feature | OSBuild | KIWI NG (this role) |
-|---------|---------|---------------------|
-| Format | TOML blueprints | XML descriptions |
-| Live ISO | Limited | Native support |
-| Akmods | Difficult | Full support |
-| Flexibility | Red Hat ecosystem | Multi-distro |
-| Use Case | Standard images | Custom live ISOs |
+| Feature     | OSBuild           | KIWI NG (this role) |
+|-------------|-------------------|---------------------|
+| Format      | TOML blueprints   | XML descriptions    |
+| Live ISO    | Limited           | Native support      |
+| Akmods      | Difficult         | Full support        |
+| Flexibility | Red Hat ecosystem | Multi-distro        |
+| Use Case    | Standard images   | Custom live ISOs    |
 
 **When to use KIWI**:
 - Building custom live ISOs
