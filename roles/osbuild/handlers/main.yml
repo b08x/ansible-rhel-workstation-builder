@@ -1,3 +1,21 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # handlers file for osbuild
+
+- name: Restart osbuild-composer
+  ansible.builtin.systemd:
+    name: osbuild-composer.socket
+    state: restarted
+  become: true
+  listen: Restart osbuild-composer
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+  listen: Reload systemd daemon
+
+- name: Refresh composer sources
+  ansible.builtin.command: composer-cli sources list
+  changed_when: false
+  listen: Refresh composer sources

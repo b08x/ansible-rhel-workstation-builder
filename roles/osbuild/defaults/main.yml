@@ -1,3 +1,260 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # defaults file for osbuild
+
+# =============================================================================
+# Build Configuration
+# =============================================================================
+
+# Fedora distribution version (e.g., "fedora-42", "fedora-43")
+osbuild_distro: "fedora-43"
+
+# Architecture (x86_64, aarch64)
+osbuild_arch: "x86_64"
+
+# Blueprint name (will be used for compose and output files)
+blueprint_name: "fedora-workstation-custom"
+
+# Blueprint version
+blueprint_version: "1.0.0"
+
+# Blueprint description
+blueprint_description: "Custom Fedora Workstation with NVIDIA, Sway, and development tools"
+
+# Image type for osbuild-composer
+# Options: live-iso, workstation-live-installer, qcow2, ami, vhd, vmdk
+# Recommended: workstation-live-installer for large payloads (Intel oneAPI)
+osbuild_image_type: "workstation-live-installer"
+
+# =============================================================================
+# Feature Toggles
+# =============================================================================
+
+# Enable NVIDIA proprietary driver and CUDA stack
+use_nvidia: true
+
+# NVIDIA driver version (use "*" for latest)
+nvidia_driver_version: "*"
+
+# Enable Sway window manager alongside GNOME
+use_sway: true
+
+# Include Intel oneAPI in the ISO image (vs first-boot installation)
+# WARNING: Setting to true results in 15GB+ ISO and 4+ hour build times
+include_oneapi_in_image: false
+
+# Enable additional development tools
+include_development_tools: true
+
+# Enable container tooling (Podman, Docker, etc.)
+include_container_tools: true
+
+# =============================================================================
+# Build Host Configuration
+# =============================================================================
+
+# Packages to install on the build host
+osbuild_host_packages:
+  - osbuild-composer
+  - composer-cli
+  - cockpit-composer
+  - bash-completion
+  - firewalld
+
+# User group for composer-cli access
+osbuild_weldr_group: "weldr"
+
+# Build timeout in seconds (default: 4 hours for oneAPI builds)
+osbuild_build_timeout: 14400
+
+# Poll interval for build status checks (seconds)
+osbuild_poll_interval: 30
+
+# Number of build retry attempts on failure
+osbuild_build_retries: 1
+
+# =============================================================================
+# Repository Sources
+# =============================================================================
+
+# Directory containing source TOML files
+osbuild_sources_dir: "files/{{ osbuild_distro }}/{{ osbuild_arch }}/sources"
+
+# List of repository sources to load
+# These correspond to TOML files in the sources directory
+# Note: cuda source filename includes the distro version (e.g., cuda-fedora43-x86_64)
+osbuild_sources:
+  - rpmfusion-free
+  - rpmfusion-free-updates
+  - rpmfusion-nonfree
+  - rpmfusion-nonfree-updates
+  - intel-oneapi
+  - nvidia-container-toolkit
+  - cuda-{{ osbuild_distro }}-{{ osbuild_arch }}
+
+# Optional sources (uncomment to enable)
+# - docker-ce
+# - vscode
+# - google-chrome
+
+# =============================================================================
+# Blueprint Configuration
+# =============================================================================
+
+# Use dynamic Jinja2 template (true) or static blueprint file (false)
+use_blueprint_template: true
+
+# Path to static blueprint file (used when use_blueprint_template: false)
+static_blueprint_path: "files/{{ osbuild_distro }}/{{ osbuild_arch }}/workstation/fedora-{{ osbuild_distro | replace('fedora-', '') }}-workstation-nvidia.toml"
+
+# Template path (used when use_blueprint_template: true)
+blueprint_template: "fedora-workstation.toml.j2"
+
+# =============================================================================
+# User Customization
+# =============================================================================
+
+# Default user account to create
+osbuild_user_name: "ansible"
+osbuild_user_description: "Ansible User"
+osbuild_user_password: "$6$rounds=4096$randomsalt$hash"  # Change this!
+osbuild_user_groups:
+  - wheel
+  - libvirt
+
+# SSH public key for default user
+osbuild_user_ssh_key: ""
+
+# Hostname for the installed system
+osbuild_hostname: "fedora-workstation"
+
+# Timezone
+osbuild_timezone: "America/New_York"
+
+# Keyboard layout
+osbuild_keyboard: "us"
+
+# Locale
+osbuild_locale: "en_US.UTF-8"
+
+# =============================================================================
+# Package Selection
+# =============================================================================
+
+# Additional packages to include beyond base blueprint
+osbuild_extra_packages: []
+  # - vim-enhanced
+  # - tmux
+  # - htop
+
+# Sway packages (automatically included if use_sway: true)
+osbuild_sway_packages:
+  - sway
+  - sway-config-fedora
+  - swaybg
+  - swayidle
+  - swaylock
+  - waybar
+  - mako
+  - wofi
+  - alacritty
+  - wl-clipboard
+  - grim
+  - slurp
+
+# NVIDIA packages (automatically included if use_nvidia: true)
+osbuild_nvidia_packages:
+  - nvidia-driver
+  - nvidia-driver-cuda
+  - nvidia-driver-cuda-libs
+  - nvidia-driver-libs
+  - nvidia-settings
+  - nvidia-persistenced
+  - cuda
+  - cuda-devel
+  - nvidia-container-toolkit
+
+# Intel oneAPI packages (included if include_oneapi_in_image: true)
+osbuild_oneapi_packages:
+  - intel-basekit
+  - intel-hpckit
+
+# Development tools packages
+osbuild_development_packages:
+  - gcc
+  - gcc-c++
+  - make
+  - cmake
+  - git
+  - python3
+  - python3-pip
+  - python3-devel
+  - nodejs
+  - npm
+
+# Container tools packages
+osbuild_container_packages:
+  - podman
+  - buildah
+  - skopeo
+  - podman-compose
+  - containers-common
+
+# =============================================================================
+# Service Configuration
+# =============================================================================
+
+# Services to enable on installed system
+osbuild_enabled_services:
+  - gdm
+  - sshd
+  - NetworkManager
+  - firewalld
+  - chronyd
+
+# Services to enable when use_nvidia: true
+osbuild_nvidia_services:
+  - nvidia-persistenced
+  - nvidia-cdi-refresh
+
+# =============================================================================
+# Kernel Configuration
+# =============================================================================
+
+# Kernel arguments for NVIDIA (applied when use_nvidia: true)
+osbuild_nvidia_kernel_args: "rd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia-drm.modeset=1"
+
+# Additional kernel arguments
+osbuild_extra_kernel_args: ""
+
+# =============================================================================
+# Output Configuration
+# =============================================================================
+
+# Directory to store final ISO/image
+osbuild_output_dir: "/var/tmp/osbuild-images"
+
+# Filename for the final image (UUID will be prepended)
+osbuild_output_filename: "{{ blueprint_name }}-{{ osbuild_distro }}.iso"
+
+# Keep build logs on failure
+osbuild_keep_logs: true
+
+# Log directory
+osbuild_log_dir: "/var/tmp/osbuild-logs"
+
+# =============================================================================
+# Advanced Configuration
+# =============================================================================
+
+# Path to osbuild work directory
+osbuild_work_dir: "/var/lib/osbuild-composer"
+
+# Minimum free disk space required (in GB)
+osbuild_min_disk_space: 50
+
+# Enable verbose output
+osbuild_verbose: false
+
+# Cleanup old composes after successful build
+osbuild_cleanup_old_composes: false

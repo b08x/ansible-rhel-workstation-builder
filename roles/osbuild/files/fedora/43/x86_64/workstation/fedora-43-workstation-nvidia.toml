@@ -1,7 +1,7 @@
-name = "fedora-42-workstation-nvidia"
-description = "Fedora 42 Workstation (NVIDIA)"
-version = "0.4.0"
-distro = "fedora-42"
+name = "fedora-43-workstation-nvidia"
+description = "Fedora 43 Workstation (NVIDIA)"
+version = "1.0.0"
+distro = "fedora-43"
 
 # --- GROUPS (Environments) ---
 [[groups]]
@@ -410,7 +410,7 @@ data = """
     - name: Set repo priorities
       shell: |
         dnf config-manager setopt fedora.priority=0 updates.priority=0 \
-        cuda-fedora42-x86_64.priority=99 \
+        cuda-fedora43-x86_64.priority=99 \
         rpmfusion-free.priority=100 \
         rpmfusion-nonfree.priority=100 \
         rpmfusion-free-updates.priority=100 \
@@ -505,11 +505,11 @@ enabled = true
 ssl_verify = true
 
 [[customizations.repositories]]
-id = "cuda-fedora42-x86_64"
-name = "cuda-fedora42-x86_64"
-baseurls = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64" ]
+id = "cuda-fedora43-x86_64"
+name = "cuda-fedora43-x86_64"
+baseurls = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora43/x86_64" ]
 gpgcheck = true
-gpgkeys = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub" ]
+gpgkeys = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora43/x86_64/D42D0685.pub" ]
 enabled = true
 
 [[customizations.repositories]]
@@ -523,7 +523,7 @@ enabled = true
 [[customizations.repositories]]
 id = "docker-ce-stable"
 name = "Docker CE Stable - x86_64"
-baseurls = [ "https://download.docker.com/linux/fedora/42/x86_64/stable" ]
+baseurls = [ "https://download.docker.com/linux/fedora/43/x86_64/stable" ]
 gpgcheck = true
 gpgkeys = [ "https://download.docker.com/linux/fedora/gpg" ]
 enabled = true

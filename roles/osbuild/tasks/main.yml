@@ -1,3 +1,153 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# tasks file for osbuild
+# Main task orchestration for osbuild role
+
+- name: Display role execution banner
+  ansible.builtin.debug:
+    msg: |
+      ╔════════════════════════════════════════════════════════════════╗
+      ║          OSBuild Custom Image Builder Role                     ║
+      ║          Fedora Workstation ISO Generation                     ║
+      ╚════════════════════════════════════════════════════════════════╝
+
+      Configuration:
+      - Blueprint: {{ blueprint_name }}
+      - Distribution: {{ osbuild_distro }}
+      - Image Type: {{ osbuild_image_type }}
+      - NVIDIA Support: {{ use_nvidia }}
+      - Sway Desktop: {{ use_sway }}
+      - Intel oneAPI (in image): {{ include_oneapi_in_image }}
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - blueprint_name is defined
+      - blueprint_name | length > 0
+      - osbuild_distro is defined
+      - osbuild_image_type is defined
+      - osbuild_output_dir is defined
+    fail_msg: "Required variables are not properly defined. Check defaults/main.yml"
+    success_msg: "Configuration validation passed"
+
+- name: Check operating system compatibility
+  ansible.builtin.assert:
+    that:
+      - ansible_os_family == "RedHat"
+      - ansible_distribution == "Fedora"
+    fail_msg: |
+      This role requires Fedora as the build host.
+      Detected: {{ ansible_distribution }} {{ ansible_distribution_version }}
+    success_msg: "Running on Fedora {{ ansible_distribution_version }}"
+
+- name: Phase 1 - Infrastructure Setup
+  block:
+    - name: Display phase
+      ansible.builtin.debug:
+        msg: "=== Phase 1: Infrastructure Setup ==="
+
+    - name: Import infrastructure provisioning tasks
+      ansible.builtin.import_tasks: install.yml
+      tags:
+        - install
+        - setup
+
+  tags:
+    - always
+
+- name: Phase 2 - Repository Configuration
+  block:
+    - name: Display phase
+      ansible.builtin.debug:
+        msg: "=== Phase 2: Repository Source Configuration ==="
+
+    - name: Import repository source tasks
+      ansible.builtin.import_tasks: sources.yml
+      tags:
+        - sources
+        - repos
+
+  tags:
+    - always
+
+- name: Phase 3 - Blueprint Preparation
+  block:
+    - name: Display phase
+      ansible.builtin.debug:
+        msg: "=== Phase 3: Blueprint Preparation ==="
+
+    - name: Import blueprint management tasks
+      ansible.builtin.import_tasks: blueprint.yml
+      tags:
+        - blueprint
+
+  tags:
+    - always
+
+- name: Phase 4 - Image Build
+  block:
+    - name: Display phase
+      ansible.builtin.debug:
+        msg: "=== Phase 4: Image Build Execution ==="
+
+    - name: Import build execution tasks
+      ansible.builtin.import_tasks: build.yml
+      tags:
+        - build
+        - compose
+
+    - name: Build retry logic
+      when: osbuild_build_retries | int > 0 and build_status != "FINISHED"
+      block:
+        - name: Wait before retry
+          ansible.builtin.pause:
+            seconds: 60
+
+        - name: Retry build
+          ansible.builtin.import_tasks: build.yml
+
+      rescue:
+        - name: All retries exhausted
+          ansible.builtin.fail:
+            msg: "Build failed after {{ osbuild_build_retries }} retries"
+
+  tags:
+    - always
+
+- name: Display completion summary
+  ansible.builtin.debug:
+    msg: |
+      ╔════════════════════════════════════════════════════════════════╗
+      ║              OSBuild Role Execution Complete                   ║
+      ╚════════════════════════════════════════════════════════════════╝
+
+      Blueprint: {{ blueprint_name }}
+      Status: {{ build_status | default('UNKNOWN') }}
+
+      {% if build_status == 'FINISHED' %}
+      Image Location: {{ osbuild_output_dir }}/{{ osbuild_output_filename }}
+
+      Verification Steps:
+      1. Check image integrity:
+         sha256sum {{ osbuild_output_dir }}/{{ osbuild_output_filename }}
+
+      2. Test in virtual machine:
+         virt-install --name test-{{ blueprint_name }} \
+           --memory 4096 --vcpus 2 \
+           --disk size=40 \
+           --cdrom {{ osbuild_output_dir }}/{{ osbuild_output_filename }} \
+           --os-variant fedora{{ osbuild_distro | regex_replace('fedora-', '') }}
+
+      3. Flash to USB (for physical hardware):
+         sudo dd if={{ osbuild_output_dir }}/{{ osbuild_output_filename }} \
+           of=/dev/sdX bs=4M status=progress oflag=sync
+
+      {% else %}
+      Build did not complete successfully.
+      Check logs at: {{ osbuild_log_dir }}
+      {% endif %}
+
+      Composer Status:
+      Run 'composer-cli compose status' for current builds
+      Run 'composer-cli blueprints list' for available blueprints
+  tags:
+    - always

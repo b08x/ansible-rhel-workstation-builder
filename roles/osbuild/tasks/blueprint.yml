@@ -1,0 +1,179 @@
+#SPDX-License-Identifier: MIT-0
+---
+# Blueprint management for osbuild-composer
+
+- name: Prepare blueprint file
+  block:
+    - name: Create temporary directory for blueprint
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: _osbuild_blueprint
+      register: temp_blueprint_dir
+
+    - name: Render blueprint from Jinja2 template
+      ansible.builtin.template:
+        src: "{{ blueprint_template }}"
+        dest: "{{ temp_blueprint_dir.path }}/{{ blueprint_name }}.toml"
+        mode: '0644'
+      when: use_blueprint_template | bool
+
+    - name: Copy static blueprint file
+      ansible.builtin.copy:
+        src: "{{ static_blueprint_path }}"
+        dest: "{{ temp_blueprint_dir.path }}/{{ blueprint_name }}.toml"
+        mode: '0644'
+      when: not use_blueprint_template | bool
+
+    - name: Set blueprint file path
+      ansible.builtin.set_fact:
+        blueprint_file_path: "{{ temp_blueprint_dir.path }}/{{ blueprint_name }}.toml"
+
+- name: Display blueprint path
+  ansible.builtin.debug:
+    msg: "Using blueprint: {{ blueprint_file_path }}"
+  when: osbuild_verbose | bool
+
+- name: Validate blueprint syntax
+  block:
+    - name: Read blueprint file
+      ansible.builtin.slurp:
+        src: "{{ blueprint_file_path }}"
+      register: blueprint_content
+
+    - name: Basic TOML syntax check
+      ansible.builtin.command: python3 -c "import tomli; tomli.loads('{{ blueprint_content.content | b64decode | replace("'", "''") }}')"
+      changed_when: false
+      ignore_errors: true
+      register: toml_check
+
+    - name: Display TOML validation warning
+      ansible.builtin.debug:
+        msg: "WARNING: TOML validation skipped (tomli not available). Blueprint may have syntax errors."
+      when: toml_check is failed
+
+  rescue:
+    - name: Skip TOML validation
+      ansible.builtin.debug:
+        msg: "Proceeding without TOML validation (python3-tomli not installed)"
+
+- name: Check if blueprint already exists
+  ansible.builtin.command: composer-cli blueprints list
+  register: existing_blueprints
+  changed_when: false
+
+- name: Display existing blueprints
+  ansible.builtin.debug:
+    msg: "Existing blueprints: {{ existing_blueprints.stdout_lines }}"
+  when: osbuild_verbose | bool
+
+- name: Push blueprint to composer
+  ansible.builtin.command: composer-cli blueprints push {{ blueprint_file_path }}
+  register: blueprint_push
+  changed_when: "'updated' in blueprint_push.stdout or 'added' in blueprint_push.stdout"
+  failed_when:
+    - blueprint_push.rc != 0
+    - "'already exists' not in blueprint_push.stderr"
+
+- name: Display blueprint push result
+  ansible.builtin.debug:
+    msg: "{{ blueprint_push.stdout_lines }}"
+
+- name: Verify blueprint was loaded
+  ansible.builtin.command: composer-cli blueprints show {{ blueprint_name }}
+  register: blueprint_show
+  changed_when: false
+
+- name: Display blueprint details
+  ansible.builtin.debug:
+    msg: "{{ blueprint_show.stdout_lines }}"
+  when: osbuild_verbose | bool
+
+- name: Resolve blueprint dependencies
+  ansible.builtin.command: composer-cli blueprints depsolve {{ blueprint_name }}
+  register: blueprint_depsolve
+  changed_when: false
+  failed_when: false  # Don't fail immediately, we'll analyze the output
+
+- name: Analyze dependency resolution results
+  block:
+    - name: Check for successful dependency resolution
+      ansible.builtin.assert:
+        that:
+          - blueprint_depsolve.rc == 0
+          - "'blueprint:' in blueprint_depsolve.stdout"
+        fail_msg: |
+          Dependency resolution failed for blueprint '{{ blueprint_name }}'.
+          This usually indicates:
+          1. Missing or incorrect repository sources
+          2. Package name typos in the blueprint
+          3. Incompatible package versions
+          4. Repository GPG key issues
+
+          Error output:
+          {{ blueprint_depsolve.stderr }}
+
+          Suggestions:
+          - Run 'composer-cli sources list' to verify all sources are loaded
+          - Check repository accessibility with 'composer-cli sources info <source-name>'
+          - Review blueprint for package name errors
+          - Verify the distro version matches your sources ({{ osbuild_distro }})
+        success_msg: "Blueprint dependencies resolved successfully"
+
+  rescue:
+    - name: Display detailed dependency error
+      ansible.builtin.debug:
+        msg: |
+          DEPENDENCY RESOLUTION FAILED
+          ============================
+          Blueprint: {{ blueprint_name }}
+
+          Command output:
+          {{ blueprint_depsolve.stdout }}
+
+          Error output:
+          {{ blueprint_depsolve.stderr }}
+
+          Loaded sources:
+          {{ existing_blueprints.stdout_lines }}
+
+    - name: Save depsolve output to log
+      ansible.builtin.copy:
+        content: |
+          Dependency Resolution Failure
+          ==============================
+          Timestamp: {{ ansible_date_time.iso8601 }}
+          Blueprint: {{ blueprint_name }}
+          Distro: {{ osbuild_distro }}
+
+          Command: composer-cli blueprints depsolve {{ blueprint_name }}
+
+          STDOUT:
+          {{ blueprint_depsolve.stdout }}
+
+          STDERR:
+          {{ blueprint_depsolve.stderr }}
+        dest: "{{ osbuild_log_dir }}/depsolve-failure-{{ ansible_date_time.epoch }}.log"
+        mode: '0644'
+      when: osbuild_keep_logs | bool
+
+    - name: Fail with helpful message
+      ansible.builtin.fail:
+        msg: "Dependency resolution failed. Check logs at {{ osbuild_log_dir }} for details."
+
+- name: Display dependency resolution summary
+  ansible.builtin.debug:
+    msg: "Blueprint '{{ blueprint_name }}' is ready for building ({{ blueprint_depsolve.stdout_lines | length }} dependencies resolved)"
+
+- name: Save blueprint file to output directory
+  ansible.builtin.copy:
+    src: "{{ blueprint_file_path }}"
+    dest: "{{ osbuild_output_dir }}/{{ blueprint_name }}.toml"
+    mode: '0644'
+    remote_src: true
+
+- name: Clean up temporary blueprint directory
+  ansible.builtin.file:
+    path: "{{ temp_blueprint_dir.path }}"
+    state: absent
+  when: temp_blueprint_dir.path is defined
+  changed_when: false

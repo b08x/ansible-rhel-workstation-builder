@@ -1,0 +1,149 @@
+#SPDX-License-Identifier: MIT-0
+---
+# Repository source management for osbuild-composer
+
+- name: Get list of currently loaded sources
+  ansible.builtin.command: composer-cli sources list
+  register: current_sources
+  changed_when: false
+  failed_when: false
+
+- name: Display currently loaded sources
+  ansible.builtin.debug:
+    msg: "Currently loaded sources: {{ current_sources.stdout_lines }}"
+  when: osbuild_verbose | bool
+
+- name: Check if source TOML files exist
+  ansible.builtin.stat:
+    path: "{{ role_path }}/{{ osbuild_sources_dir }}/{{ item }}.toml"
+  loop: "{{ osbuild_sources }}"
+  register: source_files
+
+- name: Display missing source files
+  ansible.builtin.debug:
+    msg: "WARNING: Source file not found: {{ item.item }}.toml"
+  loop: "{{ source_files.results }}"
+  when: not item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Create temporary directory for source files
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: _osbuild_sources
+  register: temp_source_dir
+  changed_when: false
+
+- name: Copy source TOML files to temporary directory
+  ansible.builtin.copy:
+    src: "{{ osbuild_sources_dir }}/{{ item.item }}.toml"
+    dest: "{{ temp_source_dir.path }}/{{ item.item }}.toml"
+    mode: '0644'
+  loop: "{{ source_files.results }}"
+  when: item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Add repository sources to composer
+  ansible.builtin.command: composer-cli sources add {{ temp_source_dir.path }}/{{ item.item }}.toml
+  loop: "{{ source_files.results }}"
+  when: item.stat.exists and item.item not in current_sources.stdout
+  loop_control:
+    label: "{{ item.item }}"
+  register: source_add_result
+  failed_when:
+    - source_add_result.rc != 0
+    - "'already exists' not in source_add_result.stderr"
+
+- name: Update existing repository sources
+  ansible.builtin.command: composer-cli sources add {{ temp_source_dir.path }}/{{ item.item }}.toml
+  loop: "{{ source_files.results }}"
+  when: item.stat.exists and item.item in current_sources.stdout
+  loop_control:
+    label: "{{ item.item }}"
+  register: source_update_result
+  changed_when: "'updated' in source_update_result.stdout or 'added' in source_update_result.stdout"
+
+- name: Verify sources were loaded successfully
+  ansible.builtin.command: composer-cli sources list
+  register: updated_sources
+  changed_when: false
+
+- name: Display loaded sources
+  ansible.builtin.debug:
+    msg: "Loaded sources: {{ updated_sources.stdout_lines }}"
+
+- name: Validate source configurations
+  ansible.builtin.command: composer-cli sources info {{ item.item }}
+  loop: "{{ source_files.results }}"
+  when: item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+  register: source_info
+  changed_when: false
+  failed_when: source_info.rc != 0
+
+- name: Display source details
+  ansible.builtin.debug:
+    msg: "{{ item.stdout_lines }}"
+  loop: "{{ source_info.results }}"
+  when:
+    - osbuild_verbose | bool
+    - item.stdout is defined
+  loop_control:
+    label: "{{ item.item.item if item.item is defined else 'unknown' }}"
+
+- name: Clean up temporary directory
+  ansible.builtin.file:
+    path: "{{ temp_source_dir.path }}"
+    state: absent
+  changed_when: false
+  when: temp_source_dir.path is defined
+
+- name: Test repository accessibility (optional check)
+  block:
+    - name: Create test blueprint for dependency checking
+      ansible.builtin.tempfile:
+        state: file
+        suffix: _test_blueprint.toml
+      register: test_blueprint_file
+
+    - name: Write minimal test blueprint
+      ansible.builtin.copy:
+        content: |
+          name = "test-sources"
+          description = "Test blueprint for source validation"
+          version = "0.0.1"
+          distro = "{{ osbuild_distro }}"
+        dest: "{{ test_blueprint_file.path }}"
+        mode: '0644'
+
+    - name: Push test blueprint
+      ansible.builtin.command: composer-cli blueprints push {{ test_blueprint_file.path }}
+      register: test_push
+      changed_when: false
+
+    - name: Verify test blueprint can resolve dependencies
+      ansible.builtin.command: composer-cli blueprints depsolve test-sources
+      register: test_depsolve
+      changed_when: false
+      failed_when: false
+
+    - name: Remove test blueprint
+      ansible.builtin.command: composer-cli blueprints delete test-sources
+      when: test_push.rc == 0
+      changed_when: false
+      failed_when: false
+
+    - name: Clean up test blueprint file
+      ansible.builtin.file:
+        path: "{{ test_blueprint_file.path }}"
+        state: absent
+      changed_when: false
+
+  rescue:
+    - name: Display source validation warning
+      ansible.builtin.debug:
+        msg: "WARNING: Source validation check failed, but continuing. Some repositories may not be accessible."
+
+  when: osbuild_verbose | bool
