@@ -13,7 +13,7 @@ This collection enforces **consistent, reproducible, and secure** configurations
 ## Structure
 
 ```shell
-ansible_new/
+ansible-rhel-workstation-builder/
 ├── playbooks/          # Workflow-specific automation
 │   ├── rpm-dev.yml     # RPM development environment
 │   ├── nas.yml         # Network-attached storage
@@ -50,7 +50,7 @@ ansible_new/
 ```bash
 # Clone repository
 git clone <repository-url>
-cd ansible_new
+cd ansible-rhel-workstation-builder
 
 # Install dependencies
 ansible-galaxy collection install ansible.posix

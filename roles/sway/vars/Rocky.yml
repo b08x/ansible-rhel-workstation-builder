@@ -1,5 +1,5 @@
 ---
-# vars file for sway on Fedora 43 Workstation
+# vars file for sway on Rocky Linux 9/10
 packages__sway:
   # Core Sway window manager and utilities
   - sway
@@ -8,13 +8,13 @@ packages__sway:
   - swaybg
   - xdg-desktop-portal-wlr
   - xdg-desktop-portal-gnome
-  - xorg-x11-server-Xwayland
+  - xwayland
 
   # GNOME / Desktop integration
   - gdm
   - gnome-keyring
   - polkit-gnome
-  - network-manager-applet
+  - NetworkManager-adwaita
   - blueman
 
   # Wayland utilities
@@ -22,8 +22,6 @@ packages__sway:
   - slurp # Region selector
   - wl-clipboard # Clipboard utilities
   - wf-recorder # Screen recorder
-  - qt5-qtwayland # Wayland support for QT5
-  - qt6-qtwayland # Wayland support for QT6
 
   # Application launchers and menus
   - fuzzel # Application launcher
@@ -56,27 +54,20 @@ packages__sway:
   - libnotify # Desktop notifications
   - xdg-user-dirs # User directory utilities
   - systemd # System and service manager
-  - pcre-tools # Perl-compatible regular expressions
 
   # Python dependencies for assign-cgroups.py and other scripts
-  # All installed as native Fedora packages (PEP 668 compliant)
   - python3
   - python3-requests # HTTP library for weather scripts
-  - python3-dbus # D-Bus bindings (legacy name)
-  - python3-dbus-next # Modern async D-Bus library (for assign-cgroups.py)
+  - python3-dbus # D-Bus bindings
   - python3-i3ipc # i3/sway IPC library
   - python3-psutil # Process and system utilities
   - python3-tenacity # Retry library
-  - python3-xlib # X11 protocol bindings
 
   # Media control
   - playerctl # Media player control
 
   # Additional Wayland tools
   - wlsunset # Blue light filter
-  - wob # On-screen display overlay
-  - wtype # Text input tool
-  - nwg-wrapper # GTK3 wrapper for desktop text display
 
   # System monitoring and tools
   - gh # GitHub CLI
@@ -87,7 +78,7 @@ packages__sway:
 
   # Fonts
   - google-roboto-fonts # Roboto font family
-  - jetbrains-mono-fonts-all # JetBrains Mono font
+  - jetbrains-mono-fonts # JetBrains Mono font
 
 # Directory definitions for user configuration
 sway_directory_definitions:

@@ -1,24 +1,33 @@
 ---
 # Sway window manager setup for Fedora 43 Workstation
-- name: Load Fedora-specific variables
-  ansible.builtin.include_vars: Fedora.yml
+- name: Load distribution-specific variables
+  ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
   tags: ["packages", "sway"]
 
-- name: Enable Copr repository for greetd
-  community.general.copr:
-    name: kylegospo/greetd
-    state: enabled
-    chroot: "fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
-  become: true
-  tags: ["packages", "repositories"]
-
-- name: Install sway and dependencies
+- name: Install sway and dependencies (Fedora)
   ansible.builtin.dnf5:
     name: "{{ packages__sway }}"
     state: present
     allow_downgrade: false
   become: true
+  when: ansible_distribution == "Fedora"
   tags: ["packages", "sway"]
+
+- name: Install sway and dependencies (Rocky)
+  ansible.builtin.dnf:
+    name: "{{ packages__sway }}"
+    state: present
+  become: true
+  when: ansible_distribution in ["Rocky", "CentOS"]
+  tags: ["packages", "sway"]
+
+- name: Ensure GDM is enabled and started
+  ansible.builtin.systemd:
+    name: gdm
+    enabled: true
+    state: started
+  become: true
+  tags: ["services", "sway", "gdm"]
 
 - name: Ensure sway directories exist
   ansible.builtin.file:
