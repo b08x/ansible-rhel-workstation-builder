@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: your name
+  description: Sway Wayland compositor for Fedora Workstation
+  company: your company (optional)
+  license: GPL-2.0-or-later
+  min_ansible_version: 2.15
+  platforms:
+    - name: Fedora
+      versions:
+        - 43
+  galaxy_tags:
+    - desktop
+    - windowmanager
+    - sway
+    - wayland
+    - fedora
+dependencies: []

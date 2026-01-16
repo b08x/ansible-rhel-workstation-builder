@@ -1,0 +1,96 @@
+---
+# vars file for sway on Fedora 43 Workstation
+packages__sway:
+  # Core Sway window manager and utilities
+  - "@sway-desktop-environment"
+  - swayidle
+  - swaylock
+  - xdg-desktop-portal-wlr
+  - xorg-x11-server-Xwayland  # XWayland support (renamed from xorg-xwayland)
+
+  # Display manager (from Copr: kylegospo/greetd)
+  - greetd
+  - greetd-gtkgreet
+
+  # Wayland utilities
+  - grim                    # Screenshot tool
+  - slurp                   # Region selector
+  - wl-clipboard            # Clipboard utilities
+  - wf-recorder             # Screen recorder
+
+  # Application launchers and menus
+  - fuzzel                  # Application launcher
+  - wofi                    # Application launcher/menu
+  - rofi-wayland            # Rofi with Wayland support
+
+  # Status bars and notifications
+  - waybar                  # Status bar
+  - mako                    # Notification daemon
+
+  # Display and appearance
+  - azote                   # Wallpaper manager
+  - kanshi                  # Dynamic display configuration
+  - wlogout                 # Logout menu
+  - swaybg                  # Wallpaper utility
+
+  # Terminal emulator
+  - foot                    # Fast terminal emulator
+
+  # System utilities required by scripts
+  - jq                      # JSON processor
+  - curl                    # HTTP client
+  - bc                      # Calculator
+  - brightnessctl           # Brightness control
+  - gettext                 # Translation tools (envsubst)
+  - util-linux              # System utilities (flock)
+  - lsof                    # List open files
+  - procps-ng               # Process utilities (pgrep, pkill)
+  - coreutils               # Core utilities (date, mv, cp, etc.)
+  - inotify-tools           # File system event monitoring
+  - libnotify               # Desktop notifications
+  - xdg-user-dirs           # User directory utilities
+  - systemd                 # System and service manager
+  - pcre-tools              # Perl-compatible regular expressions
+
+  # Python dependencies for assign-cgroups.py and other scripts
+  # All installed as native Fedora packages (PEP 668 compliant)
+  - python3
+  - python3-requests        # HTTP library for weather scripts
+  - python3-dbus            # D-Bus bindings (legacy name)
+  - python3-dbus-next       # Modern async D-Bus library (for assign-cgroups.py)
+  - python3-i3ipc           # i3/sway IPC library
+  - python3-psutil          # Process and system utilities
+  - python3-tenacity        # Retry library
+  - python3-xlib            # X11 protocol bindings
+
+  # Media control
+  - playerctl               # Media player control
+
+  # Additional Wayland tools
+  - wlsunset                # Blue light filter
+  - wob                     # On-screen display overlay
+  - wtype                   # Text input tool
+  - nwg-wrapper             # GTK3 wrapper for desktop text display
+
+  # System monitoring and tools
+  - gh                      # GitHub CLI
+  - lm_sensors              # Hardware monitoring
+
+  # Desktop integration
+  - desktop-backgrounds-compat  # Default wallpapers
+
+  # Fonts
+  - google-roboto-fonts         # Roboto font family
+  - jetbrains-mono-fonts-all    # JetBrains Mono font
+
+# Directory definitions for user configuration
+sway_directory_definitions:
+  - dest: ".config/sway"
+  - dest: ".config/waybar"
+  - dest: ".config/mako"
+  - dest: ".config/wlogout"
+  - dest: ".config/sway/config.d"
+  - dest: ".config/sway/inputs"
+  - dest: ".config/sway/modes"
+
+

@@ -1,0 +1,120 @@
+---
+# Sway window manager setup for Fedora 43 Workstation
+- name: Load Fedora-specific variables
+  ansible.builtin.include_vars: Fedora.yml
+  tags: ["packages", "sway"]
+
+- name: Enable Copr repository for greetd
+  community.general.copr:
+    name: kylegospo/greetd
+    state: enabled
+    chroot: "fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+  become: true
+  tags: ["packages", "repositories"]
+
+- name: Install sway and dependencies
+  ansible.builtin.dnf5:
+    name: "{{ packages__sway }}"
+    state: present
+    allow_downgrade: false
+  become: true
+  tags: ["packages", "sway"]
+
+- name: Ensure sway directories exist
+  ansible.builtin.file:
+    dest: "{{ wm_directory_default_location }}/{{ item.dest }}"
+    state: directory
+    owner: "{{ item.owner | default(wm_directory_default_owner) }}"
+    group: "{{ item.group | default(wm_directory_default_group) }}"
+    mode: "{{ item.mode | default(wm_directory_default_mode) }}"
+    recurse: "{{ item.recurse | default(wm_directory_default_recurse) }}"
+  loop: "{{ sway_directory_definitions }}"
+  check_mode: false
+  tags: ["folders", "sway"]
+
+- name: Install Sway system configs
+  block:
+    - name: Copy sway system configs (excluding keybindings)
+      ansible.builtin.copy:
+        src: etc/sway/
+        dest: /etc/sway
+        owner: root
+        group: root
+        directory_mode: "0755"
+        mode: "0644"
+        backup: true
+      become: true
+
+    - name: Copy sway system executables
+      ansible.builtin.copy:
+        src: usr/libexec/sway/
+        dest: /usr/libexec/sway
+        owner: root
+        group: root
+        directory_mode: "0755"
+        mode: "0755"
+        backup: true
+      become: true
+
+    - name: Copy sway systemd executables
+      ansible.builtin.copy:
+        src: usr/libexec/sway-systemd/
+        dest: /usr/libexec/sway-systemd
+        owner: root
+        group: root
+        directory_mode: "0755"
+        mode: "0755"
+        backup: true
+      become: true
+
+    - name: Copy sway system scripts, templates, and themes
+      ansible.builtin.copy:
+        src: usr/share/sway/
+        dest: /usr/share/sway
+        owner: root
+        group: root
+        directory_mode: "0755"
+        mode: "0644"
+        backup: true
+      become: true
+
+- name: Update sway user configs
+  become: false
+  block:
+    # - name: Remove previous sway user configs to ensure clean install
+    #   ansible.builtin.file:
+    #     path: "{{ user.home }}/.config/sway"
+    #     state: absent
+
+    - name: Update sway user configs
+      ansible.builtin.copy:
+        src: home/.config/sway/
+        dest: "{{ user.home }}/.config/sway"
+        backup: true
+
+    - name: Update waybar css
+      ansible.builtin.template:
+        src: "home/.config/waybar/{{ item }}.j2"
+        dest: "{{ user.home }}/.config/waybar/{{ item }}"
+        mode: "0644"
+        backup: true
+      with_items:
+        - style.css
+        - theme.css
+
+    - name: Update wlogout css
+      ansible.builtin.template:
+        src: "home/.config/wlogout/{{ item }}.j2"
+        dest: "{{ user.home }}/.config/wlogout/{{ item }}"
+        mode: "0644"
+        backup: true
+      with_items:
+        - style.css
+        - theme.css
+    
+    - name: Update .profile
+      ansible.builtin.copy:
+        src: home/.profile
+        dest: "{{ user.home }}/.profile"
+        mode: "0644"
+        backup: true
