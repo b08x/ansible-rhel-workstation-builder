@@ -1,0 +1,32 @@
+---
+- name: Load distribution-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  tags: ["packages"]
+
+- name: Starting audio role tasks
+  ansible.builtin.debug:
+    msg: "Starting audio tasks"
+
+- name: add modprobe option to not use a usb card are the default device
+  lineinfile:
+    path: /etc/modprobe.d/10-alsa_usb.conf
+    line: "options snd slots=snd-hda-intel,snd-usb-audio"
+    create: yes
+    backup: yes
+  tags: ['modprobe']
+
+- name: Install ALSA packages
+  ansible.builtin.dnf:
+    name: "{{ audio_packages.alsa }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+
+
+- ansible.builtin.import_tasks:
+    file: tuning.yml
+  tags: ["tuning"]
+
+- import_tasks:
+    file: noisetorch.yml
+  become: false
+  tags: ['noisetorch']

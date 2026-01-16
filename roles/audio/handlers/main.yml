@@ -1,0 +1,29 @@
+---
+# roles/audio/handlers/main.yml
+
+- name: restart pipewire
+  listen: "restart pipewire"
+  become: false
+  ansible.builtin.command:
+    cmd: systemctl --user restart pipewire wireplumber pipewire-pulse
+
+- name: reload sysctl
+  listen: "reload sysctl"
+  ansible.builtin.command:
+    cmd: sysctl --system
+
+- name: Enable and restart rtirq service
+  listen: "Enable and restart rtirq service"
+  ansible.builtin.systemd:
+    name: rtirq
+    enabled: true
+    state: restarted
+    daemon_reload: true
+
+- name: Enable and restart rtkit service
+  listen: "Enable and restart rtkit service"
+  ansible.builtin.systemd:
+    name: rtkit-daemon
+    enabled: true
+    state: restarted
+    daemon_reload: true

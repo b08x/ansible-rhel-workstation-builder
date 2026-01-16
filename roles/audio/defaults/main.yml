@@ -1,0 +1,51 @@
+---
+
+# Primary audio system selection - must be one of:
+# - "pipewire" (default, modern audio server with compatibility layers)
+# - "pulseaudio_jack" (traditional setup with JACK and PulseAudio)
+audio_system: "pipewire"
+
+# Legacy variables (kept for backward compatibility)
+# These are now derived from audio_system and should not be set directly
+use_jack: false
+use_pipewire: true
+
+# Audio packages to install
+audio_packages:
+  - name: alsa-utils
+  - name: pipewire
+  - name: pipewire-alsa
+  - name: pipewire-pulse
+  - name: pipewire-jack
+  - name: realtime-privileges
+
+jack:
+  dps:
+    device: hw:0
+    capture: none
+    playback: none
+    rate: 48000
+    period: 1024
+    nperiods: 2
+    hwmon: false
+    hwmeter: false
+    duplex: true
+    softmode: false
+    monitor: true
+    dither: n
+    shorts: false
+    mididriver: seq
+  eps:
+    driver: alsa
+    name: default
+    realtime: true
+    realtimepriority: 10
+    temporary: false
+    verbose: false
+    # client-timeout: Client timeout limit in milliseconds. (sint:notset:0:0)
+    # clock-source: Clocksource type : c(ycle) | h(pet) | s(ystem). (uint:notset:0:0)
+    port-max: 2048
+    replaceregistry: false
+    sync: false
+    # self-connect-mode: Self connect mode. (char:notset: : )
+    # slave-drivers: Slave drivers to use (str:notset::)

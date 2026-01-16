@@ -1,0 +1,39 @@
+---
+# roles/audio/tasks/pipewire.yml - Unified PipeWire audio stack
+
+- name: Install PipeWire packages
+  ansible.builtin.dnf:
+    name: "{{ audio_packages.pipewire }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags:
+    - pipewire
+    - audio-stack
+
+- name: Get target user information for PipeWire services
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ target_user | default(ansible_user) }}"
+  register: pipewire_user_info
+
+- name: Ensure PipeWire user service is enabled
+  ansible.builtin.systemd:
+    name: pipewire
+    enabled: true
+    scope: user
+    daemon_reload: true
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ pipewire_user_info.ansible_facts.getent_passwd[target_user | default(ansible_user)][2] }}"
+  become: false
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Ensure WirePlumber user service is enabled
+  ansible.builtin.systemd:
+    name: wireplumber
+    enabled: true
+    scope: user
+    daemon_reload: true
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ pipewire_user_info.ansible_facts.getent_passwd[target_user | default(ansible_user)][2] }}"
+  become: false
+  ignore_errors: "{{ ansible_check_mode }}"

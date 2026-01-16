@@ -1,0 +1,12 @@
+---
+# Audio packages installation
+
+- name: Install audio packages
+  ansible.builtin.dnf:
+    name: "{{ audio_packages }}"
+    state: present
+  become: true
+  when:
+    - ansible_os_family == "RedHat"
+    - audio_packages is defined
+  tags: ["packages"]
