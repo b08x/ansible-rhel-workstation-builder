@@ -1,0 +1,27 @@
+# An `osbuild-composer` blueprint for the Fedora workstation edition, based on
+# the `ext/fedora-kickstarts/fedora-live-workstation.ks` file.
+name = "fedora-workstation-live-iso"
+description = "Fedora Workstation Live ISO"
+
+distro = "fedora-42"
+minimal = false
+
+# These packages are installed upon the 'base' fedora as defined in
+# `osbuild-composer`.
+packages = [
+    # Desktop Environment
+    { name = "@workstation-product-environment" },
+
+    # Install environment
+    { name = "anaconda" },
+    { name = "anaconda-install-env-deps" },
+    { name = "anaconda-live" },
+    { name = "@anaconda-tools" },
+    { name = "glibc-all-langpacks" },
+]
+
+customizations.files = [
+    { path = "/etc/sysconfig/livesys", data = "livesys_session=\"gnome\"" }
+]
+
+customizations.services.enabled = ["livesys", "livesys-late"]

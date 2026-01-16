@@ -1,0 +1,61 @@
+# An `osbuild-composer` blueprint for the Fedora workstation edition, based on
+# the `ext/fedora-kickstarts/fedora-live-workstation.ks` file.
+name = "fedora-workstation-live-iso-nvidia"
+description = "Fedora Workstation Live ISO (NVIDIA)"
+version = "0.1.2"
+
+distro = "fedora-42"
+minimal = false
+
+groups = [
+    { name = "hardware-support" },
+    { name = "c-development" },
+    { name = "headless-management" },
+    { name = "development-tools" },
+    { name = "container-management" },
+    { name = "system-tools" },
+    { name = "admin-tools" },
+    { name = "gnome-desktop" },
+    { name = "virtualization" },
+    { name = "anaconda-tools" }
+]
+
+# These packages are installed upon the 'base' fedora as defined in
+# `osbuild-composer`.
+packages = [
+
+    # Install environment
+    { name = "livesys-scripts"},
+    { name = "anaconda" },
+    { name = "anaconda-install-env-deps" },
+    { name = "anaconda-live" },
+    { name = "glibc-all-langpacks" },
+    { name = "kernel-devel" },
+    { name = "kernel-headers" },
+    { name = "kernel-modules-extra" },
+    { name = "kernel-modules-core" },
+    { name = "kernel-tools" },
+    { name = "kernel-tools-libs" },
+    { name = "nvidia-driver", version = "3:580.105.08-1.fc42" },
+    { name = "nvidia-driver-cuda", version = "3:580.105.08-1.fc42" },
+    { name = "nvidia-gpu-firmware" },
+    { name = "cuda-toolkit", version="13.0.2-1"},
+    { name = "gcc14" },
+    { name = "gcc14-c++" },
+    { name = "libva-intel-media-driver" },
+    { name = "google-chrome-stable" },
+    { name = "micro" },
+    { name = "kitty" },
+    { name = "ranger" },
+    { name = "zsh" },
+    { name = "htop" },
+    { name = "btrfs-progs" },
+    { name = "lnav" },
+    { name = "ansible" }
+]
+
+customizations.files = [
+    { path = "/etc/sysconfig/livesys", data = "livesys_session=\"gnome\"" }
+]
+
+customizations.services.enabled = ["livesys", "livesys-late"]
