@@ -1,0 +1,9 @@
+version: 3
+dependencies:
+  python: requirements.txt
+  system: bindep.txt
+additional_build_steps:
+  prepend_base:
+    - RUN pip install --upgrade pip setuptools wheel
+    # Specific fix for SQLite version issues in some base images
+    - RUN pip install pysqlite3-binary
