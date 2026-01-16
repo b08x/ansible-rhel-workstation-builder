@@ -1,6 +1,8 @@
 # VARIABLES KNOWLEDGE BASE
 
-**Generated:** 03:12:45 AM (America/New_York)
+**Generated:** 07:26:41 AM (America/New_York)
+**Commit:** 8940810
+**Branch:** development
 
 ---
 
@@ -10,7 +12,8 @@ The `vars/` directory contains global and distribution-specific variables for An
 ## STRUCTURE
 ```
 vars/
-├── secrets.yml    # Unencrypted secrets (security anti-pattern)
+├── secrets.yml    # Unencrypted secrets (CRITICAL security anti-pattern)
+├── main.yml       # Global project variables
 ├── Fedora.yml     # Fedora-specific variables
 └── RedHat.yml     # RHEL/Rocky Linux-specific variables
 ```
@@ -27,9 +30,11 @@ vars/
 - **Role-Prefixed Variables**: Variables are prefixed with role names (e.g., `nas_nfs_exports`, `rpm_dev_user`).
 - **Variable Precedence**: `vars/` > `group_vars/` > `host_vars/` (if added later).
 
-## ANTI-PATTERNS
-- **Unencrypted Secrets**: `secrets.yml` contains plaintext credentials (security risk). Use Ansible Vault.
-- **Generic Variable Names**: Avoid generic names (e.g., `user`, `path`). Use role-prefixed variables (e.g., `nas_user`, `rpm_dev_path`).
+## ANTI-PATTERNS (THIS PROJECT)
+- **Unencrypted secrets**: `secrets.yml` contains plaintext credentials (CRITICAL)
+- **SMB1/NTLMv1**: Deprecated protocols enabled in roles (security risk)
+- **Hardcoded credentials**: References to plaintext passwords in playbooks
+- **Variable location**: Should use `group_vars/` or `host_vars/` for better organization
 
 ## UNIQUE STYLES
 - **Distribution-Specific Variables**: Fedora and RHEL configurations are separated for clarity.

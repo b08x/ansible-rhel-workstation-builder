@@ -1,45 +1,59 @@
 # PLAYBOOKS KNOWLEDGE BASE
 
-**Generated:** 03:12:45 AM (America/New_York)
+**Generated:** 07:26:41 AM (America/New_York)
+**Commit:** 8940810
+**Branch:** development
 
 ---
 
 ## OVERVIEW
-The `playbooks/` directory contains top-level automation scripts for Ansible, targeting specific use cases or system configurations.
+Top-level automation scripts with non-standard, use-case-specific naming that directly reflects their purpose rather than generic conventions.
 
 ## STRUCTURE
 ```
 playbooks/
-├── facts.yml            # System facts gathering
-├── rpm-dev.yml          # RPM development environment setup
-├── nas.yml              # Network-attached storage configuration
-├── oneAPI.yml           # Intel oneAPI MKL installation
-├── postfix_gmail.yml    # Postfix Gmail relay configuration
-└── jacktrip-pi.yml      # JackTrip on Raspberry Pi (non-standard)
+├── build-kiwi-iso.yml   # KIWI NG image building (107 lines)
+├── nas.yml              # NFS/Samba/Rsync setup
+├── jacktrip-pi.yml      # JackTrip audio streaming (Raspberry Pi)
+├── workstation.yml      # Full workstation provisioning
+├── facts.yml            # System facts gathering/debugging
+├── rpm-dev.yml          # RPM development environment
+├── docker.yml           # Docker + container tools
+├── postfix_gmail.yml    # Gmail SMTP relay configuration
+└── oneAPI.yml           # Intel oneAPI tools
 ```
 
 ## WHERE TO LOOK
-| Playbook | Purpose | Roles Used | Notes |
-|----------|---------|------------|-------|
-| **facts.yml** | Gather system facts and baseline configuration | - | Debug playbook for system introspection |
-| **rpm-dev.yml** | Configure RPM development environment | `common`, `repos`, `rpm-dev` | Fedora 42 focus with Mock support |
-| **nas.yml** | Configure network-attached storage services | `nas` | Manually configurable for NFS/Samba/Rsync |
-| **oneAPI.yml** | Install Intel oneAPI MKL toolkit | - | Adds Intel repository and scientific computing libraries |
-| **postfix_gmail.yml** | Configure Postfix to relay via Gmail SMTP | - | Requires encrypted `secrets.yml` with Gmail credentials |
-| **jacktrip-pi.yml** | Configure JackTrip on Raspberry Pi | - | Non-standard playbook for specific use case |
+| Playbook | Purpose | Key Roles | Target Hosts |
+|----------|---------|-----------|--------------|
+| **workstation.yml** | Full workstation setup | workstation, repos, common | localhost |
+| **nas.yml** | Network storage services | nas | nas_server |
+| **build-kiwi-iso.yml** | Custom ISO generation | kiwi | localhost |
+| **rpm-dev.yml** | RPM packaging environment | rpm-dev, repos | dev |
+| **jacktrip-pi.yml** | Network audio streaming | audio (partial) | pi |
+| **postfix_gmail.yml** | Email relay via Gmail | N/A (standalone tasks) | all |
+| **docker.yml** | Container platform | docker, libvirt | localhost |
+| **oneAPI.yml** | Intel development tools | N/A (standalone tasks) | localhost |
+| **facts.yml** | System information | N/A (debug only) | all |
 
 ## CONVENTIONS
-- **Non-Standard Playbook Names**: Playbooks target specific use cases (e.g., `jacktrip-pi.yml`, `postfix_gmail.yml`) rather than roles or system types.
-- **Modular Composition**: Playbooks compose roles and tasks for specific workflows (e.g., `rpm-dev.yml` uses `common`, `repos`, and `rpm-dev` roles).
-- **Security-First**: Playbooks like `postfix_gmail.yml` require encrypted secrets (Ansible Vault).
+- **Use-Case Names**: Playbooks named after specific functions (not generic like `site.yml`)
+- **Target-Specific**: Each playbook targets specific host groups or use cases
+- **Modular Structure**: Uses `pre_tasks`, `roles`, `post_tasks` for organized execution
+- **Variable Validation**: Complex playbooks include variable validation in `pre_tasks`
+- **Build Summaries**: Image building playbooks generate build reports
 
-## ANTI-PATTERNS
-- **Non-Standard Names**: Avoid playbook names that target specific tools/use cases (e.g., `jacktrip-pi.yml`). Prefer role-based names (e.g., `workstation.yml`).
+## ANTI-PATTERNS (THIS PROJECT)
+- **Unencrypted credentials**: `postfix_gmail.yml` references plaintext Gmail passwords
+- **Non-idempotent tasks**: `postmap` command not fully idempotent when credentials change
+- **Hardcoded paths**: Some playbooks use hardcoded paths instead of variables
 
 ## UNIQUE STYLES
-- **Use-Case-Specific Playbooks**: Playbooks like `jacktrip-pi.yml` and `postfix_gmail.yml` target niche use cases.
-- **Role Composition**: Playbooks compose roles for specific workflows (e.g., `rpm-dev.yml` uses `common`, `repos`, and `rpm-dev`).
-- **Security Integration**: Playbooks like `postfix_gmail.yml` require Ansible Vault for secrets.
+- **Non-Standard Entry Points**: No `site.yml` - must know specific playbook names
+- **Build Orchestration**: `build-kiwi-iso.yml` has complex validation and summary logic
+- **Cross-Platform**: `jacktrip-pi.yml` optimized for Raspberry Pi hardware
+- **Standalone Tasks**: Some playbooks bypass roles for simple configurations
+- **Dynamic Inclusion**: Role inclusion with complex conditionals based on build status
 
 ## NOTES
 - **Dependencies**: Some playbooks depend on roles (e.g., `rpm-dev.yml` requires `common`, `repos`, and `rpm-dev`).
