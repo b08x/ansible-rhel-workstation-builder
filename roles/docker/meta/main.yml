@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: B08X
+  description: An Ansible role to install Docker CE on Fedora.
+  company: B08X
+  license: MIT
+  min_ansible_version: '2.16'
+  platforms:
+    - name: Fedora
+      versions:
+        - 41
+        - 42
+  galaxy_tags:
+    - docker
+    - container
+    - fedora
+    - system
+    - automation
+
+dependencies: []

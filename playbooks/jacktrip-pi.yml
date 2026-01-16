@@ -1,0 +1,94 @@
+---
+- name: Prepare Debian system for JackTrip (build + runtime)
+  hosts: pi
+  become: true
+
+  vars:
+    jacktrip_build_packages:
+      - gcc
+      - g++
+      - meson
+      - git
+      - pkg-config
+      - qt6-base-dev
+      - qt6-5compat-dev
+      - qt6-declarative-dev
+      - qt6-networkauth-dev
+      - qt6-svg-dev
+      - qt6-websockets-dev
+      - qt6-webengine-dev
+      - qt6-webchannel-dev
+      - qt6-shadertools-dev
+      - qt6-tools-dev
+      - libjack-jackd2-dev
+      - libasound2-dev
+      - librtaudio-dev
+      - libsndfile1-dev
+      - libsamplerate0-dev
+      - python3-yaml
+      - python3-jinja2
+      - help2man
+      - libappstream-glib-dev
+      - desktop-file-utils
+
+    jacktrip_runtime_packages:
+      - jackd2
+      - libjack-jackd2-0
+      - alsa-utils
+      - realtime-privileges
+
+    jacktrip_audio_groups:
+      - audio
+      - realtime
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install JackTrip build dependencies
+      apt:
+        name: "{{ jacktrip_build_packages }}"
+        state: present
+
+    - name: Install JackTrip runtime dependencies
+      apt:
+        name: "{{ jacktrip_runtime_packages }}"
+        state: present
+
+    - name: Ensure JACK binary exists
+      stat:
+        path: /usr/bin/jackd
+      register: jackd_stat
+
+    - name: Fail if JACK server is missing
+      fail:
+        msg: "jackd binary not found after installation"
+      when: not jackd_stat.stat.exists
+
+    - name: Add invoking user to audio and realtime groups
+      user:
+        name: "{{ ansible_user_id }}"
+        groups: "{{ jacktrip_audio_groups }}"
+        append: yes
+
+    - name: Ensure realtime limits are present
+      stat:
+        path: /etc/security/limits.d/audio.conf
+      register: rt_limits
+
+    - name: Warn if realtime limits file is missing
+      debug:
+        msg: >
+          realtime-privileges is installed but /etc/security/limits.d/audio.conf
+          was not found. JACK may not get RT scheduling.
+      when: not rt_limits.stat.exists
+
+    - name: Display post-install notice
+      debug:
+        msg: |
+          JackTrip system dependencies installed.
+          IMPORTANT:
+            - Log out and log back in for group changes to take effect
+            - Test JACK with: jackd -d alsa

@@ -1,6 +1,6 @@
 ---
 - name: Configure rpm-dev host
-  hosts: localhost
+  hosts: dev
   become: true
   gather_facts: true
   vars:
