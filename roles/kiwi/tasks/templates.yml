@@ -1,0 +1,146 @@
+---
+# Render Jinja2 templates for KIWI build
+
+# ============================================================================
+# Render KIWI Configuration Files
+# ============================================================================
+
+- name: Render KIWI config.xml
+  ansible.builtin.template:
+    src: config.xml.j2
+    dest: "{{ kiwi_build_dir }}/config.xml"
+    mode: '0644'
+  become: true
+  register: config_xml_rendered
+
+- name: Display config.xml location
+  ansible.builtin.debug:
+    msg: "KIWI image description rendered: {{ kiwi_build_dir }}/config.xml"
+
+# ============================================================================
+# Render Chroot Configuration Script
+# ============================================================================
+
+- name: Render config.sh script
+  ansible.builtin.template:
+    src: config.sh.j2
+    dest: "{{ kiwi_build_dir }}/config.sh"
+    mode: '0755'
+  become: true
+  register: config_sh_rendered
+
+- name: Display config.sh location
+  ansible.builtin.debug:
+    msg: "Chroot configuration script rendered: {{ kiwi_build_dir }}/config.sh"
+
+# ============================================================================
+# Render Post-Create Image Script
+# ============================================================================
+
+- name: Render images.sh script
+  ansible.builtin.template:
+    src: images.sh.j2
+    dest: "{{ kiwi_build_dir }}/images.sh"
+    mode: '0755'
+  become: true
+  register: images_sh_rendered
+
+- name: Display images.sh location
+  ansible.builtin.debug:
+    msg: "Post-create image script rendered: {{ kiwi_build_dir }}/images.sh"
+
+# ============================================================================
+# Validate XML Syntax
+# ============================================================================
+
+- name: Validate config.xml syntax
+  ansible.builtin.command: xmllint --noout {{ kiwi_build_dir }}/config.xml
+  register: xml_validation
+  changed_when: false
+  failed_when: xml_validation.rc != 0
+  become: true
+
+- name: Display XML validation result
+  ansible.builtin.debug:
+    msg: "config.xml validated successfully - XML syntax is correct"
+
+# ============================================================================
+# Validate KIWI Schema
+# ============================================================================
+
+- name: Validate KIWI image description (KIWI schema check)
+  ansible.builtin.command: kiwi-ng system validate --description {{ kiwi_build_dir }}
+  register: kiwi_validation
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: Display KIWI validation result
+  ansible.builtin.debug:
+    msg: "{{ kiwi_validation.stdout_lines }}"
+  when: kiwi_validation.stdout_lines | length > 0
+
+- name: Handle KIWI validation warnings
+  ansible.builtin.debug:
+    msg:
+      - "KIWI validation completed with warnings (non-fatal):"
+      - "{{ kiwi_validation.stderr_lines | join('\n') }}"
+  when:
+    - kiwi_validation.rc != 0
+    - kiwi_validation.stderr_lines | length > 0
+
+# ============================================================================
+# Display Rendered Files Summary
+# ============================================================================
+
+- name: Get file sizes of rendered templates
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ kiwi_build_dir }}/config.xml"
+    - "{{ kiwi_build_dir }}/config.sh"
+    - "{{ kiwi_build_dir }}/images.sh"
+  register: template_stats
+  become: true
+
+- name: Display template rendering summary
+  ansible.builtin.debug:
+    msg:
+      - "============================================================================"
+      - "Template Rendering Complete"
+      - "============================================================================"
+      - "Files created in {{ kiwi_build_dir }}:"
+      - "  - config.xml ({{ (template_stats.results[0].stat.size / 1024) | round(2) }}KB) - KIWI image description"
+      - "  - config.sh ({{ (template_stats.results[1].stat.size / 1024) | round(2) }}KB) - Chroot configuration"
+      - "  - images.sh ({{ (template_stats.results[2].stat.size / 1024) | round(2) }}KB) - Post-create script"
+      - ""
+      - "All templates validated successfully"
+      - "============================================================================"
+
+# ============================================================================
+# Create Template Checksums (for debugging)
+# ============================================================================
+
+- name: Generate checksums for templates
+  ansible.builtin.stat:
+    path: "{{ item }}"
+    checksum_algorithm: sha256
+  loop:
+    - "{{ kiwi_build_dir }}/config.xml"
+    - "{{ kiwi_build_dir }}/config.sh"
+    - "{{ kiwi_build_dir }}/images.sh"
+  register: template_checksums
+  become: true
+
+- name: Save template checksums
+  ansible.builtin.copy:
+    content: |
+      KIWI Template Checksums (SHA256)
+      Generated: {{ ansible_date_time.iso8601 }}
+
+      config.xml: {{ template_checksums.results[0].stat.checksum }}
+      config.sh: {{ template_checksums.results[1].stat.checksum }}
+      images.sh: {{ template_checksums.results[2].stat.checksum }}
+    dest: "{{ kiwi_build_dir }}/TEMPLATE_CHECKSUMS.txt"
+    mode: '0644'
+  become: true

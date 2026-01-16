@@ -1,0 +1,240 @@
+---
+# defaults file for kiwi role
+# KIWI NG Image Builder Configuration for Fedora 43 AI/HPC Workstation
+
+# ============================================================================
+# Fedora Version Targeting
+# ============================================================================
+fedora_version: 43
+
+# ============================================================================
+# Image Identification
+# ============================================================================
+kiwi_image_name: "fedora-43-ai-hybrid"
+kiwi_image_description: "Fedora 43 Workstation: GNOME/Sway/NVIDIA/CUDA/oneAPI"
+kiwi_image_version: "1.0.0"
+iso_label: "Fedora-43-AI-Hybrid"
+
+# ============================================================================
+# Build Directories
+# ============================================================================
+# KIWI build directory (where config.xml and scripts are placed)
+kiwi_build_dir: "/var/tmp/kiwi-build"
+# KIWI output directory (where final ISO will be generated)
+kiwi_output_dir: "/var/tmp/kiwi-output"
+
+# ============================================================================
+# KIWI Profile Configuration
+# ============================================================================
+# Profile type: live, oem, vmx, or docker
+kiwi_profile: "live"
+
+# ============================================================================
+# Image Size Configuration
+# ============================================================================
+# Root filesystem size in GB
+# Must accommodate: Base OS (5GB) + GNOME (3GB) + Intel oneAPI (15GB) + NVIDIA CUDA (5GB) + Overhead (5GB)
+kiwi_root_size_gb: 45
+
+# ============================================================================
+# Repository URLs
+# ============================================================================
+# Using Jinja2 templating for dynamic version substitution
+fedora_base_url: "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{ fedora_version }}/Everything/x86_64/os/"
+fedora_updates_url: "https://dl.fedoraproject.org/pub/fedora/linux/updates/{{ fedora_version }}/Everything/x86_64/"
+rpmfusion_free_url: "https://mirrors.rpmfusion.org/free/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
+rpmfusion_nonfree_url: "https://mirrors.rpmfusion.org/nonfree/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
+intel_oneapi_url: "https://yum.repos.intel.com/oneapi"
+nvidia_container_url: "https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"
+
+# ============================================================================
+# Kernel Command-Line Parameters
+# ============================================================================
+# Boot parameters for optimal NVIDIA driver compatibility
+kiwi_kernel_cmdline: "rhgb quiet rd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia-drm.modeset=1"
+
+# ============================================================================
+# Bootloader Configuration
+# ============================================================================
+kiwi_bootloader: "grub2"
+kiwi_bootloader_timeout: 5
+kiwi_bootloader_console: "gfxterm"
+
+# ============================================================================
+# Default User Configuration
+# ============================================================================
+kiwi_default_user: "fedora"
+kiwi_default_groups: "wheel,video,render"
+# Empty password for live ISO - users can set password after installation
+kiwi_default_password: ""
+
+# ============================================================================
+# Feature Toggles
+# ============================================================================
+# Enable/disable specific components
+kiwi_enable_nvidia: true
+kiwi_enable_oneapi: true
+kiwi_enable_sway: true
+kiwi_enable_gnome: true
+
+# ============================================================================
+# Package Collections
+# ============================================================================
+# Core packages always installed
+kiwi_core_packages:
+  - kernel
+  - kernel-modules
+  - kernel-modules-extra
+  - kernel-devel
+  - dracut-kiwi-live
+  - shim-x64
+  - grub2-efi-x64
+  - grub2-efi-x64-modules
+  - efibootmgr
+  - NetworkManager
+  - systemd
+  - glibc-all-langpacks
+  - distribution-gpg-keys
+
+# GNOME Workstation packages
+kiwi_gnome_packages:
+  - gnome-shell
+  - gnome-terminal
+  - gnome-tweaks
+  - nautilus
+  - gdm
+  - gnome-control-center
+  - gnome-system-monitor
+
+# Sway window manager packages
+kiwi_sway_packages:
+  - sway
+  - sway-config-fedora
+  - swaylock
+  - swayidle
+  - waybar
+  - wofi
+  - alacritty
+  - polkit-gnome
+  - xdg-desktop-portal-wlr
+
+# NVIDIA driver packages (from RPM Fusion)
+kiwi_nvidia_packages:
+  - akmod-nvidia
+  - xorg-x11-drv-nvidia-cuda
+  - xorg-x11-drv-nvidia-libs
+  - xorg-x11-drv-nvidia-libs.i686
+  - nvidia-settings
+  - vulkan
+  - gcc
+  - make
+  - openssl-devel
+
+# Container runtime packages
+kiwi_container_packages:
+  - podman
+  - podman-docker
+  - buildah
+  - skopeo
+
+# Intel oneAPI packages
+kiwi_oneapi_packages:
+  - intel-oneapi-compiler-dpcpp-cpp
+  - intel-oneapi-mkl
+  - intel-oneapi-mkl-devel
+
+# Development tools
+kiwi_devel_packages:
+  - git
+  - vim
+  - htop
+  - tmux
+  - wget
+  - curl
+
+# ============================================================================
+# Build Options
+# ============================================================================
+# Allow KIWI to reuse existing root directory (useful for iterative builds)
+kiwi_allow_existing_root: true
+
+# Async task timeout (in seconds) - 2 hours for large builds
+kiwi_async_timeout: 7200
+
+# Async task poll interval (in seconds) - check every 30 seconds
+kiwi_async_poll: 30
+
+# Execute the build (set to false for testing role structure only)
+kiwi_execute_build: true
+
+# Clean build directory before starting
+kiwi_clean_build_dir: false
+
+# Clean output directory before starting
+kiwi_clean_output_dir: false
+
+# ============================================================================
+# RPM Signature Validation
+# ============================================================================
+# Disable RPM signature checking (required for Intel oneAPI and NVIDIA repos)
+# This is a pragmatic workaround for RPM 6.0 weak key constraints
+kiwi_rpm_check_signatures: false
+
+# ============================================================================
+# Locale and Timezone Configuration
+# ============================================================================
+kiwi_locale: "en_US.utf8"
+kiwi_keytable: "us"
+kiwi_timezone: "UTC"
+
+# ============================================================================
+# Systemd Services to Enable
+# ============================================================================
+# Services to enable during chroot configuration
+kiwi_enabled_services:
+  - NetworkManager
+  - gdm
+  - sshd
+
+# NVIDIA-specific services (enabled conditionally)
+kiwi_nvidia_services:
+  - akmods
+  - nvidia-cdi-refresh
+  - nvidia-cdi-refresh.path
+
+# ============================================================================
+# DNF Configuration Optimizations
+# ============================================================================
+kiwi_dnf_fastestmirror: true
+kiwi_dnf_max_parallel_downloads: 10
+kiwi_dnf_clean_requirements_on_remove: true
+
+# ============================================================================
+# SELinux Configuration
+# ============================================================================
+# Restore SELinux to enforcing after build
+kiwi_restore_selinux: true
+
+# ============================================================================
+# KIWI Advanced Options
+# ============================================================================
+# Additional KIWI build flags
+kiwi_additional_build_flags: ""
+
+# ISO hybrid mode (allows USB booting)
+kiwi_iso_hybrid: true
+
+# Firmware type (uefi, bios, or both)
+kiwi_firmware: "uefi"
+
+# Image flags (overlay enables writable filesystem)
+kiwi_image_flags: "overlay"
+
+# ============================================================================
+# Logging and Debugging
+# ============================================================================
+# Enable verbose KIWI output
+kiwi_verbose: false
+
+# Log file location
+kiwi_log_file: "/var/log/kiwi-build.log"

@@ -1,0 +1,82 @@
+---
+# Handle SELinux for KIWI build process
+# KIWI requires permissive or disabled SELinux during build
+
+# ============================================================================
+# Check Current SELinux Status
+# ============================================================================
+
+- name: Check if SELinux is enabled
+  ansible.builtin.command: getenforce
+  register: selinux_status
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: Display current SELinux status
+  ansible.builtin.debug:
+    msg: "Current SELinux status: {{ selinux_status.stdout }}"
+  when: selinux_status.rc == 0
+
+# ============================================================================
+# Store Original State
+# ============================================================================
+
+- name: Store original SELinux state
+  ansible.builtin.set_fact:
+    original_selinux_state: "{{ selinux_status.stdout }}"
+  when: selinux_status.rc == 0
+
+- name: Set default SELinux state if command failed
+  ansible.builtin.set_fact:
+    original_selinux_state: "Disabled"
+  when: selinux_status.rc != 0
+
+# ============================================================================
+# Set SELinux to Permissive Mode
+# ============================================================================
+
+- name: Set SELinux to Permissive for build duration
+  ansible.builtin.command: setenforce 0
+  when:
+    - selinux_status.rc == 0
+    - "'Enforcing' in selinux_status.stdout"
+  become: true
+  register: selinux_set_permissive
+  changed_when: selinux_set_permissive.rc == 0
+  failed_when: false
+
+- name: Display SELinux mode change
+  ansible.builtin.debug:
+    msg:
+      - "SELinux mode changed for build:"
+      - "  Original: {{ original_selinux_state }}"
+      - "  Current: Permissive (temporary)"
+      - "  Will be restored after build completes"
+  when:
+    - selinux_status.rc == 0
+    - "'Enforcing' in selinux_status.stdout"
+
+- name: Display SELinux skip message
+  ansible.builtin.debug:
+    msg: "SELinux is not in Enforcing mode, no changes needed"
+  when:
+    - selinux_status.rc == 0
+    - "'Enforcing' not in selinux_status.stdout"
+
+# ============================================================================
+# SELinux Context Information
+# ============================================================================
+
+- name: Create informational message about SELinux
+  ansible.builtin.debug:
+    msg:
+      - "============================================================================"
+      - "SELinux and KIWI NG"
+      - "============================================================================"
+      - "KIWI requires SELinux to be in Permissive mode during image builds"
+      - "This is necessary because KIWI creates chroot environments and mounts"
+      - "filesystems in ways that trigger SELinux denials in Enforcing mode."
+      - ""
+      - "{% if kiwi_restore_selinux and original_selinux_state == 'Enforcing' %}SELinux will be automatically restored to Enforcing mode after the build.{% endif %}"
+      - "============================================================================"

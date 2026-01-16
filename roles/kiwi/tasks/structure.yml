@@ -1,0 +1,168 @@
+---
+# Create build directory structure and validate prerequisites
+
+# ============================================================================
+# Clean Directories (if requested)
+# ============================================================================
+
+- name: Clean build directory if requested
+  ansible.builtin.file:
+    path: "{{ kiwi_build_dir }}"
+    state: absent
+  become: true
+  when: kiwi_clean_build_dir | bool
+
+- name: Clean output directory if requested
+  ansible.builtin.file:
+    path: "{{ kiwi_output_dir }}"
+    state: absent
+  become: true
+  when: kiwi_clean_output_dir | bool
+
+# ============================================================================
+# Create Directory Structure
+# ============================================================================
+
+- name: Create KIWI build directory
+  ansible.builtin.file:
+    path: "{{ kiwi_build_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Create KIWI output directory
+  ansible.builtin.file:
+    path: "{{ kiwi_output_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+# ============================================================================
+# Disk Space Validation
+# ============================================================================
+
+- name: Check available disk space in build directory
+  ansible.builtin.shell: |
+    set -o pipefail
+    df -BG {{ kiwi_build_dir }} | awk 'NR==2 {print $4}' | sed 's/G//'
+  args:
+    executable: /bin/bash
+  register: available_space
+  changed_when: false
+  become: true
+
+- name: Display available disk space
+  ansible.builtin.debug:
+    msg: "Available disk space in {{ kiwi_build_dir }}: {{ available_space.stdout }}GB"
+
+- name: Assert sufficient disk space (50GB minimum recommended)
+  ansible.builtin.assert:
+    that:
+      - available_space.stdout | int >= 50
+    fail_msg: |
+      Insufficient disk space in {{ kiwi_build_dir }}
+      Available: {{ available_space.stdout }}GB
+      Required: 50GB minimum
+
+      The build requires substantial space for:
+      - Base Fedora packages (5GB)
+      - GNOME Desktop (3GB)
+      - Intel oneAPI (15GB)
+      - NVIDIA drivers and CUDA (5GB)
+      - Build artifacts and temporary files (15GB)
+      - ISO creation workspace (7GB)
+
+      Please free up disk space or use a different build directory
+      by setting kiwi_build_dir to a location with more space.
+    success_msg: "Sufficient disk space available: {{ available_space.stdout }}GB"
+
+# ============================================================================
+# Check for Existing Builds
+# ============================================================================
+
+- name: Check for existing KIWI build artifacts
+  ansible.builtin.find:
+    paths: "{{ kiwi_build_dir }}"
+    file_type: any
+  register: existing_build_files
+  become: true
+
+- name: Display warning if existing build artifacts found
+  ansible.builtin.debug:
+    msg:
+      - "WARNING: Existing build artifacts found in {{ kiwi_build_dir }}"
+      - "Found {{ existing_build_files.matched }} files/directories"
+      - "These will be used if kiwi_allow_existing_root is true"
+      - "Set kiwi_clean_build_dir: true to start fresh"
+  when: existing_build_files.matched > 0
+
+# ============================================================================
+# Memory Check
+# ============================================================================
+
+- name: Check available system memory
+  ansible.builtin.shell: |
+    set -o pipefail
+    free -g | awk 'NR==2 {print $7}'
+  args:
+    executable: /bin/bash
+  register: available_memory
+  changed_when: false
+
+- name: Display memory information
+  ansible.builtin.debug:
+    msg:
+      - "Available system memory: {{ available_memory.stdout }}GB"
+      - "Recommended: 8GB or more for optimal build performance"
+
+- name: Warn if low memory
+  ansible.builtin.debug:
+    msg:
+      - "WARNING: Low available memory detected"
+      - "Available: {{ available_memory.stdout }}GB"
+      - "Build may be slow or fail with memory exhaustion"
+      - "Consider closing other applications or increasing system RAM"
+  when: available_memory.stdout | int < 4
+
+# ============================================================================
+# Create Build Info File
+# ============================================================================
+
+- name: Create build information file
+  ansible.builtin.copy:
+    content: |
+      ============================================================================
+      KIWI NG Build Information
+      ============================================================================
+      Image Name: {{ kiwi_image_name }}
+      Image Version: {{ kiwi_image_version }}
+      Fedora Version: {{ fedora_version }}
+      Build Profile: {{ kiwi_profile }}
+
+      Build Directory: {{ kiwi_build_dir }}
+      Output Directory: {{ kiwi_output_dir }}
+
+      Build Date: {{ ansible_date_time.iso8601 }}
+      Build Host: {{ ansible_hostname }}
+
+      Features Enabled:
+        - GNOME: {{ kiwi_enable_gnome }}
+        - Sway: {{ kiwi_enable_sway }}
+        - NVIDIA: {{ kiwi_enable_nvidia }}
+        - Intel oneAPI: {{ kiwi_enable_oneapi }}
+
+      System Information:
+        - Available Disk Space: {{ available_space.stdout }}GB
+        - Available Memory: {{ available_memory.stdout }}GB
+        - Ansible Version: {{ ansible_version.full }}
+      ============================================================================
+    dest: "{{ kiwi_build_dir }}/BUILD_INFO.txt"
+    mode: '0644'
+  become: true
+
+- name: Display structure creation complete
+  ansible.builtin.debug:
+    msg:
+      - "Build directory structure created successfully"
+      - "Build directory: {{ kiwi_build_dir }}"
+      - "Output directory: {{ kiwi_output_dir }}"

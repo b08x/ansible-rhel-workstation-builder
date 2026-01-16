@@ -1,0 +1,99 @@
+---
+# tasks file for kiwi role
+# Main entry point for KIWI NG image building
+
+# ============================================================================
+# Distribution Verification
+# ============================================================================
+
+- name: Verify Fedora distribution
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution == "Fedora"
+      - ansible_distribution_major_version | int >= 43
+    fail_msg: "This role requires Fedora 43 or newer (detected: {{ ansible_distribution }} {{ ansible_distribution_major_version }})"
+    success_msg: "Distribution check passed: Fedora {{ ansible_distribution_major_version }}"
+  tags:
+    - always
+    - kiwi
+    - kiwi-verify
+
+# ============================================================================
+# Display Build Configuration
+# ============================================================================
+
+- name: Display build configuration
+  ansible.builtin.debug:
+    msg:
+      - "============================================================================"
+      - "KIWI NG Image Build Configuration"
+      - "============================================================================"
+      - "Image Name: {{ kiwi_image_name }}"
+      - "Image Version: {{ kiwi_image_version }}"
+      - "Fedora Version: {{ fedora_version }}"
+      - "Build Directory: {{ kiwi_build_dir }}"
+      - "Output Directory: {{ kiwi_output_dir }}"
+      - "Profile: {{ kiwi_profile }}"
+      - "Root Size: {{ kiwi_root_size_gb }}GB"
+      - ""
+      - "Features:"
+      - "  - GNOME: {{ kiwi_enable_gnome }}"
+      - "  - Sway: {{ kiwi_enable_sway }}"
+      - "  - NVIDIA: {{ kiwi_enable_nvidia }}"
+      - "  - Intel oneAPI: {{ kiwi_enable_oneapi }}"
+      - "============================================================================"
+  tags:
+    - always
+    - kiwi
+
+# ============================================================================
+# Include Task Files
+# ============================================================================
+
+- name: Include prerequisites tasks
+  ansible.builtin.include_tasks: prerequisites.yml
+  tags:
+    - kiwi
+    - kiwi-prerequisites
+
+- name: Include SELinux handling tasks
+  ansible.builtin.include_tasks: selinux_handling.yml
+  tags:
+    - kiwi
+    - kiwi-selinux
+
+- name: Include structure creation tasks
+  ansible.builtin.include_tasks: structure.yml
+  tags:
+    - kiwi
+    - kiwi-structure
+
+- name: Include template rendering tasks
+  ansible.builtin.include_tasks: templates.yml
+  tags:
+    - kiwi
+    - kiwi-templates
+
+- name: Include build execution tasks
+  ansible.builtin.include_tasks: build.yml
+  when: kiwi_execute_build | default(true)
+  tags:
+    - kiwi
+    - kiwi-build
+
+# ============================================================================
+# Final Summary
+# ============================================================================
+
+- name: Display completion message
+  ansible.builtin.debug:
+    msg:
+      - "============================================================================"
+      - "KIWI Role Execution Complete"
+      - "============================================================================"
+      - "{% if kiwi_execute_build %}Build completed successfully!{% else %}Build was skipped (kiwi_execute_build=false){% endif %}"
+      - "{% if kiwi_iso_path is defined %}ISO location: {{ kiwi_iso_path }}{% endif %}"
+      - "============================================================================"
+  tags:
+    - always
+    - kiwi

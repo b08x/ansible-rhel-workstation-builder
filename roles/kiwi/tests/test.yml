@@ -1,0 +1,83 @@
+---
+# Test playbook for kiwi role
+# This playbook tests the role without actually executing the build
+
+- name: Test KIWI role (without build execution)
+  hosts: localhost
+  become: true
+  gather_facts: true
+
+  vars:
+    # Disable actual build execution for testing
+    kiwi_execute_build: false
+
+    # Use smaller test configuration
+    fedora_version: 43
+    kiwi_image_name: "fedora-43-test"
+    kiwi_image_version: "0.0.1-test"
+
+    # Minimal feature set for faster testing
+    kiwi_enable_nvidia: true
+    kiwi_enable_oneapi: false
+    kiwi_enable_sway: false
+    kiwi_enable_gnome: true
+
+    # Use /tmp for test builds
+    kiwi_build_dir: "/tmp/kiwi-test-build"
+    kiwi_output_dir: "/tmp/kiwi-test-output"
+
+    # Clean up test directories
+    kiwi_clean_build_dir: true
+    kiwi_clean_output_dir: true
+
+  pre_tasks:
+    - name: Display test information
+      ansible.builtin.debug:
+        msg:
+          - "============================================================================"
+          - "KIWI Role Test"
+          - "============================================================================"
+          - "This test validates the role structure and template rendering"
+          - "without executing the actual build process."
+          - ""
+          - "Test configuration:"
+          - "  - Build directory: {{ kiwi_build_dir }}"
+          - "  - Output directory: {{ kiwi_output_dir }}"
+          - "  - Build execution: {{ kiwi_execute_build }}"
+          - "============================================================================"
+
+  roles:
+    - role: ../../kiwi
+
+  post_tasks:
+    - name: Verify templates were rendered
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: template_check
+      failed_when: not template_check.stat.exists
+      loop:
+        - "{{ kiwi_build_dir }}/config.xml"
+        - "{{ kiwi_build_dir }}/config.sh"
+        - "{{ kiwi_build_dir }}/images.sh"
+
+    - name: Display test results
+      ansible.builtin.debug:
+        msg:
+          - "============================================================================"
+          - "Test Results: PASSED"
+          - "============================================================================"
+          - "All templates were rendered successfully:"
+          - "  - config.xml: {{ template_check.results[0].stat.exists }}"
+          - "  - config.sh: {{ template_check.results[1].stat.exists }}"
+          - "  - images.sh: {{ template_check.results[2].stat.exists }}"
+          - ""
+          - "Role structure is valid and ready for production use."
+          - "============================================================================"
+
+    - name: Cleanup test directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ kiwi_build_dir }}"
+        - "{{ kiwi_output_dir }}"

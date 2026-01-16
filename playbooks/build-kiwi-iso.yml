@@ -1,0 +1,107 @@
+---
+# Example playbook: Build Fedora 43 AI Workstation ISO with KIWI NG
+#
+# Usage:
+#   ansible-playbook playbooks/build-kiwi-iso.yml
+#
+# To skip the build and only generate templates:
+#   ansible-playbook playbooks/build-kiwi-iso.yml -e "kiwi_execute_build=false"
+#
+# To customize the build:
+#   ansible-playbook playbooks/build-kiwi-iso.yml -e "kiwi_enable_nvidia=false"
+
+- name: Build Fedora 43 AI Workstation ISO with KIWI NG
+  hosts: localhost
+  become: true
+  gather_facts: true
+
+  # ========================================================================
+  # Variables
+  # ========================================================================
+  vars:
+    # Fedora version
+    fedora_version: 43
+
+    # Feature toggles
+    kiwi_enable_nvidia: true
+    kiwi_enable_oneapi: true
+    kiwi_enable_sway: true
+    kiwi_enable_gnome: true
+
+    # Image customization
+    kiwi_image_name: "fedora-43-ai-hybrid"
+    kiwi_image_version: "1.0.0"
+
+    # Build options (uncomment to customize)
+    # kiwi_build_dir: "/var/tmp/kiwi-build"
+    # kiwi_output_dir: "/var/tmp/kiwi-output"
+    # kiwi_root_size_gb: 45
+    # kiwi_clean_build_dir: false
+
+  # ========================================================================
+  # Pre-Tasks
+  # ========================================================================
+  pre_tasks:
+    - name: Display playbook information
+      ansible.builtin.debug:
+        msg:
+          - "============================================================================"
+          - "KIWI NG ISO Build Playbook"
+          - "============================================================================"
+          - "This playbook will build a custom Fedora {{ fedora_version }} Workstation ISO"
+          - "with AI/HPC tools and hybrid desktop environment."
+          - ""
+          - "Features enabled in this build:"
+          - "  - GNOME Desktop: {{ kiwi_enable_gnome }}"
+          - "  - Sway WM: {{ kiwi_enable_sway }}"
+          - "  - NVIDIA Drivers: {{ kiwi_enable_nvidia }}"
+          - "  - Intel oneAPI: {{ kiwi_enable_oneapi }}"
+          - ""
+          - "Build will take 45-90 minutes depending on system performance."
+          - "============================================================================"
+
+    - name: Check if running on Fedora
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution == "Fedora"
+          - ansible_distribution_major_version | int >= 43
+        fail_msg: "This playbook must be run on Fedora 43 or newer"
+
+  # ========================================================================
+  # Roles
+  # ========================================================================
+  roles:
+    # Optional: Use repos role for repository management
+    # Uncomment if you want to use the repos role
+    # - role: repos
+    #   tags:
+    #     - repos
+    #     - setup
+
+    # Main KIWI role
+    - role: kiwi
+      tags:
+        - kiwi
+        - build
+
+  # ========================================================================
+  # Post-Tasks
+  # ========================================================================
+  post_tasks:
+    - name: Display build completion message
+      ansible.builtin.debug:
+        msg:
+          - "============================================================================"
+          - "ISO Build Complete!"
+          - "============================================================================"
+          - "{% if kiwi_iso_path is defined %}ISO Location: {{ kiwi_iso_path }}{% endif %}"
+          - "{% if kiwi_iso_size_gb is defined %}ISO Size: {{ kiwi_iso_size_gb }}GB{% endif %}"
+          - ""
+          - "Next Steps:"
+          - "1. Verify the ISO integrity using the checksum"
+          - "2. Test the ISO in a VM: qemu-system-x86_64 -m 8G -enable-kvm -boot d -cdrom <iso>"
+          - "3. Write to USB: sudo dd if=<iso> of=/dev/sdX bs=4M status=progress"
+          - ""
+          - "For documentation, see: roles/kiwi/README.md"
+          - "============================================================================"
+      when: kiwi_iso_path is defined
