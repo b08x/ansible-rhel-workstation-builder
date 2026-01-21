@@ -7,11 +7,16 @@
 # Ansible managed - DO NOT EDIT MANUALLY
 # ============================================================================
 
-set -euxo pipefail
+set -x
 
 # Source KIWI environment
-test -f /.kconfig && . /.kconfig
-test -f /.profile && . /.profile
+if [ -f /.kconfig ]; then
+    . /.kconfig
+fi
+
+if [ -f /.profile ]; then
+    . /.profile
+fi
 
 echo "============================================================================"
 echo "KIWI Post-Create Image Customization"
@@ -132,12 +137,12 @@ echo "[+] Customizing GNOME environment..."
 
 # Create GDM dconf profile for auto-login on live ISO (optional)
 # Uncomment below to enable auto-login
-# mkdir -p /etc/dconf/profile
-# cat > /etc/dconf/profile/gdm << 'GDM_DCONF_EOF'
-# user-db:user
-# system-db:gdm
-# file-db:/usr/share/gdm/greeter-dconf-defaults
-# GDM_DCONF_EOF
+mkdir -p /etc/dconf/profile
+cat > /etc/dconf/profile/gdm << 'GDM_DCONF_EOF'
+user-db:user
+system-db:gdm
+file-db:/usr/share/gdm/greeter-dconf-defaults
+GDM_DCONF_EOF
 
 # Set GNOME default favorites in taskbar
 mkdir -p /etc/dconf/db/local.d

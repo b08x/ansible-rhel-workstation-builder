@@ -7,11 +7,16 @@
 # Ansible managed - DO NOT EDIT MANUALLY
 # ============================================================================
 
-set -euxo pipefail
+set -x
 
 # Source KIWI environment
-test -f /.kconfig && . /.kconfig
-test -f /.profile && . /.profile
+if [ -f /.kconfig ]; then
+    . /.kconfig
+fi
+
+if [ -f /.profile ]; then
+    . /.profile
+fi
 
 echo "============================================================================"
 echo "KIWI Post-Installation Configuration"
@@ -289,6 +294,12 @@ echo "[+] Ensuring locale is generated..."
 
 # Generate en_US.UTF-8 locale
 localedef -i en_US -f UTF-8 en_US.UTF-8 || true
+
+# ============================================================================
+# 13. yadm Installation
+# ============================================================================
+dnf config-manager addrepo --from-repofile=https://download.opensuse.org/repositories/home:TheLocehiliosan:yadm/Fedora_43/home:TheLocehiliosan:yadm.repo
+dnf install yadm
 
 # ============================================================================
 # Cleanup and Final Steps

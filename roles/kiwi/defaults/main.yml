@@ -43,9 +43,12 @@ kiwi_root_size_gb: 45
 fedora_base_url: "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{ fedora_version }}/Everything/x86_64/os/"
 fedora_updates_url: "https://dl.fedoraproject.org/pub/fedora/linux/updates/{{ fedora_version }}/Everything/x86_64/"
 rpmfusion_free_url: "http://download1.rpmfusion.org/free/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
+rpmfusion_free_update_url: "http://download1.rpmfusion.org/free/fedora/updates/{{ fedora_version }}/x86_64/"
 rpmfusion_nonfree_url: "http://download1.rpmfusion.org/nonfree/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
+rpmfusion_nonfree_update_url: "http://download1.rpmfusion.org/nonfree/fedora/updates/{{ fedora_version }}/x86_64/"
 intel_oneapi_url: "https://yum.repos.intel.com/oneapi"
 nvidia_container_url: "https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"
+cuda_url: "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64"
 
 # ============================================================================
 # Kernel Command-Line Parameters
@@ -82,20 +85,23 @@ kiwi_enable_gnome: true
 # ============================================================================
 # Core packages always installed
 kiwi_core_packages:
-  - kernel
-  - kernel-modules
-  - kernel-modules-extra
-  - kernel-devel
+  - ansible
+  - ansible-collection-ansible-posix
+  - distribution-gpg-keys
   - dracut-kiwi-live
-  - shim-x64
+  - efibootmgr
+  - glibc-all-langpacks
   - grub2-efi-x64
   - grub2-efi-x64-modules
-  - efibootmgr
+  - grub2-pc
+  - kernel
+  - kernel-devel
+  - kernel-modules
+  - kernel-modules-extra
   - NetworkManager
-  - systemd
-  - glibc-all-langpacks
-  - distribution-gpg-keys
   - plymouth-theme-charge
+  - shim-x64
+  - systemd
 
 # GNOME Workstation packages
 kiwi_gnome_packages:
@@ -109,26 +115,33 @@ kiwi_gnome_packages:
 
 # Sway window manager packages
 kiwi_sway_packages:
+  - alacritty
+  - grim
+  - mako
+  - slurp
   - sway
   - sway-config-fedora
-  - swaylock
+  - swaybg
   - swayidle
+  - swaylock
   - waybar
+  - wl-clipboard
   - wofi
-  - alacritty
+  - wofi
   - xdg-desktop-portal-wlr
 
 # NVIDIA driver packages (from RPM Fusion)
 kiwi_nvidia_packages:
-  - akmod-nvidia
-  - xorg-x11-drv-nvidia-cuda
-  - xorg-x11-drv-nvidia-libs
-  - xorg-x11-drv-nvidia-libs.i686
-  - nvidia-settings
-  - vulkan
+  - cuda-toolkit
   - gcc
   - make
+  - nvidia-driver
+  - nvidia-driver-cuda
+  - nvidia-gpu-firmware
   - openssl-devel
+  - vulkan
+  - xorg-x11-nvidia
+  - nvidia-settings
 
 # Container runtime packages
 kiwi_container_packages:
@@ -145,12 +158,20 @@ kiwi_oneapi_packages:
 
 # Development tools
 kiwi_devel_packages:
-  - git
-  - vim
-  - htop
-  - tmux
-  - wget
   - curl
+  - git
+  - htop
+  - htop
+  - kitty
+  - lm_sensors-devel
+  - lnav
+  - micro
+  - ranger
+  - tmux
+  - vim
+  - wget
+  - zoxide
+  - zsh
 
 # ============================================================================
 # Build Options
@@ -198,7 +219,7 @@ kiwi_enabled_services:
 
 # NVIDIA-specific services (enabled conditionally)
 kiwi_nvidia_services:
-  - akmods
+  # - akmods
   - nvidia-cdi-refresh
   - nvidia-cdi-refresh.path
 

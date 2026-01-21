@@ -75,15 +75,29 @@
         <source path="{{ rpmfusion_free_url }}"/>
     </repository>
 
+    <!-- RPM Fusion Free Updates Repository -->
+    <repository type="rpm-md" alias="rpmfusion-free-updates" priority="55">
+        <source path="{{ rpmfusion_free_update_url }}"/>
+    </repository>
+
     <!-- RPM Fusion Nonfree Repository -->
     <repository type="rpm-md" alias="rpmfusion-nonfree" priority="60">
         <source path="{{ rpmfusion_nonfree_url }}"/>
+    </repository>
+
+    <!-- RPM Fusion Nonfree Updates Repository -->
+    <repository type="rpm-md" alias="rpmfusion-nonfree-updates" priority="55">
+        <source path="{{ rpmfusion_nonfree_update_url }}"/>
     </repository>
 
 {% if kiwi_enable_nvidia %}
     <!-- NVIDIA Container Toolkit Repository -->
     <repository type="rpm-md" alias="nvidia-container-toolkit" priority="70" package_gpgcheck="false">
         <source path="{{ nvidia_container_url }}"/>
+    </repository>
+    <!-- CUDA Repository -->
+    <repository type="rpm-md" alias="cuda" priority="51" package_gpgcheck="false">
+        <source path="{{ cuda_url }}"/>
     </repository>
 {% endif %}
 

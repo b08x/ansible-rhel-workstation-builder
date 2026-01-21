@@ -410,7 +410,7 @@ data = """
     - name: Set repo priorities
       shell: |
         dnf config-manager setopt fedora.priority=0 updates.priority=0 \
-        cuda-fedora43-x86_64.priority=99 \
+        cuda-fedora42-x86_64.priority=99 \
         rpmfusion-free.priority=100 \
         rpmfusion-nonfree.priority=100 \
         rpmfusion-free-updates.priority=100 \
