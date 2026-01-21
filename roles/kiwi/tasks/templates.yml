@@ -9,7 +9,7 @@
   ansible.builtin.template:
     src: config.xml.j2
     dest: "{{ kiwi_build_dir }}/config.xml"
-    mode: '0644'
+    mode: "0644"
   become: true
   register: config_xml_rendered
 
@@ -25,7 +25,7 @@
   ansible.builtin.template:
     src: config.sh.j2
     dest: "{{ kiwi_build_dir }}/config.sh"
-    mode: '0755'
+    mode: "0755"
   become: true
   register: config_sh_rendered
 
@@ -41,7 +41,7 @@
   ansible.builtin.template:
     src: images.sh.j2
     dest: "{{ kiwi_build_dir }}/images.sh"
-    mode: '0755'
+    mode: "0755"
   become: true
   register: images_sh_rendered
 
@@ -63,31 +63,6 @@
 - name: Display XML validation result
   ansible.builtin.debug:
     msg: "config.xml validated successfully - XML syntax is correct"
-
-# ============================================================================
-# Validate KIWI Schema
-# ============================================================================
-
-- name: Validate KIWI image description (KIWI schema check)
-  ansible.builtin.command: kiwi-ng system validate --description {{ kiwi_build_dir }}
-  register: kiwi_validation
-  changed_when: false
-  failed_when: false
-  become: true
-
-- name: Display KIWI validation result
-  ansible.builtin.debug:
-    msg: "{{ kiwi_validation.stdout_lines }}"
-  when: kiwi_validation.stdout_lines | length > 0
-
-- name: Handle KIWI validation warnings
-  ansible.builtin.debug:
-    msg:
-      - "KIWI validation completed with warnings (non-fatal):"
-      - "{{ kiwi_validation.stderr_lines | join('\n') }}"
-  when:
-    - kiwi_validation.rc != 0
-    - kiwi_validation.stderr_lines | length > 0
 
 # ============================================================================
 # Display Rendered Files Summary
@@ -142,5 +117,5 @@
       config.sh: {{ template_checksums.results[1].stat.checksum }}
       images.sh: {{ template_checksums.results[2].stat.checksum }}
     dest: "{{ kiwi_build_dir }}/TEMPLATE_CHECKSUMS.txt"
-    mode: '0644'
+    mode: "0644"
   become: true

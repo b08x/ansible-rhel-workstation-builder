@@ -42,8 +42,8 @@ kiwi_root_size_gb: 45
 # Using Jinja2 templating for dynamic version substitution
 fedora_base_url: "https://dl.fedoraproject.org/pub/fedora/linux/releases/{{ fedora_version }}/Everything/x86_64/os/"
 fedora_updates_url: "https://dl.fedoraproject.org/pub/fedora/linux/updates/{{ fedora_version }}/Everything/x86_64/"
-rpmfusion_free_url: "https://mirrors.rpmfusion.org/free/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
-rpmfusion_nonfree_url: "https://mirrors.rpmfusion.org/nonfree/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
+rpmfusion_free_url: "http://download1.rpmfusion.org/free/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
+rpmfusion_nonfree_url: "http://download1.rpmfusion.org/nonfree/fedora/releases/{{ fedora_version }}/Everything/x86_64/os/"
 intel_oneapi_url: "https://yum.repos.intel.com/oneapi"
 nvidia_container_url: "https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"
 
@@ -95,6 +95,7 @@ kiwi_core_packages:
   - systemd
   - glibc-all-langpacks
   - distribution-gpg-keys
+  - plymouth-theme-charge
 
 # GNOME Workstation packages
 kiwi_gnome_packages:
@@ -115,7 +116,6 @@ kiwi_sway_packages:
   - waybar
   - wofi
   - alacritty
-  - polkit-gnome
   - xdg-desktop-portal-wlr
 
 # NVIDIA driver packages (from RPM Fusion)
