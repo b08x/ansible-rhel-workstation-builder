@@ -1,6 +1,6 @@
 # Ansible Role: Audio
 
-This Ansible role is designed to set up and configure a Linux system (primarily targeting Arch Linux) for professional audio work. It handles the installation and configuration of audio servers like JACK and PipeWire, essential audio packages, system tuning for real-time performance, and user permissions.
+This Ansible role configures a Linux system (primarily targeting Arch Linux) for low-latency audio work. It handles the installation and configuration of audio servers like JACK and PipeWire, essential audio packages, system tuning for realtime performance, and user permissions.
 
 ## Requirements
 
@@ -259,7 +259,7 @@ Here's an example of how to use this role in a playbook:
 
 - **PipeWire (`audio_system: "pipewire"`):** Recommended for modern setups. PipeWire aims to be a unified audio and video server, providing compatibility layers for PulseAudio, ALSA, and JACK applications. It generally offers easier setup and better integration with desktop environments.
 
-- **JACK with PulseAudio (`audio_system: "pulseaudio_jack"`):** A low-latency audio server primarily for professional audio applications. This option sets up JACK and configures PulseAudio to bridge desktop audio to JACK. This can be more complex to manage but offers fine-grained control for pro-audio workflows.
+- **JACK with PulseAudio (`audio_system: "pulseaudio_jack"`):** A low-latency audio server optimized for realtime audio applications. This option sets up JACK and configures PulseAudio to bridge desktop audio to JACK. This can be more complex to manage but offers fine-grained control for low-latency workflows.
 
 - The role now enforces mutual exclusivity between these audio systems to prevent conflicts. When selecting `audio_system: "pulseaudio_jack"`, the role will attempt to remove any installed PipeWire packages.
 
