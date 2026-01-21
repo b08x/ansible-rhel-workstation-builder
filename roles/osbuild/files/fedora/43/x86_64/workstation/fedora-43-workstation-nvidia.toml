@@ -116,13 +116,13 @@ name = "cuda-toolkit"
 version = "13.0.2-1"
 [[packages]]
 name = "nvidia-gpu-firmware"
-version = "20251021-1.fc42"
+version = "*"
 [[packages]]
 name = "nvidia-driver"
-version = "3:580.105.08-1.fc42"
+version = "*"
 [[packages]]
 name = "nvidia-driver-cuda"
-version = "3:580.105.08-1.fc42"
+version = "*"
 
 
 # # Intel oneAPI & Compute
@@ -505,11 +505,11 @@ enabled = true
 ssl_verify = true
 
 [[customizations.repositories]]
-id = "cuda-fedora43-x86_64"
-name = "cuda-fedora43-x86_64"
-baseurls = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora43/x86_64" ]
+id = "cuda-fedora42-x86_64"
+name = "cuda-fedora42-x86_64"
+baseurls = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64" ]
 gpgcheck = true
-gpgkeys = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora43/x86_64/D42D0685.pub" ]
+gpgkeys = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub" ]
 enabled = true
 
 [[customizations.repositories]]

@@ -1,7 +1,7 @@
 id = "rpmfusion-free-updates"
 name = "RPM Fusion Free Updates for Fedora 42"
 type = "yum-metalink"
-url = "https://mirrors.rpmfusion.org/metalink?repo=free-fedora-updates-released-42&arch=x86_64"
+url = "https://mirrors.rpmfusion.org/metalink?repo=free-fedora-updates-released-43&arch=x86_64"
 check_gpg = true
 check_ssl = true
 check_repogpg = false
