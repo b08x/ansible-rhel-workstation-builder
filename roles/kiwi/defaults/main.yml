@@ -69,7 +69,7 @@ kiwi_bootloader_console: "gfxterm"
 kiwi_default_user: "fedora"
 kiwi_default_groups: "wheel,video,render"
 # Empty password for live ISO - users can set password after installation
-kiwi_default_password: ""
+kiwi_default_password: "$1$xyz$bRp2nQA8qDd7vVtZ.U9YJ/"
 
 # ============================================================================
 # Feature Toggles
@@ -127,7 +127,6 @@ kiwi_sway_packages:
   - waybar
   - wl-clipboard
   - wofi
-  - wofi
   - xdg-desktop-portal-wlr
 
 # NVIDIA driver packages (from RPM Fusion)
@@ -138,10 +137,10 @@ kiwi_nvidia_packages:
   - nvidia-driver
   - nvidia-driver-cuda
   - nvidia-gpu-firmware
+  - nvidia-settings
   - openssl-devel
   - vulkan
   - xorg-x11-nvidia
-  - nvidia-settings
 
 # Container runtime packages
 kiwi_container_packages:

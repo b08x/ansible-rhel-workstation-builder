@@ -149,30 +149,30 @@ osbuild_extra_packages: []
 
 # Sway packages (automatically included if use_sway: true)
 osbuild_sway_packages:
+  - alacritty
+  - grim
+  - mako
+  - slurp
   - sway
   - sway-config-fedora
   - swaybg
   - swayidle
   - swaylock
   - waybar
-  - mako
-  - wofi
-  - alacritty
   - wl-clipboard
-  - grim
-  - slurp
+  - wofi
 
 # NVIDIA packages (automatically included if use_nvidia: true)
 osbuild_nvidia_packages:
+  - cuda
+  - cuda-devel
+  - nvidia-container-toolkit
   - nvidia-driver
   - nvidia-driver-cuda
   - nvidia-driver-cuda-libs
   - nvidia-driver-libs
-  - nvidia-settings
   - nvidia-persistenced
-  - cuda
-  - cuda-devel
-  - nvidia-container-toolkit
+  - nvidia-settings
 
 # Intel oneAPI packages (included if include_oneapi_in_image: true)
 osbuild_oneapi_packages:
@@ -181,24 +181,24 @@ osbuild_oneapi_packages:
 
 # Development tools packages
 osbuild_development_packages:
+  - cmake
   - gcc
   - gcc-c++
-  - make
-  - cmake
   - git
-  - python3
-  - python3-pip
-  - python3-devel
+  - make
   - nodejs
   - npm
+  - python3
+  - python3-devel
+  - python3-pip
 
 # Container tools packages
 osbuild_container_packages:
-  - podman
   - buildah
-  - skopeo
-  - podman-compose
   - containers-common
+  - podman
+  - podman-compose
+  - skopeo
 
 # =============================================================================
 # Service Configuration
@@ -206,16 +206,16 @@ osbuild_container_packages:
 
 # Services to enable on installed system
 osbuild_enabled_services:
-  - gdm
-  - sshd
-  - NetworkManager
-  - firewalld
   - chronyd
+  - firewalld
+  - gdm
+  - NetworkManager
+  - sshd
 
 # Services to enable when use_nvidia: true
 osbuild_nvidia_services:
-  - nvidia-persistenced
   - nvidia-cdi-refresh
+  - nvidia-persistenced
 
 # =============================================================================
 # Kernel Configuration
