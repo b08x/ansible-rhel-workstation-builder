@@ -1,0 +1,42 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for video role
+
+# Feature Toggles
+use_nvidia: true
+use_intel: true
+
+# NVIDIA Configuration
+nvidia_driver_version: "*"
+nvidia_driver_branch: "latest" # or "lts"
+nvidia_include_cuda: true
+nvidia_configure_cdi: true
+
+# NVIDIA Package Lists
+nvidia_packages:
+  - nvidia-driver
+  - nvidia-driver-cuda
+  - nvidia-gpu-firmware
+  - nvidia-container-toolkit
+  - cuda-toolkit
+  - nvidia-driver-cuda-libs
+  - nvidia-driver-libs
+  - nvidia-persistenced
+  - nvidia-settings
+
+# Intel Configuration
+intel_include_oneapi: true
+intel_oneapi_mkl_only: true # Set to false for full basekit if needed
+
+# Intel Package Lists
+intel_packages:
+  - libva-intel-media-driver
+  - intel-oneapi-mkl-devel
+
+# Repository Priorities
+video_repo_priorities:
+  fedora: 0
+  updates: 0
+  cuda: 99
+  rpmfusion: 100
+  intel_oneapi: 100

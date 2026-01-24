@@ -1,0 +1,13 @@
+#SPDX-License-Identifier: MIT-0
+---
+# Main task orchestration for video role
+
+- name: NVIDIA Driver Implementation
+  ansible.builtin.import_tasks: nvidia.yml
+  when: use_nvidia | bool
+  tags: [nvidia, video]
+
+- name: Intel Driver Implementation
+  ansible.builtin.import_tasks: intel.yml
+  when: use_intel | bool
+  tags: [intel, video]

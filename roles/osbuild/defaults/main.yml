@@ -162,22 +162,11 @@ osbuild_sway_packages:
   - wl-clipboard
   - wofi
 
-# NVIDIA packages (automatically included if use_nvidia: true)
-osbuild_nvidia_packages:
-  - cuda
-  - cuda-devel
-  - nvidia-container-toolkit
-  - nvidia-driver
-  - nvidia-driver-cuda
-  - nvidia-driver-cuda-libs
-  - nvidia-driver-libs
-  - nvidia-persistenced
-  - nvidia-settings
+# NVIDIA packages (manages via video role if available)
+osbuild_nvidia_packages: "{{ nvidia_packages | default(['cuda', 'cuda-devel', 'nvidia-container-toolkit', 'nvidia-driver', 'nvidia-driver-cuda', 'nvidia-driver-cuda-libs', 'nvidia-driver-libs', 'nvidia-persistenced', 'nvidia-settings']) }}"
 
 # Intel oneAPI packages (included if include_oneapi_in_image: true)
-osbuild_oneapi_packages:
-  - intel-basekit
-  - intel-hpckit
+osbuild_oneapi_packages: "{{ intel_packages | default(['intel-basekit', 'intel-hpckit']) }}"
 
 # Development tools packages
 osbuild_development_packages:

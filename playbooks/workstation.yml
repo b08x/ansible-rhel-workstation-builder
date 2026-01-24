@@ -33,6 +33,8 @@
   - { role: common, tags: ["common"] }
   - { role: repos, tags: ["repos"] }
   - { role: zsh, tags: ["zsh"] }
-  - { role: workstation, tags: ["workstation"] }
+  - { role: asdf, tags: ["asdf"] }
+  - { role: video, tags: ["video"] }
   - { role: docker, tags: ["docker"] }
   - { role: libvirt, tags: ["libvirt"] }
+  - { role: workstation, tags: ["workstation"] }
