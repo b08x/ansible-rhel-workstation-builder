@@ -2,64 +2,74 @@
 ---
 # NVIDIA driver and toolkit installation
 
-- name: Add NVIDIA-related repositories
+- name: Detect NVIDIA GPU
+  ansible.builtin.shell: lspci | grep -iq nvidia
+  register: nvidia_gpu_detected
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
+- name: NVIDIA Setup
+  when: nvidia_gpu_detected.rc == 0
   block:
-    - name: Add NVIDIA Container Toolkit repository
-      ansible.builtin.yum_repository:
+    - name: Add NVIDIA-related repositories
+      block:
+        - name: Add NVIDIA Container Toolkit repository
+          ansible.builtin.yum_repository:
+            name: nvidia-container-toolkit
+            description: nvidia-container-toolkit
+            baseurl: https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64
+            gpgcheck: true
+            gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
+            enabled: true
+          when: nvidia_install_container_toolkit | bool
+
+        - name: Add CUDA repository
+          ansible.builtin.yum_repository:
+            name: "cuda-fedora{{ ansible_distribution_major_version }}-x86_64"
+            description: "CUDA for Fedora {{ ansible_distribution_major_version }}"
+            baseurl: "https://developer.download.nvidia.com/compute/cuda/repos/fedora{{ ansible_distribution_major_version }}/x86_64"
+            gpgcheck: true
+            gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/fedora{{ ansible_distribution_major_version }}/x86_64/D42D0685.pub"
+            enabled: true
+          when: ansible_distribution == "Fedora"
+
+    - name: Install NVIDIA packages
+      ansible.builtin.dnf:
+        name: "{{ nvidia_packages }}"
+        state: present
+
+    - name: Install NVIDIA Container Toolkit
+      ansible.builtin.dnf:
         name: nvidia-container-toolkit
-        description: nvidia-container-toolkit
-        baseurl: https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64
-        gpgcheck: true
-        gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
-        enabled: true
+        state: present
       when: nvidia_install_container_toolkit | bool
 
-    - name: Add CUDA repository
-      ansible.builtin.yum_repository:
-        name: "cuda-fedora{{ ansible_distribution_major_version }}-x86_64"
-        description: "CUDA for Fedora {{ ansible_distribution_major_version }}"
-        baseurl: "https://developer.download.nvidia.com/compute/cuda/repos/fedora{{ ansible_distribution_major_version }}/x86_64"
-        gpgcheck: true
-        gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/fedora{{ ansible_distribution_major_version }}/x86_64/D42D0685.pub"
-        enabled: true
-      when: ansible_distribution == "Fedora"
+    - name: Configure Kernel Parameters for NVIDIA
+      ansible.builtin.command:
+        cmd: >
+          grubby --update-kernel=ALL
+          --args="rd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia-drm.modeset=1"
+      register: grubby_update
+      changed_when: grubby_update.rc == 0
 
-- name: Install NVIDIA packages
-  ansible.builtin.dnf:
-    name: "{{ nvidia_packages }}"
-    state: present
+    - name: Setup NVIDIA CDI refresh service
+      block:
+        - name: Copy CDI generation script
+          ansible.builtin.copy:
+            src: nvidia-cdi-generate.sh
+            dest: /usr/local/bin/nvidia-cdi-generate.sh
+            mode: "0755"
 
-- name: Install NVIDIA Container Toolkit
-  ansible.builtin.dnf:
-    name: nvidia-container-toolkit
-    state: present
-  when: nvidia_install_container_toolkit | bool
+        - name: Create CDI refresh service
+          ansible.builtin.template:
+            src: nvidia-cdi-refresh.service.j2
+            dest: /etc/systemd/system/nvidia-cdi-refresh.service
+            mode: "0644"
 
-- name: Configure Kernel Parameters for NVIDIA
-  ansible.builtin.command:
-    cmd: >
-      grubby --update-kernel=ALL
-      --args="rd.driver.blacklist=nouveau modprobe.blacklist=nouveau nvidia-drm.modeset=1"
-  register: grubby_update
-  changed_when: grubby_update.rc == 0
-
-- name: Setup NVIDIA CDI refresh service
-  block:
-    - name: Copy CDI generation script
-      ansible.builtin.copy:
-        src: nvidia-cdi-generate.sh
-        dest: /usr/local/bin/nvidia-cdi-generate.sh
-        mode: "0755"
-
-    - name: Create CDI refresh service
-      ansible.builtin.template:
-        src: nvidia-cdi-refresh.service.j2
-        dest: /etc/systemd/system/nvidia-cdi-refresh.service
-        mode: "0644"
-
-    - name: Enable NVIDIA CDI refresh service
-      ansible.builtin.systemd:
-        name: nvidia-cdi-refresh
-        enabled: true
-        state: started
-      ignore_errors: true # May fail if driver not loaded yet
+        - name: Enable NVIDIA CDI refresh service
+          ansible.builtin.systemd:
+            name: nvidia-cdi-refresh
+            enabled: true
+            state: started
+          ignore_errors: true # May fail if driver not loaded yet
