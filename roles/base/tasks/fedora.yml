@@ -80,3 +80,25 @@
       tags: ["dnf_config"]
 
   tags: ["dnf_configuration"]
+
+- name: Setup YADM
+  block:
+    - name: Add YADM repository
+      ansible.builtin.get_url:
+        url: "https://download.opensuse.org/repositories/home:TheLocehiliosan:yadm/Fedora_{{ ansible_distribution_major_version }}/home:TheLocehiliosan:yadm.repo"
+        dest: /etc/yum.repos.d/home:TheLocehiliosan:yadm.repo
+        mode: "0644"
+      become: true
+
+    - name: Install yadm
+      ansible.builtin.dnf:
+        name: yadm
+        state: present
+      become: true
+
+  rescue:
+    - name: Log YADM setup failure
+      ansible.builtin.debug:
+        msg: "Failed to set up YADM. It may need to be installed manually."
+
+  tags: ["yadm", "repos", "packages"]
