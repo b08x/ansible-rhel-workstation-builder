@@ -85,19 +85,32 @@ kiwi_enable_gnome: true
 # ============================================================================
 # Core packages always installed
 kiwi_core_packages:
+  - anaconda
+  - anaconda-dracut
+  - anaconda-gui
+  - anaconda-live
   - ansible
   - ansible-collection-ansible-posix
   - distribution-gpg-keys
+  - dracut
   - dracut-kiwi-live
+  - dracut-live
+  - dracut-network
   - efibootmgr
   - glibc-all-langpacks
   - grub2-efi-x64
   - grub2-efi-x64-modules
   - grub2-pc
+  - ipxe-roms
+  - ipxe-roms-qemu
   - kernel
   - kernel-devel
+  - kernel-headers
   - kernel-modules
+  - kernel-modules-core
   - kernel-modules-extra
+  - kernel-tools
+  - kernel-tools-libs
   - NetworkManager
   - plymouth-theme-charge
   - shim-x64

@@ -11,7 +11,7 @@
 #   ansible-playbook playbooks/build-kiwi-iso.yml -e "kiwi_enable_nvidia=false"
 
 - name: Build Fedora 43 AI Workstation ISO with KIWI NG
-  hosts: localhost
+  hosts: builder
   become: true
   gather_facts: true
 

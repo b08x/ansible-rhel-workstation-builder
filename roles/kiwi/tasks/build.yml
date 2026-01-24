@@ -33,7 +33,7 @@
   ansible.builtin.file:
     path: "{{ kiwi_log_file | dirname }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
   become: true
 
 # ============================================================================
@@ -46,6 +46,7 @@
       kiwi-ng
       {% if kiwi_verbose %}--debug{% endif %}
       system build
+      --logfile {{ kiwi_log_file }}
       --description {{ kiwi_build_dir }}
       --target-dir {{ kiwi_output_dir }}
       {% if kiwi_allow_existing_root %}--allow-existing-root{% endif %}
@@ -240,7 +241,7 @@
 
       ============================================================================
     dest: "{{ kiwi_output_dir }}/BUILD_MANIFEST.txt"
-    mode: '0644'
+    mode: "0644"
   become: true
   when: generated_iso.matched > 0
 
