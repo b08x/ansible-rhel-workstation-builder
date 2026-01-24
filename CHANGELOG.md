@@ -14,6 +14,13 @@
 - *(osbuild)* Overhaul role with modular tasks and Fedora 43 support
 - *(sway)* Enhance distribution support and refine configuration
 - Document the new audio role and enhance the project knowledge base with updated playbooks, anti-patterns, and unique style descriptions.
+- *(osbuild)* Update Fedora 43 package sources and manifest
+- *(kiwi)* Update image build configuration and package lists
+- *(kiwi)* Update build configuration and dependencies
+- *(workstation)* Expand functionality with IDE and browser improvements
+- *(roles)* Add asdf version manager role
+- *(video)* Add new role for Intel and NVIDIA GPU configuration
+- *(podman)* Add podman role and update nvidia gpu configuration
 
 ### 🐛 Bug Fixes
 
@@ -22,6 +29,7 @@
 ### 🚜 Refactor
 
 - *(repos)* Consolidate repository priority configuration
+- *(kiwi)* Update schema to 8.3 and refine config
 
 ### 📚 Documentation
 
@@ -29,6 +37,8 @@
 - Rewrite README + add Claude agents for RHEL workflows
 - Add workstation collection architect agent definition
 - Enhance README readability by adjusting table formatting, adding a KIWI documentation link, and specifying shell for a code block.
+- Add changelog and significantly update READMEs
+- *(agents)* Expand agent documentation and context files
 
 ### ⚙️ Miscellaneous Tasks
 
