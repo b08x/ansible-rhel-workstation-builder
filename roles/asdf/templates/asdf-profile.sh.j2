@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export ASDF_DATA_DIR="{{ asdf_install_path }}"
+export PATH="{{ asdf_install_path }}/bin:$PATH"
+
+if [[ -f "{{ asdf_install_path }}/asdf.sh" ]]; then
+    source "{{ asdf_install_path }}/asdf.sh"
+fi
+
+if [[ -f "{{ asdf_install_path }}/completions/asdf.bash" ]]; then
+    source "{{ asdf_install_path }}/completions/asdf.bash"
+fi

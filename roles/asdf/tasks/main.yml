@@ -1,0 +1,111 @@
+---
+# tasks file for asdf
+
+- name: Install system dependencies for asdf
+  ansible.builtin.dnf:
+    name: "{{ asdf_dependencies }}"
+    state: present
+    update_cache: yes
+  become: true
+  when: ansible_os_family == "RedHat"
+  tags: ["asdf_install", "dependencies"]
+
+- name: Clone asdf repository
+  ansible.builtin.git:
+    repo: https://github.com/asdf-vm/asdf.git
+    dest: "{{ asdf_install_path }}"
+    version: master
+    update: yes
+  become: true
+  register: asdf_clone_result
+  tags: ["asdf_install", "git"]
+
+- name: Set asdf directory ownership and permissions
+  ansible.builtin.file:
+    path: "{{ asdf_install_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+    recurse: yes
+  become: true
+  tags: ["asdf_install", "permissions"]
+
+- name: Install asdf core plugins
+  ansible.builtin.shell: |
+    export ASDF_DATA_DIR="{{ asdf_install_path }}"
+    export PATH="{{ asdf_install_path }}/bin:$PATH"
+    source "{{ asdf_install_path }}/asdf.sh"
+    asdf plugin add {{ item }}
+  args:
+    executable: /bin/bash
+    creates: "{{ asdf_install_path }}/plugins/{{ item }}"
+  become: true
+  loop: "{{ asdf_plugins }}"
+  tags: ["asdf_plugins"]
+
+- name: Install default Ruby version
+  ansible.builtin.shell: |
+    export ASDF_DATA_DIR="{{ asdf_install_path }}"
+    export PATH="{{ asdf_install_path }}/bin:$PATH"
+    source "{{ asdf_install_path }}/asdf.sh"
+    asdf install ruby {{ asdf_ruby_version }}
+  args:
+    executable: /bin/bash
+    creates: "{{ asdf_install_path }}/installs/ruby/{{ asdf_ruby_version }}"
+  become: true
+  when: asdf_ruby_version is defined
+  tags: ["asdf_install_languages", "ruby"]
+
+- name: Install default Python version
+  ansible.builtin.shell: |
+    export ASDF_DATA_DIR="{{ asdf_install_path }}"
+    export PATH="{{ asdf_install_path }}/bin:$PATH"
+    source "{{ asdf_install_path }}/asdf.sh"
+    asdf install python {{ asdf_python_version }}
+  args:
+    executable: /bin/bash
+    creates: "{{ asdf_install_path }}/installs/python/{{ asdf_python_version }}"
+  become: true
+  when: asdf_python_version is defined
+  tags: ["asdf_install_languages", "python"]
+
+- name: Install default Node.js version
+  ansible.builtin.shell: |
+    export ASDF_DATA_DIR="{{ asdf_install_path }}"
+    export PATH="{{ asdf_install_path }}/bin:$PATH"
+    source "{{ asdf_install_path }}/asdf.sh"
+    asdf install nodejs {{ asdf_nodejs_version }}
+  args:
+    executable: /bin/bash
+    creates: "{{ asdf_install_path }}/installs/nodejs/{{ asdf_nodejs_version }}"
+  become: true
+  when: asdf_nodejs_version is defined
+  tags: ["asdf_install_languages", "nodejs"]
+
+- name: Set global default versions
+  ansible.builtin.shell: |
+    export ASDF_DATA_DIR="{{ asdf_install_path }}"
+    export PATH="{{ asdf_install_path }}/bin:$PATH"
+    source "{{ asdf_install_path }}/asdf.sh"
+    asdf global ruby {{ asdf_ruby_version }}
+    asdf global python {{ asdf_python_version }}
+    asdf global nodejs {{ asdf_nodejs_version }}
+  args:
+    executable: /bin/bash
+  become: true
+  when: 
+    - asdf_ruby_version is defined
+    - asdf_python_version is defined
+    - asdf_nodejs_version is defined
+  tags: ["asdf_global_versions"]
+
+- name: Create system-wide asdf configuration script
+  ansible.builtin.template:
+    src: asdf-profile.sh.j2
+    dest: /etc/profile.d/asdf.sh
+    mode: '0644'
+    owner: root
+    group: root
+  become: true
+  tags: ["asdf_profile", "shell_integration"]

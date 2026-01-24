@@ -1,0 +1,40 @@
+---
+# defaults file for asdf
+
+# asdf installation path (system-wide)
+asdf_install_path: "/opt/asdf"
+
+# Default language versions
+asdf_ruby_version: "3.2.0"
+asdf_python_version: "3.11.7"
+asdf_nodejs_version: "18.19.0"
+
+# Plugins to install
+asdf_plugins:
+  - ruby
+  - python
+  - nodejs
+
+# System dependencies for language environment management
+asdf_dependencies:
+  # Core build tools
+  - git
+  - curl
+  - gcc
+  - make
+  - automake
+  - autoconf
+  - libtool
+  # Ruby dependencies
+  - readline-devel
+  - zlib-devel
+  - openssl-devel
+  - libyaml-devel
+  # Python dependencies
+  - sqlite-devel
+  - bzip2-devel
+  - libffi-devel
+  - xz-devel
+  - tk-devel
+  # Node.js dependencies
+  - which
