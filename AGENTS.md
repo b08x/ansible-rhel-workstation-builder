@@ -1,7 +1,7 @@
 # ANSIBLE KNOWLEDGE BASE
 
-**Generated:** 08:50:55 PM (America/New_York)
-**Commit:** 2030f3f
+**Generated:** 12:30:47 AM (America/New_York)
+**Commit:** d4b4492
 **Branch:** development
 
 ---
@@ -15,7 +15,7 @@ Ansible collection automating RHEL-family workstation provisioning, NAS configur
 ```
 ./
 ├── playbooks/          # Use-case-specific automation (non-standard naming)
-├── roles/              # Modular roles (12 total: audio, common, docker, kiwi, libvirt, nas, osbuild, repos, rpm-dev, sway, workstation, zsh)
+├── roles/              # Modular roles (16 total: asdf, audio, base, common, docker, kiwi, libvirt, nas, osbuild, podman, repos, rpm-dev, sway, video, workstation, zsh)
 ├── vars/               # Global variables (CRITICAL: unencrypted secrets)
 ├── plugins/            # Custom Ansible plugins (callbacks, filters)
 ├── inventory/          # Inventory files
@@ -34,19 +34,23 @@ Ansible collection automating RHEL-family workstation provisioning, NAS configur
 | **Sway WM** | `roles/sway/` | Wayland compositor configs (130 files, 29 scripts) |
 | **NAS Services** | `roles/nas/` | NFS/Samba/Rsync (CRITICAL: SMB1/NTLMv1 enabled, 239-line defaults) |
 | **RPM Development** | `roles/rpm-dev/` | Mock templates (anti-pattern: templates in `files/`) |
-| **Workstation Apps** | `roles/workstation/` | **Target for GenAI tools** (ollama, whisper.cpp, gemini-cli, claude-code, opencode) |
+| **Workstation Apps** | `roles/workstation/` | **Target for GenAI tools** (ollama, whisper.cpp, gemini-cli, claude-code, Claude) |
 | **Shell Customization** | `roles/zsh/` | Oh-My-Zsh, plugins, themes (38 files) |
+| **GPU Configuration** | `roles/video/` | Intel/NVIDIA GPU setup, driver detection |
+| **Container Runtime** | `roles/podman/` | Podman with GPU passthrough, NVIDIA CDI |
+| **Development Tools** | `roles/asdf/` | Version manager (Ruby/Python/Node.js) |
+| **System Foundation** | `roles/base/` | **NEW**: Consolidated repos + common functionality |
 | **Repositories** | `roles/repos/` | DNF/YUM management (Fedora/RHEL-specific) |
 | **Baseline Config** | `roles/common/` | GRUB, timezone, locale, rc.local, YADM |
 | **Variables** | `vars/` | **CRITICAL**: Unencrypted secrets, distro-specific vars (140 lines Fedora.yml) |
 | **Custom Plugins** | `plugins/callback/llm_analyzer.py` | LLM-based playbook analysis callback |
 
 ## PROJECT SCALE
-- **Files:** 474 total (149 in `audio`, 130 in `sway`, 51 in `osbuild`)
-- **YAML Lines:** 6,633 total (281 in `kiwi/tasks/build.yml`, 273 in `kiwi/defaults/main.yml`)
+- **Files:** 476 total (149 in `audio`, 130 in `sway`, 52 in `osbuild`)
+- **YAML Lines:** 8,249 total (281 in `kiwi/tasks/build.yml`, 273 in `kiwi/defaults/main.yml`)
 - **Directory Depth:** 9 levels (complexity hotspots at depth 4+)
-- **Large Files (>100 lines):** 19 files (complexity indicators)
-- **Roles:** 12 distinct domains
+- **Large Files (>100 lines):** 20 files (complexity indicators)
+- **Roles:** 16 distinct domains
 
 ## CONVENTIONS
 - **YAML Style**: 2-space indentation, no line limits, `document-start: error`
@@ -89,7 +93,7 @@ Ansible collection automating RHEL-family workstation provisioning, NAS configur
 - Add whisper.cpp (speech-to-text)
 - Add gemini-cli (Google Gemini CLI)
 - Add claude-code (Anthropic Claude Code)
-- Add opencode (Oh My OpenCode)
+- Add Claude (Oh My Claude Code)
 
 **Ruby/Python Environments:**
 - Investigate rbenv/pyenv/asdf integration patterns
@@ -143,7 +147,7 @@ ansible-playbook roles/<role>/tests/test.yml -i roles/<role>/tests/inventory
 ```
 
 ## NOTES
-- **Project Scale:** 474 files, 6633 YAML lines, depth 9 - significant complexity
+- **Project Scale:** 476 files, 8249 YAML lines, depth 9 - significant complexity
 - **No Molecule:** Custom test playbooks in `roles/*/tests/` (non-standard)
 - **NVIDIA First Boot:** Black screen 2-5min normal (akmods compiling drivers)
 - **Secure Boot:** NVIDIA akmods unsigned - disable or enroll MOK
@@ -151,5 +155,5 @@ ansible-playbook roles/<role>/tests/test.yml -i roles/<role>/tests/inventory
 - **Disk Space:** KIWI 50-80GB, OSBuild 50GB, both active 100GB+
 - **Security:** Restrict NAS to trusted networks, use firewalld
 - **Gmail App Passwords:** Required for `postfix_gmail.yml` (enable 2FA)
-- **Large Files:** 19 files >100 lines indicate refactoring opportunities
-- **AI-Generated:** Much of codebase generated with Claude Code, Antigravity, OpenCode
+- **Large Files:** 20 files >100 lines indicate refactoring opportunities
+- **AI-Generated:** Much of codebase generated with Claude Code, Antigravity, Claude Code
