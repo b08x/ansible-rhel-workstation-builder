@@ -1,2 +1,6 @@
 ---
 # defaults file for workstation
+
+pkgs_browsers:
+  - google-chrome-stable
+  - firefox

@@ -1,10 +1,16 @@
 ---
-
-- name: Install yadm for dotfile management
+- name: Add YADM repository
   ansible.builtin.get_url:
-    url: "https://github.com/yadm-dev/yadm/raw/master/yadm"
-    dest: "{{ '/home/' + user.name }}/.local/bin/yadm"
-    mode: "0755"
-    owner: "{{ user.name }}"
-    group: "{{ user.group | default(user.name) }}"
-  tags: ["yadm"]
+    url: "https://download.opensuse.org/repositories/home:TheLocehiliosan:yadm/Fedora_{{ ansible_distribution_major_version }}/home:TheLocehiliosan:yadm.repo"
+    dest: /etc/yum.repos.d/home:TheLocehiliosan:yadm.repo
+    mode: "0644"
+  when: ansible_distribution == "Fedora"
+  become: true
+  tags: ["yadm", "repos"]
+
+- name: Install yadm
+  ansible.builtin.dnf:
+    name: yadm
+    state: present
+  become: true
+  tags: ["yadm", "packages"]

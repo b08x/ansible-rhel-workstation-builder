@@ -33,11 +33,6 @@
         disable_gpg_check: true
       tags: ["rpmfusion"]
 
-    - name: Enable Google Chrome repository
-      ansible.builtin.command: dnf config-manager setopt google-chrome.enabled=1
-      changed_when: false
-      tags: ["google_chrome"]
-
   rescue:
     - name: Log repository setup failure
       ansible.builtin.debug:
@@ -66,7 +61,7 @@
         # dnf config-manager setopt "fedora-updates.priority=10"
         # dnf config-manager setopt "fedora-cisco-openh264.priority=20"
         # dnf config-manager setopt "rpmfusion-*.priority=40"
-        dnf config-manager setopt fedora.priority=0 updates.priority=0 rpmfusion-*.priority=100
+        dnf config-manager setopt fedora.priority=0 updates.priority=0 rpmfusion-*.priority=90
       changed_when: false
       tags: ["dnf_priorities"]
 

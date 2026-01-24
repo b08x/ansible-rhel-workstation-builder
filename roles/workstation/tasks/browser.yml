@@ -1,19 +1,17 @@
 ---
-
 - name: Enable Google Chrome repository
   ansible.builtin.command: dnf config-manager setopt google-chrome.enabled=1
   tags: ["google_chrome"]
 
-
 # Install workstation packages
-- name: Install workstation packages
+- name: Install Browser Packages
   tags: ["packages"]
   block:
     - name: Install Google Chrome Stable
       ansible.builtin.dnf:
-        name: google-chrome-stable
+        name: "{{ pkgs_browsers }}"
         state: present
         update_cache: yes
       when:
         - ansible_distribution == "Fedora"
-      tags: ["google_chrome"]
+      tags: ["browser"]

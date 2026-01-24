@@ -1,2 +1,46 @@
 ---
 # tasks file for workstation
+
+- name: Setup Terra repository
+  block:
+    - name: Install terra-release for Fedora 42+
+      ansible.builtin.shell:
+        cmd: dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
+      when:
+        - ansible_distribution == 'Fedora'
+        - ansible_distribution_major_version | int >= 42
+      args:
+        creates: /etc/yum.repos.d/terra.repo
+
+    - name: Install terra-release for Rocky 10
+      ansible.builtin.shell:
+        cmd: dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terrael$releasever' terra-release
+      when:
+        - ansible_distribution == 'Rocky'
+        - ansible_distribution_major_version | int == 10
+      args:
+        creates: /etc/yum.repos.d/terra.repo
+
+    - name: Set Terra repository priority
+      ansible.builtin.command: dnf config-manager setopt terra.priority=95
+      changed_when: false
+      tags: ["dnf_priorities", "terra"]
+
+  rescue:
+    - name: Log Terra repository setup failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to set up Terra repository.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          This might be due to network connectivity issues or repository availability.
+      tags: ["terra", "repo_setup"]
+
+    - name: Mark Terra repository setup as failed
+      ansible.builtin.set_fact:
+        terra_repo_setup_failed: true
+      tags: ["terra", "repo_setup"]
+
+  tags: ["terra"]
+
+- include_tasks: browser.yml
+- include_tasks: ide.yml
