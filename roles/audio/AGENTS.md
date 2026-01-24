@@ -1,68 +1,56 @@
 # AUDIO ROLE KNOWLEDGE BASE
 
-**Generated:** 07:26:41 AM (America/New_York)
-**Commit:** 8940810
-**Branch:** development
-
----
-
-## OVERVIEW
-Professional-grade audio subsystem for low-latency, realtime performance on Linux workstations. Supports PipeWire (modern) and JACK+PulseAudio (legacy) with comprehensive system tuning.
-
-## STRUCTURE
-```
-roles/audio/
-├── tasks/          # Modular audio tasks
-│   ├── main.yml    # Orchestrates workflow
-│   ├── pipewire.yml
-│   ├── tuning.yml  # Realtime optimization (150 lines)
-│   ├── applications.yml
-│   └── configure_pipewire.yml
-├── files/home/local/share/applications/  # 97 desktop files
-├── templates/wireplumber/    # WirePlumber Lua configs
-├── vars/           # Distro-specific packages (Fedora.yml, RedHat.yml)
-└── defaults/       # Buffer sizes, sample rates, JACK params
-```
+Low-latency audio workstation with PipeWire/JACK, realtime tuning, and 97 application desktop files.
 
 ## WHERE TO LOOK
-| Task | Location | Notes |
-|------|----------|-------|
-| **PipeWire Setup** | `tasks/pipewire.yml` | Modern audio stack (default) |
-| **System Tuning** | `tasks/tuning.yml` | Realtime privileges, tuned profiles, RTIRQ |
-| **Applications** | `tasks/applications.yml` | COPR repos, DAW installs |
-| **Desktop Files** | `files/home/local/share/applications/` | 97 audio app .desktop files |
-| **WirePlumber Config** | `templates/wireplumber/` | Pro-audio Lua templates |
-| **Package Lists** | `vars/Fedora.yml` | Audinux COPR, audio packages |
+| Task | File | Notes |
+|------|------|-------|
+| **97 Desktop Files** | `files/home/local/share/applications/` | User-specific app launchers (unorganized) |
+| **Realtime Tuning** | `tasks/tuning.yml` | 150 lines, IRQ balance, CPU governor, limits |
+| **Package Installation** | `tasks/packages.yml` | Distro-specific audio packages |
+| **PipeWire Config** | `templates/pipewire/`, `templates/wireplumber/` | JACK integration, buffer sizes, Lua configs |
+| **JACK Control** | `templates/etc/default/jack_control.j2` | JACK daemon settings |
+| **Distro Variables** | `vars/Fedora.yml`, `vars/RedHat.yml` | Audio packages, buffer defaults, Audinux COPR |
 
 ## CONVENTIONS
-- **Audio Stack Selection**: `audio_system: "pipewire"` (default) or `"pulseaudio_jack"`
-- **Deep File Structure**: 97 desktop files at depth 5 (`files/home/local/share/applications/`)
-- **User-Specific Configs**: Deployed to `~/.config/pipewire/` via `getent` user resolution
-- **Realtime Optimization**: Custom tuned profiles, IRQ prioritization, CPU governor
-- **Distribution-Aware**: Separate package lists for Fedora vs RHEL/Rocky
-
-## ANTI-PATTERNS (THIS PROJECT)
-- **Templates in files/**: Desktop entries stored in `files/` instead of `templates/` 
-- **Mixed responsibilities**: `tuning.yml` handles kernel, audio, and system configs (150 lines)
+- **User-Specific Deploy**: Desktop files to `~/.local/share/applications/` (not `/usr/share/`)
+- **Audio Stack Selection**: `audio_system: "pipewire"` (default) or `"pulseaudio_jack"` (legacy)
+- **Realtime Kernel**: Assumes RT kernel available (no validation)
+- **Audio Group**: Adds users to `audio` and `realtime` groups for device access
+- **Buffer Configuration**: `audio_buffer_size` variable (default 1024 samples)
+- **IRQ Balance**: Disables `irqbalance` for low-latency (use caution)
 
 ## UNIQUE STYLES
+- **97 Desktop Files**: Largest static file count in project (no organization by category)
+- **Rationale**: User-specific installs avoid conflicts with system packages
+- **PipeWire/JACK Hybrid**: PipeWire with JACK API compatibility layer
+- **Distro Split**: Fedora uses `pipewire-jack-audio-connection-kit`, RHEL differs
 - **Professional Audio Focus**: Optimized for DAW/music production workflows
 - **Lua Configuration**: WirePlumber configs use Jinja2-templated Lua scripts
 - **COPR Integration**: Audinux stable-audio repo for bleeding-edge packages
-- **Realtime Tuning**: Custom `realtime-modified` tuned profile, disabled irqbalance
-- **Cross-Role Integration**: JackTrip playbook extends audio for network streaming
+- **Realtime Tuning**: Custom `realtime-modified` tuned profile
 
-## AUDIO FLOW
-```
-PipeWire Stack (default):
-packages → user services → configs → tuning → applications
+## CONSOLIDATION TARGETS
+- **Organize Desktop Files**: Split into subdirectories (`audio/`, `midi/`, `utilities/`)
+- **Dynamic Generation**: Replace static `.desktop` files with templated generation
+- **Variable Consolidation**: Merge audio packages into `common/vars/packages.yml`
+- **Realtime Validation**: Add kernel capability checks before tuning
 
-Legacy Stack (pro-audio):
-JACK + PulseAudio → realtime privileges → tuned profiles → applications
-```
+## ANTI-PATTERNS (THIS ROLE)
+- **No Organization**: 97 desktop files in flat directory (hard to maintain)
+- **Assumption-Based Tuning**: No check for RT kernel before applying realtime settings
+- **IRQ Balance Risk**: Disabling can impact system performance on non-audio workloads
+- **Deprecated Variable**: `audio_system` variable pattern documented as deprecated
+- **Templates in files/**: Desktop entries stored in `files/` instead of `templates/`
+- **Mixed Responsibilities**: `tuning.yml` handles kernel, audio, and system configs (150 lines)
 
 ## NOTES
+- **149 Files**: Largest role in project - candidate for splitting
+- **Realtime Limits**: `/etc/security/limits.d/99-realtime-privileges.conf` allows memlock/rtprio
+- **CPU Governor**: Sets `performance` mode (high power consumption)
 - **Buffer Size**: Default 1024 samples (adjustable via `audio_buffer_size`)
-- **Realtime Groups**: Users added to `audio` and `realtime` groups  
-- **JackTrip Support**: Network audio streaming via dedicated playbook
+- **Realtime Groups**: Users added to `audio` and `realtime` groups
 - **Post-Install**: Logout/login required for group membership changes
+- **Testing**: Use `jack_simple_client` to verify JACK configuration
+- **Desktop Files**: Consider dynamic generation from package metadata
+- **JackTrip Support**: Network audio streaming via dedicated playbook (`playbooks/jacktrip-pi.yml`)

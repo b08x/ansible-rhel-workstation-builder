@@ -30,5 +30,9 @@
       tags: ["always"]
 
   roles:
+  - { role: common, tags: ["common"] }
+  - { role: repos, tags: ["repos"] }
+  - { role: zsh, tags: ["zsh"] }
+  - { role: workstation, tags: ["workstation"] }
   - { role: docker, tags: ["docker"] }
   - { role: libvirt, tags: ["libvirt"] }

@@ -1,91 +1,155 @@
 # ANSIBLE KNOWLEDGE BASE
 
-**Generated:** 07:26:41 AM (America/New_York)
-**Commit:** 8940810
+**Generated:** 08:50:55 PM (America/New_York)
+**Commit:** 2030f3f
 **Branch:** development
 
 ---
 
 ## OVERVIEW
-This Ansible project automates Linux workstation provisioning, NAS configuration, and RPM development environments for RHEL-family systems (Fedora, Rocky Linux, RHEL). It uses modular roles, playbooks, and custom plugins for extensibility.
+Ansible collection automating RHEL-family workstation provisioning, NAS configuration, and custom ISO generation (KIWI NG/OSBuild). Modular roles support Fedora 43, Rocky Linux 9/10, RHEL 9+ with specialized AI/HPC workstation images featuring NVIDIA drivers, Intel oneAPI, and hybrid desktop environments.
+
+**Current State:** Production collection capturing existing architecture with planned consolidation of package/var declarations, code normalization, style guide adoption, and GenAI tool integration.
 
 ## STRUCTURE
 ```
 ./
-├── playbooks/          # Top-level automation scripts (non-standard names)
-├── roles/              # Modular roles (common, nas, repos, rpm-dev, workstation, zsh)
-├── vars/               # Global variables (unencrypted secrets anti-pattern)
-├── plugins/            # Custom Ansible plugins (modules, filters, callbacks)
-├── inventory/          # Inventory files (non-standard location)
-├── docs/               # Project documentation
-├── ansible.cfg         # Custom plugin paths, fact caching, SSH optimization
-├── .ansible-lint       # Custom linting rules (skips best practices)
-└── .yamllint.yaml      # YAML formatting rules
+├── playbooks/          # Use-case-specific automation (non-standard naming)
+├── roles/              # Modular roles (12 total: audio, common, docker, kiwi, libvirt, nas, osbuild, repos, rpm-dev, sway, workstation, zsh)
+├── vars/               # Global variables (CRITICAL: unencrypted secrets)
+├── plugins/            # Custom Ansible plugins (callbacks, filters)
+├── inventory/          # Inventory files
+├── docs/               # Documentation (PLAYBOOKS.md, VARIABLES.md)
+├── ansible.cfg         # Custom plugins, fact caching, SSH optimization
+├── .ansible-lint       # Custom linting rules
+└── .yamllint.yaml      # YAML formatting (2-space indent, no line limits)
 ```
 
 ## WHERE TO LOOK
 | Task | Location | Notes |
 |------|----------|-------|
-| **Playbooks** | `playbooks/` | Non-standard names (e.g., `jacktrip-pi.yml`, `postfix_gmail.yml`) |
-| **NAS Setup** | `roles/nas/` | NFS, Samba, Rsync configurations (security implications) |
-| **Workstation** | `roles/workstation/` | Application installs (non-standard task files) |
-| **RPM Dev** | `roles/rpm-dev/` | Mock templates, RPM build environment (non-standard dir structure) |
-| **Audio Production** | `roles/audio/` | PipeWire, JACK, audio applications (97 app desktop files) |
-| **ISO Generation** | `roles/kiwi/` | KIWI NG image building (complex async logic) |
-| **Repositories** | `roles/repos/` | DNF/YUM repository management (Fedora/RHEL-specific) |
-| **ZSH** | `roles/zsh/` | Oh-My-Zsh, custom plugins, themes |
-| **Variables** | `vars/` | Unencrypted secrets (anti-pattern), distro-specific vars |
-| **Plugins** | `plugins/` | Custom modules, filters, callbacks (defined in `ansible.cfg`) |
+| **Custom ISO Building** | `roles/kiwi/`, `playbooks/build-kiwi-iso.yml` | KIWI NG live ISOs with NVIDIA/oneAPI (async build, 281 lines) |
+| **Blueprint ISOs** | `roles/osbuild/` | OSBuild Composer TOML-based images (253-line build task) |
+| **Audio Workstation** | `roles/audio/` | PipeWire/JACK, realtime tuning (97 desktop files, 149 total files) |
+| **Sway WM** | `roles/sway/` | Wayland compositor configs (130 files, 29 scripts) |
+| **NAS Services** | `roles/nas/` | NFS/Samba/Rsync (CRITICAL: SMB1/NTLMv1 enabled, 239-line defaults) |
+| **RPM Development** | `roles/rpm-dev/` | Mock templates (anti-pattern: templates in `files/`) |
+| **Workstation Apps** | `roles/workstation/` | **Target for GenAI tools** (ollama, whisper.cpp, gemini-cli, claude-code, opencode) |
+| **Shell Customization** | `roles/zsh/` | Oh-My-Zsh, plugins, themes (38 files) |
+| **Repositories** | `roles/repos/` | DNF/YUM management (Fedora/RHEL-specific) |
+| **Baseline Config** | `roles/common/` | GRUB, timezone, locale, rc.local, YADM |
+| **Variables** | `vars/` | **CRITICAL**: Unencrypted secrets, distro-specific vars (140 lines Fedora.yml) |
+| **Custom Plugins** | `plugins/callback/llm_analyzer.py` | LLM-based playbook analysis callback |
+
+## PROJECT SCALE
+- **Files:** 474 total (149 in `audio`, 130 in `sway`, 51 in `osbuild`)
+- **YAML Lines:** 6,633 total (281 in `kiwi/tasks/build.yml`, 273 in `kiwi/defaults/main.yml`)
+- **Directory Depth:** 9 levels (complexity hotspots at depth 4+)
+- **Large Files (>100 lines):** 19 files (complexity indicators)
+- **Roles:** 12 distinct domains
 
 ## CONVENTIONS
-- **YAML Style**: 2-space indentation (Ansible standard).
-- **Non-Standard Playbook Names**: Playbooks target specific use cases (e.g., `oneAPI.yml`, `postfix_gmail.yml`).
-- **Non-Standard Task Files**: Task files named after components/tools (e.g., `google-chrome.yml`, `rclocal.yml`).
-- **Modular Task Includes**: Uses `include_tasks` for dynamic task loading.
-- **Custom Plugin Paths**: No explicit paths in `ansible.cfg` (commented out).
+- **YAML Style**: 2-space indentation, no line limits, `document-start: error`
+- **Non-Standard Naming**: Playbooks/tasks named after tools (e.g., `google-chrome.yml`, `jacktrip-pi.yml`)
+- **Modular Task Includes**: `include_tasks` for dynamic loading (e.g., `{{ ansible_distribution }}.yml`)
+- **Distribution Variables**: `Fedora.yml` vs `Rocky.yml`/`RedHat.yml` in `roles/*/vars/`
+- **Async Build Patterns**: KIWI/OSBuild use `async`/`poll: 0` (avoid timeouts on 45-90min builds)
+- **Component-Specific Tasks**: Tool-named files (not `install.yml`/`configure.yml`)
 
 ## ANTI-PATTERNS (THIS PROJECT)
-- **Unencrypted secrets**: `vars/secrets.yml` contains plaintext credentials (CRITICAL)
-- **SMB1/NTLMv1**: Deprecated protocols enabled in `roles/nas/defaults/main.yml`
-- **Empty passwords**: Default passwords in `roles/kiwi/` and `roles/osbuild/`
-- **Privilege escalation**: Docker/libvirt group membership grants root-equivalent access
+**SECURITY CRITICAL:**
+- **Unencrypted secrets**: `vars/secrets.yml` (Gmail passwords, credentials)
+- **SMB1/NTLMv1**: `roles/nas/defaults/main.yml` enables deprecated protocols
+- **Empty passwords**: `roles/kiwi/defaults/main.yml`, `roles/osbuild/` (live ISO defaults)
+- **Root-equivalent privileges**: Docker/libvirt group membership
+
+**STRUCTURAL:**
 - **Templates in files/**: `roles/rpm-dev/files/etc/mock/templates/` violates conventions
-- **Stdout parsing**: Error detection via stdout parsing (unreliable)
+- **Monolithic defaults**: 273-line `kiwi/defaults/main.yml`, 260-line `osbuild/defaults/main.yml`
+- **Package duplication**: Common packages (firewalld, policycoreutils) repeated across roles
+- **97 desktop files**: `roles/audio/files/home/local/share/applications/` (no organization)
+- **Stdout parsing**: Unreliable error detection
 
 ## UNIQUE STYLES
-- **Modular Roles**: Each role (e.g., `nas`, `workstation`) is self-contained with distinct conventions.
-- **Jinja2 Templates**: Dynamic configurations (e.g., `roles/nas/templates/`).
-- **Task Includes**: Reusable tasks via `include_tasks` (e.g., `roles/common/tasks/`).
-- **Distribution-Specific Variables**: Fedora vs. RHEL package lists (e.g., `roles/repos/vars/Fedora.yml`).
-- **Deep File Structures**: Audio role has 97 desktop files in `roles/audio/files/home/local/share/applications/`
-- **Async Build Logic**: KIWI role uses complex async patterns for image building
-- **Component-Specific Tasks**: Tasks named after tools (e.g., `google-chrome.yml`, `noisetorch.yml`)
+- **Split-Brain Design**: Fedora 43 (bleeding-edge ISO builds) vs Rocky 9/10 (stable configs)
+- **Deep Nesting**: NAS role modularizes services into subdirs (`nfs/`, `samba/`, `rsync/`)
+- **User-Specific Deploys**: Audio/ZSH deploy to user directories (`home/local/share/`)
+- **Async Workflows**: KIWI/OSBuild complex polling for ISO generation (7200s timeout)
+- **No `site.yml`**: Use-case-specific playbooks (must know exact names)
+- **Dynamic Inclusion**: Role inclusion with complex conditionals based on build status
+
+## CONSOLIDATION ROADMAP
+**Package/Var Normalization:**
+- Consolidate package lists from 12 role defaults into `common/vars/packages.yml`
+- Merge distribution-specific variables using `ansible_distribution` conditionals
+- Deduplicate common packages (firewalld, policycoreutils appear 8+ times)
+
+**GenAI Tools Integration (roles/workstation/):**
+- Add ollama (LLM runtime)
+- Add whisper.cpp (speech-to-text)
+- Add gemini-cli (Google Gemini CLI)
+- Add claude-code (Anthropic Claude Code)
+- Add opencode (Oh My OpenCode)
+
+**Ruby/Python Environments:**
+- Investigate rbenv/pyenv/asdf integration patterns
+- Define systemwide vs user-local installation strategy
+- Add virtual environment management
+
+**Style Guide Adoption:**
+- Flatten monolithic defaults (split into `packages.yml`, `build_configs.yml`)
+- Move templates from `files/` to `templates/`
+- Consolidate handlers into `common/handlers/`
+- Extract reusable tasks to `common/tasks/` (packages, services, firewall)
+
+## CODE MAP (COMPLEXITY HOTSPOTS)
+| File | Lines | Complexity | Priority |
+|------|-------|------------|----------|
+| `roles/kiwi/tasks/build.yml` | 281 | Async polling, nested conditionals, hardcoded timeouts | **HIGH** |
+| `roles/kiwi/defaults/main.yml` | 273 | Monolithic package lists, no separation of concerns | **HIGH** |
+| `roles/osbuild/tasks/build.yml` | 253 | Retry logic, nested block/rescue, cleanup tasks | **HIGH** |
+| `roles/osbuild/defaults/main.yml` | 260 | Monolithic blueprints, package lists | **HIGH** |
+| `roles/nas/defaults/main.yml` | 239 | NFS/Samba/Rsync configs, SMB1 anti-pattern | **MEDIUM** |
+| `roles/osbuild/tasks/blueprint.yml` | 179 | Validation logic, error handling | **MEDIUM** |
+| `roles/kiwi/tasks/structure.yml` | 168 | Directory validation, hardcoded paths | **MEDIUM** |
+| `roles/nas/tasks/nfs/firewall.yml` | 155 | Large loops, hardcoded port lists | **LOW** |
+| `roles/osbuild/tasks/main.yml` | 153 | Build orchestration, nested blocks | **LOW** |
+| `roles/audio/tasks/tuning.yml` | 150 | Realtime kernel tuning, IRQ balance | **LOW** |
 
 ## COMMANDS
 ```bash
-# Run a playbook
-ansible-playbook playbooks/<playbook>.yml -i inventory/inventory.ini
+# Custom ISO builds (primary use case)
+ansible-playbook playbooks/build-kiwi-iso.yml  # KIWI NG (45-90min)
+ansible-playbook -i inventory playbooks/osbuild-example.yml  # OSBuild Composer
 
-# Syntax check
-ansible-playbook --syntax-check playbooks/<playbook>.yml
+# System configuration
+ansible-playbook playbooks/workstation.yml -i inventory/inventory.ini
+ansible-playbook playbooks/nas.yml -i inventory/inventory.ini
+ansible-playbook playbooks/rpm-dev.yml -i inventory/inventory.ini
 
 # Dry run
-ansible-playbook -C playbooks/<playbook>.yml -i inventory/inventory.ini
+ansible-playbook -C playbooks/<playbook>.yml -i inventory/inventory.ini --diff
 
-# Encrypt secrets with Ansible Vault
+# Security
 ansible-vault encrypt vars/secrets.yml
-
-# Run playbook with vault password
 ansible-playbook playbooks/postfix_gmail.yml --ask-vault-pass
 
-# Lint check
+# Linting
 ansible-lint
 yamllint -c .yamllint.yaml .
+
+# Testing (role-specific)
+ansible-playbook roles/<role>/tests/test.yml -i roles/<role>/tests/inventory
 ```
 
 ## NOTES
-- **Security**: NAS role exposes NFS/Samba/Rsync. Restrict to trusted networks and use firewalld.
-- **Gmail App Passwords**: Required for `postfix_gmail.yml`. Enable 2FA and generate an App Password.
-- **SMB1 Deprecation**: Override default SMB1 protocol in production.
-- **Large Files**: Several files >100 lines indicate complexity hotspots (especially `roles/kiwi/tasks/build.yml` at 280 lines).
-- **Project Scale**: 519 files, 6602 YAML lines, depth 9 - significant complexity requiring careful navigation.
+- **Project Scale:** 474 files, 6633 YAML lines, depth 9 - significant complexity
+- **No Molecule:** Custom test playbooks in `roles/*/tests/` (non-standard)
+- **NVIDIA First Boot:** Black screen 2-5min normal (akmods compiling drivers)
+- **Secure Boot:** NVIDIA akmods unsigned - disable or enroll MOK
+- **DNF5 Instability:** Fedora 43+ retry logic (3 attempts) for download failures
+- **Disk Space:** KIWI 50-80GB, OSBuild 50GB, both active 100GB+
+- **Security:** Restrict NAS to trusted networks, use firewalld
+- **Gmail App Passwords:** Required for `postfix_gmail.yml` (enable 2FA)
+- **Large Files:** 19 files >100 lines indicate refactoring opportunities
+- **AI-Generated:** Much of codebase generated with Claude Code, Antigravity, OpenCode

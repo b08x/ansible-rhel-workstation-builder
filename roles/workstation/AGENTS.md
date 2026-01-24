@@ -1,51 +1,78 @@
 # WORKSTATION ROLE KNOWLEDGE BASE
 
-**Generated:** 03:12:45 AM (America/New_York)
-
----
-
-## OVERVIEW
-The `workstation` role automates the setup of a Linux workstation, including application installations, development tools, and repository configurations.
-
-## STRUCTURE
-```
-roles/workstation/
-├── tasks/          # Workstation setup tasks
-│   ├── main.yml    # Orchestrates task includes
-│   ├── google-chrome.yml  # Google Chrome installation
-│   ├── rust_utils.yml     # Rust toolchain setup
-│   ├── rpmfusion.yml      # RPM Fusion repository setup
-│   └── yadm.yml          # YADM dotfile management
-├── handlers/       # Service handlers
-├── templates/      # Jinja2 templates for application configs
-├── vars/           # Role-specific variables
-├── defaults/       # Default variables (lowest precedence)
-└── files/          # Static files
-```
+Application installation role - **PRIMARY TARGET** for GenAI tools integration and language environment management.
 
 ## WHERE TO LOOK
-| Task | Location | Notes |
-|------|----------|-------|
-| **Google Chrome** | `tasks/google-chrome.yml` | Installs Google Chrome browser |
-| **Rust Toolchain** | `tasks/rust_utils.yml` | Installs Rust and utilities (e.g., `cargo`) |
-| **RPM Fusion** | `tasks/rpmfusion.yml` | Configures RPM Fusion repositories |
-| **YADM** | `tasks/yadm.yml` | Manages dotfiles with YADM |
-| **Templates** | `templates/` | Jinja2 templates for application configurations |
+| Task                   | File                      | Notes                             |
+|------------------------|---------------------------|-----------------------------------|
+| **Browser Install**    | `tasks/google-chrome.yml` | Google Chrome (non-standard repo) |
+| **IDE Setup**          | `tasks/ide.yml`           | Development environments          |
+| **Rust Utilities**     | `tasks/rust_utils.yml`    | Cargo-based CLI tools             |
+| **YADM Dotfiles**      | `tasks/yadm.yml`          | Yet Another Dotfiles Manager      |
+| **Main Orchestration** | `tasks/main.yml`          | Includes component-specific tasks |
+| **Package Variables**  | `vars/main.yml`           | Workstation-specific packages     |
 
 ## CONVENTIONS
-- **Modular Task Files**: Tasks are split into reusable files (e.g., `google-chrome.yml`, `rust_utils.yml`).
-- **Non-Standard Task Names**: Task files named after applications/tools (e.g., `google-chrome.yml` instead of `browsers.yml`).
-- **Role Dependencies**: Requires `common` and `repos` roles for baseline setup.
+- **Component-Specific Tasks**: Named after tools (google-chrome.yml, not install-browser.yml)
+- **Include Pattern**: `main.yml` dynamically includes task files
+- **Third-Party Repos**: Manages non-standard repos (Chrome, RPM Fusion)
+- **User Applications**: System-wide installs (not user-local)
+- **Application-Specific Task Files**: Tasks organized by application/tool
+- **Jinja2 Templates**: Dynamic configurations for application setups
 
-## ANTI-PATTERNS
-- **Non-Standard Task Names**: Avoid naming task files after applications/tools (e.g., `google-chrome.yml`). Use functional names (e.g., `browsers.yml`).
+## CONSOLIDATION OBJECTIVES
+
+### **GenAI Tools Integration** (PRIMARY)
+Add the following tools to this role:
+
+| Tool            | Type              | Installation Method  | Notes                                  |
+|-----------------|-------------------|----------------------|----------------------------------------|
+| **ollama**      | LLM runtime       | Official repo/script | Systemd service, model management      |
+| **whisper.cpp** | Speech-to-text    | Manual build/tarball | CUDA support optional, model downloads |
+| **gemini-cli**  | Google Gemini CLI | pip/manual           | API key management (secrets.yml)       |
+| **claude-code** | Anthropic CLI     | npm/manual           | API key management, project config     |
+| **opencode**    | Oh My OpenCode    | git clone/script     | Shell integration, plugin system       |
+
+**Implementation Strategy:**
+- Create `tasks/genai.yml` for unified GenAI tool installation
+- Split into subtasks: `tasks/genai/ollama.yml`, `tasks/genai/whisper.yml`, etc.
+- Add variables: `workstation_enable_genai`, `genai_tools_list`
+- Manage API keys via Ansible Vault in `vars/secrets.yml`
+- Consider systemd units for ollama service management
+
+### **Ruby/Python Environment Management** (SECONDARY)
+Investigate and implement:
+
+| Tool      | Purpose                        | Installation | Notes                                          |
+|-----------|--------------------------------|--------------|------------------------------------------------|
+| **asdf**  | Multi-language version manager | git clone    | Preferred (supports both Ruby + Python + Node) |
+| **rbenv** | Ruby version manager           | git clone    | Alternative if Ruby-only                       |
+| **pyenv** | Python version manager         | git clone    | Alternative if Python-only                     |
+
+**Implementation Strategy:**
+- Create `tasks/language-envs.yml`
+- Support both systemwide (`/opt/asdf/`) and user-local (`~/.asdf/`)
+- Add variables: `workstation_enable_asdf`, `asdf_install_path`, `asdf_users`
+- Shell integration (zsh/bash profiles)
+- Default language versions as variables
+
+## ANTI-PATTERNS (THIS ROLE)
+- **Minimal Package Consolidation**: Duplicates common packages from other roles
+- **No GenAI Tool Support**: Currently missing planned tools
+- **No Language Version Managers**: Ruby/Python installed system-wide only
+- **Non-Standard Task Names**: Task files named after applications/tools (existing convention, not changing)
 
 ## UNIQUE STYLES
-- **Application-Specific Task Files**: Tasks are organized by application/tool (e.g., `google-chrome.yml`, `rust_utils.yml`).
-- **Jinja2 Templates**: Dynamic configurations for application setups.
-- **YADM Integration**: Manages dotfiles using YADM (Yet Another Dotfiles Manager).
+- **Application Focus**: Unlike infrastructure roles, focuses on end-user applications
+- **Third-Party Repo Heavy**: Manages non-standard package sources
+- **Future Expansion Hub**: Designated role for new tool categories
+- **YADM Integration**: Manages dotfiles using YADM (Yet Another Dotfiles Manager)
 
 ## NOTES
-- **Dependencies**: Requires `common` and `repos` roles for baseline system and repository setup.
-- **Testing**: No formal testing framework (e.g., Molecule) detected. Use `--check --diff` for dry runs.
-- **Documentation**: Expand role-specific docs in `docs/roles/workstation/README.md`.
+- **13 Files**: Smaller than most roles (ready for expansion)
+- **Non-Standard Repos**: Chrome repo added manually (google-chrome.yml)
+- **Dependencies**: Requires `common` and `repos` roles first
+- **Testing**: Verify app launches after install (no automated tests currently)
+- **GenAI Tools**: Target for consolidation effort - high priority
+- **Language Envs**: Consider asdf over rbenv+pyenv for unified management
+- **Expansion Ready**: Minimal current footprint allows significant additions without complexity explosion
