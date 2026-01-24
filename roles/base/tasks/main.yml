@@ -1,8 +1,8 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # ============================================================================
-# RPM repository configuration
-# Provides rpm repository setup for RedHat family distributions
+# Base Configuration
+# Provides foundational system setup and repository configuration
 # ============================================================================
 
 # ----------------------------------------------------------------------------
@@ -39,7 +39,7 @@
         dnf_config_failed: true
       tags: ["dnf_config"]
 
-  tags: ["dnf_configuration"]
+  tags: ["dnf_configuration", "base", "repos"]
 
 # ----------------------------------------------------------------------------
 # Repository Configuration
@@ -49,7 +49,7 @@
   ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
   when:
     - enable_third_party_repos | default(true)
-  tags: ["repos"]
+  tags: ["repos", "base"]
 
 # ----------------------------------------------------------------------------
 # Package Cache Management
@@ -71,4 +71,23 @@
           You may need to run 'dnf clean all && dnf makecache' manually.
       tags: ["cache_update"]
 
-  tags: ["cache"]
+  tags: ["cache", "base", "repos"]
+
+# ----------------------------------------------------------------------------
+# System Configuration
+# ----------------------------------------------------------------------------
+
+- name: Set system timezone
+  ansible.builtin.command: "timedatectl set-timezone {{ timezone }}"
+  register: timezone_result
+  changed_when: timezone_result.rc == 0
+  failed_when: timezone_result.rc != 0
+  tags: ["timezone", "base", "common"]
+
+# ----------------------------------------------------------------------------
+# Package Installation
+# ----------------------------------------------------------------------------
+
+- name: Include package installation tasks
+  ansible.builtin.import_tasks: packages.yml
+  tags: ["packages", "builder", "base", "common"]

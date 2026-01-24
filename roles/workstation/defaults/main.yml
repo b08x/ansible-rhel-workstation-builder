@@ -4,3 +4,34 @@
 pkgs_browsers:
   - google-chrome-stable
   - firefox
+
+# GNOME Workstation packages
+workstation_gnome_packages:
+  - gnome-shell
+  - gnome-terminal
+  - gnome-tweaks
+  - nautilus
+  - gdm
+  - gnome-control-center
+  - gnome-system-monitor
+
+# Sway window manager packages
+workstation_sway_packages:
+  - alacritty
+  - grim
+  - mako
+  - slurp
+  - sway
+  - sway-config-fedora
+  - swaybg
+  - swayidle
+  - swaylock
+  - waybar
+  - wl-clipboard
+  - wofi
+  - xdg-desktop-portal-wlr
+
+# IDE packages
+workstation_ide_packages:
+  - code
+  - antigravity

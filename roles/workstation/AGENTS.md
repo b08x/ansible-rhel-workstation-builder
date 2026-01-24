@@ -40,22 +40,6 @@ Add the following tools to this role:
 - Manage API keys via Ansible Vault in `vars/secrets.yml`
 - Consider systemd units for ollama service management
 
-### **Ruby/Python Environment Management** (SECONDARY)
-Investigate and implement:
-
-| Tool      | Purpose                        | Installation | Notes                                          |
-|-----------|--------------------------------|--------------|------------------------------------------------|
-| **asdf**  | Multi-language version manager | git clone    | Preferred (supports both Ruby + Python + Node) |
-| **rbenv** | Ruby version manager           | git clone    | Alternative if Ruby-only                       |
-| **pyenv** | Python version manager         | git clone    | Alternative if Python-only                     |
-
-**Implementation Strategy:**
-- Create `tasks/language-envs.yml`
-- Support both systemwide (`/opt/asdf/`) and user-local (`~/.asdf/`)
-- Add variables: `workstation_enable_asdf`, `asdf_install_path`, `asdf_users`
-- Shell integration (zsh/bash profiles)
-- Default language versions as variables
-
 ## ANTI-PATTERNS (THIS ROLE)
 - **Minimal Package Consolidation**: Duplicates common packages from other roles
 - **No GenAI Tool Support**: Currently missing planned tools

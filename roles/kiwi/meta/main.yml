@@ -37,11 +37,11 @@ galaxy_info:
 
 # Role dependencies
 dependencies: []
-  # This role can optionally use the 'repos' role for repository management
+  # This role can optionally use the 'base' role for repository management
   # but it's not a hard dependency as it manages its own repositories
-  # Uncomment below if you want to integrate with the repos role:
-  # - role: repos
-  #   when: kiwi_use_repos_role | default(false)
+  # Uncomment below if you want to integrate with the base role:
+  # - role: base
+  #   when: kiwi_use_base_role | default(false)
 
 # Collections this role depends on
 collections:

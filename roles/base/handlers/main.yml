@@ -1,6 +1,12 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# handlers file for common
+# handlers file for base role
+
+- name: Update cache
+  ansible.builtin.dnf:
+    update_cache: true
+  listen: "Update cache"
+
 - name: Generate locales
   ansible.builtin.command: locale-gen
   listen: "Generate locales"

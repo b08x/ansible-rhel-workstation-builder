@@ -22,9 +22,7 @@
 
     - name: Install IDE packages
       ansible.builtin.dnf:
-        name:
-          - code
-          - antigravity
+        name: "{{ workstation_ide_packages }}"
         state: present
   when: ansible_os_family == 'RedHat'
   tags: ["ide", "packages"]

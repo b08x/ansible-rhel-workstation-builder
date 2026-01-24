@@ -1,0 +1,28 @@
+#SPDX-License-Identifier: MIT-0
+---
+# ----------------------------------------------------------------------------
+# Package Installation
+# Installs common dependencies for image building and development
+# ----------------------------------------------------------------------------
+
+- name: Ensure common system groups exist
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ common_groups }}"
+  become: true
+  tags: ["groups", "common"]
+
+- name: Install common kernel packages
+  ansible.builtin.dnf:
+    name: "{{ common_kernel_packages }}"
+    state: present
+  become: true
+  tags: ["packages", "kernel", "common"]
+
+- name: Install common utility packages
+  ansible.builtin.dnf:
+    name: "{{ common_utility_packages }}"
+    state: present
+  become: true
+  tags: ["packages", "utilities", "common"]

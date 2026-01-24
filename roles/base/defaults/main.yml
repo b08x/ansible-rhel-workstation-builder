@@ -1,0 +1,79 @@
+#SPDX-License-Identifier: MIT-0
+---
+# ----------------------------------------------------------------------------
+# System Configuration
+# ----------------------------------------------------------------------------
+
+timezone: "America/New_York"
+locale: "en_US.UTF-8"
+keymap: "us"
+
+# ----------------------------------------------------------------------------
+# Repository Configuration
+# ----------------------------------------------------------------------------
+
+# General repository settings
+enable_third_party_repos: true
+network_timeout: 30
+retry_count: 3
+
+# RHEL-specific repositories
+enable_epel: true
+enable_powertools: true
+enable_rpmfusion: true
+
+# ----------------------------------------------------------------------------
+# GRUB Bootloader Configuration
+# ----------------------------------------------------------------------------
+
+bootloader: grub
+
+# Default kernel parameters for quiet boot with performance optimizations
+kernel_parameters_default: "splash threadirqs mitigations=off"
+
+# Additional kernel parameters
+kernel_parameters: "ipv6.disable=1 net.ifnames=0"
+
+# GRUB visual configuration
+grub_background: "/usr/share/backgrounds/syncopated/syncopated016.png"
+grub_enable_os_prober: false
+
+# ----------------------------------------------------------------------------
+# System Packages and Groups
+# ----------------------------------------------------------------------------
+
+# Core system groups
+common_groups:
+  - wheel
+  - video
+  - render
+  - libvirt
+
+# Kernel-related packages
+common_kernel_packages:
+  - kernel
+  - kernel-devel
+  - kernel-headers
+  - kernel-modules
+  - kernel-modules-core
+  - kernel-modules-extra
+  - kernel-tools
+  - kernel-tools-libs
+
+# Base utility packages
+common_utility_packages:
+  - bash-completion
+  - curl
+  - git
+  - htop
+  - kitty
+  - lm_sensors-devel
+  - lnav
+  - micro
+  - ranger
+  - rsync
+  - tmux
+  - vim
+  - wget
+  - zoxide
+  - zsh

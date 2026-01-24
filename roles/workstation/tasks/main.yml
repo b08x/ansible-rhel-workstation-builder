@@ -44,3 +44,17 @@
 
 - include_tasks: browser.yml
 - include_tasks: ide.yml
+
+- name: Install GNOME Desktop Environment
+  ansible.builtin.dnf:
+    name: "{{ workstation_gnome_packages }}"
+    state: present
+  become: true
+  tags: ["gnome", "workstation"]
+
+- name: Install Sway Window Manager
+  ansible.builtin.dnf:
+    name: "{{ workstation_sway_packages }}"
+    state: present
+  become: true
+  tags: ["sway", "workstation"]
