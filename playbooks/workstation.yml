@@ -35,6 +35,11 @@
   - { role: zsh, tags: ["zsh"] }
   - { role: asdf, tags: ["asdf"] }
   - { role: video, tags: ["video"] }
-  - { role: docker, tags: ["docker"] }
+  - role: podman
+    tags: ["podman"]
+    when: install_podman | default(true) | bool
+  - role: docker
+    tags: ["docker"]
+    when: install_docker | default(false) | bool
   - { role: libvirt, tags: ["libvirt"] }
   - { role: workstation, tags: ["workstation"] }

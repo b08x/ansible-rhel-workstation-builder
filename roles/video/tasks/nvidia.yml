@@ -12,6 +12,7 @@
         gpgcheck: true
         gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
         enabled: true
+      when: nvidia_install_container_toolkit | bool
 
     - name: Add CUDA repository
       ansible.builtin.yum_repository:
@@ -27,6 +28,12 @@
   ansible.builtin.dnf:
     name: "{{ nvidia_packages }}"
     state: present
+
+- name: Install NVIDIA Container Toolkit
+  ansible.builtin.dnf:
+    name: nvidia-container-toolkit
+    state: present
+  when: nvidia_install_container_toolkit | bool
 
 - name: Configure Kernel Parameters for NVIDIA
   ansible.builtin.command:

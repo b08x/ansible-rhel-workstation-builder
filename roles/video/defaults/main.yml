@@ -11,13 +11,13 @@ nvidia_driver_version: "*"
 nvidia_driver_branch: "latest" # or "lts"
 nvidia_include_cuda: true
 nvidia_configure_cdi: true
+nvidia_install_container_toolkit: "{{ (install_docker | default(false) | bool) or (install_podman | default(true) | bool) }}"
 
 # NVIDIA Package Lists
 nvidia_packages:
   - nvidia-driver
   - nvidia-driver-cuda
   - nvidia-gpu-firmware
-  - nvidia-container-toolkit
   - cuda-toolkit
   - nvidia-driver-cuda-libs
   - nvidia-driver-libs

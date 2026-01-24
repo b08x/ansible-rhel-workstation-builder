@@ -1,0 +1,10 @@
+---
+# defaults file for podman role
+
+podman_packages:
+  - podman
+  - podman-compose
+  - podman-docker
+
+# Whether to install podman
+podman_install: true
