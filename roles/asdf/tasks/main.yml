@@ -24,12 +24,17 @@
   ansible.builtin.file:
     path: "{{ asdf_install_path }}"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
     mode: '0755'
     recurse: yes
   become: true
   tags: ["asdf_install", "permissions"]
+
+- name: Run make to build asdf
+  ansible.builtin.make:
+    chdir: "{{ asdf_install_path }}"
+  tags: ["asdf_install", "asdf_build"]
 
 - name: Install asdf core plugins
   ansible.builtin.shell: |

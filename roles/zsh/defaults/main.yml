@@ -13,7 +13,7 @@ desktop: "sway"
 zsh_theme: "robbyrussell"
 
 # Optional installations
-zoxide_install: true  # Install zoxide from GitHub releases
+zoxide_install: false  # Install zoxide from GitHub releases
 oh_my_zsh_install: true  # Install oh-my-zsh (set to false if already installed)
 
 # Optional features

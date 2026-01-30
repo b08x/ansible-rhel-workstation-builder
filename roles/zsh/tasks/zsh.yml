@@ -81,5 +81,5 @@
       ansible.builtin.file:
         path: "/tmp/zoxide.tar.gz"
         state: absent
-  when: zoxide_install | default(true) | bool
+  when: zoxide_install | default(false) | bool
   tags: ["zsh", "zoxide"]

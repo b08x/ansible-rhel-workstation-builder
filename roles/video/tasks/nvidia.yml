@@ -26,11 +26,11 @@
 
         - name: Add CUDA repository
           ansible.builtin.yum_repository:
-            name: "cuda-fedora{{ ansible_distribution_major_version }}-x86_64"
-            description: "CUDA for Fedora {{ ansible_distribution_major_version }}"
-            baseurl: "https://developer.download.nvidia.com/compute/cuda/repos/fedora{{ ansible_distribution_major_version }}/x86_64"
+            name: "cuda-fedora42-x86_64"
+            description: "CUDA for Fedora 42"
+            baseurl: "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64"
             gpgcheck: true
-            gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/fedora{{ ansible_distribution_major_version }}/x86_64/D42D0685.pub"
+            gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub"
             enabled: true
           when: ansible_distribution == "Fedora"
 

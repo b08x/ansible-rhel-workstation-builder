@@ -4,7 +4,7 @@
 packages__zsh:
   - zsh
   - zsh-syntax-highlighting
-  - zsh-completions  # Available in standard repos
+  - zsh-autosuggestions  # Available in standard repos
 
 # Note: oh-my-zsh, zoxide, and zsh-autocomplete are not available in standard repos
 # These are installed via tasks in the role
