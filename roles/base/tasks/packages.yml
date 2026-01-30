@@ -13,16 +13,39 @@
 #   become: true
 #   tags: ["groups", "common"]
 
-- name: Install common kernel packages
-  ansible.builtin.dnf:
-    name: "{{ common_kernel_packages }}"
-    state: present
+- name: Install Base Packages
   become: true
-  tags: ["packages", "kernel", "common"]
+  block:
+    - name: Install Kernel Packages
+      ansible.builtin.dnf:
+        name: "{{ common_kernel_packages }}"
+        state: present
+      tags: ["packages", "kernel"]
 
-- name: Install common utility packages
-  ansible.builtin.dnf:
-    name: "{{ common_utility_packages }}"
-    state: present
-  become: true
-  tags: ["packages", "utilities", "common"]
+    - name: Install Utility Packages
+      ansible.builtin.dnf:
+        name: "{{ common_utility_packages }}"
+        state: present
+      tags: ["packages", "utilities"]
+
+    - name: Install Cockpit and related packages
+      ansible.builtin.dnf:
+        name: "{{ base_packages_cockpit }}"
+        state: present
+      tags: ["packages", "cockpit"]
+
+  rescue:
+    - name: Log package installation failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to install packages.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          This might be due to network connectivity issues or repository availability.
+      tags: ["package_install"]
+
+    - name: Mark package installation as failed
+      ansible.builtin.set_fact:
+        package_install_failed: true
+      tags: ["package_install"]
+
+

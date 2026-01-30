@@ -9,6 +9,7 @@
   ansible.builtin.dnf:
     name: "{{ packages__zsh }}"
     state: present
+  become: true
   tags: ["packages"]
 
 - name: Install zsh configurations and plugins
@@ -23,6 +24,7 @@
     group: "{{ item.group }}"
     mode: "0644"
     backup: true
+  become: true
   loop:
     - dest: "{{ user.home }}/.aliases"
       owner: "{{ user.name }}"
@@ -61,5 +63,6 @@
   ansible.builtin.user:
     name: "{{ user.name }}"
     shell: /bin/zsh
+  become: true
   when: zsh_set_default_shell | default(false) | bool
   tags: ["zsh"]

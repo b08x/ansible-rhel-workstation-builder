@@ -1,0 +1,12 @@
+# flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+- name: Add Flathub repository
+  ansible.builtin.command:
+    cmd: "flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
+  tags: ["flatpaks", "flatpak_repo"]
+
+- name: Install Flatpaks
+  ansible.builtin.command:
+    cmd: "flatpak install flathub {{ item }}"
+  loop: "{{ flatpaks }}"
+  tags: ["flatpaks", "flatpak_install"]

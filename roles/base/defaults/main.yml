@@ -63,8 +63,13 @@ common_kernel_packages:
 # Base utility packages
 common_utility_packages:
   - bash-completion
+  - cargo
   - curl
+  - du-dust
+  - fd-find
   - git
+  - golang
+  - grsync
   - htop
   - kitty
   - lm_sensors-devel
@@ -77,7 +82,23 @@ common_utility_packages:
   - wget
   - zoxide
   - zsh
-  - grsync
-  - zoxide
-  - golang
-  - cargo
+  - nvtop
+  - gitui
+  - nodejs
+
+base_packages_cockpit:
+  - cockpit
+  - cockpit-composer
+  - cockpit-files
+  - cockpit-image-builder
+  - cockpit-machines
+  - cockpit-networkmanager
+  - cockpit-ostree
+  - cockpit-packagekit
+  - cockpit-podman
+  - cockpit-selinux
+  - cockpit-sosreport
+  - cockpit-storaged
+  - cockpit-system
+  - cockpit-ws
+  - cockpit-ws-selinux

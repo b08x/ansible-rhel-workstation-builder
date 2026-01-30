@@ -2,43 +2,60 @@
 ---
 # Intel driver and oneAPI installation
 
-- name: Add Intel oneAPI repository
-  ansible.builtin.yum_repository:
-    name: oneAPI
-    description: "Intel® oneAPI repository"
-    baseurl: https://yum.repos.intel.com/oneapi
-    enabled: true
-    gpgcheck: true
-    gpgkey: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+- name: Intel Setup
+  when: intel_gpu_detected.rc == 0
+  become: true
+  block: 
+    - name: Add Intel oneAPI repository
+      ansible.builtin.yum_repository:
+        name: oneAPI
+        description: "Intel® oneAPI repository"
+        baseurl: https://yum.repos.intel.com/oneapi
+        enabled: true
+        gpgcheck: true
+        gpgkey: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
 
-- name: Update Package Cache
-  ansible.builtin.dnf:
-    update_cache: true
+    - name: Update Package Cache
+      ansible.builtin.dnf:
+        update_cache: true
 
-- name: Install Intel packages
-  ansible.builtin.dnf:
-    name: "{{ intel_packages }}"
-    state: present
+    - name: Install Intel packages
+      ansible.builtin.dnf:
+        name: "{{ intel_packages }}"
+        state: present
 
-- name: Create oneAPI Environment Profile Script
-  ansible.builtin.template:
-    src: intel-oneapi.sh.j2
-    dest: /etc/profile.d/intel-oneapi.sh
-    mode: "0755"
-    owner: root
-    group: root
-  when: intel_include_oneapi | bool
+    - name: Create oneAPI Environment Profile Script
+      ansible.builtin.template:
+        src: intel-oneapi.sh.j2
+        dest: /etc/profile.d/intel-oneapi.sh
+        mode: "0755"
+        owner: root
+        group: root
+      when: intel_include_oneapi | bool
 
-- name: Set repo priorities
-  ansible.builtin.shell: |
-    dnf config-manager setopt fedora.priority={{ video_repo_priorities.fedora }} \
-    updates.priority={{ video_repo_priorities.updates }} \
-    cuda-fedora{{ ansible_distribution_major_version }}-x86_64.priority={{ video_repo_priorities.cuda }} \
-    rpmfusion-free.priority={{ video_repo_priorities.rpmfusion }} \
-    rpmfusion-nonfree.priority={{ video_repo_priorities.rpmfusion }} \
-    rpmfusion-free-updates.priority={{ video_repo_priorities.rpmfusion }} \
-    rpmfusion-nonfree-updates.priority={{ video_repo_priorities.rpmfusion }} \
-    oneAPI.priority={{ video_repo_priorities.intel_oneapi }}
-  register: repo_priority_result
-  changed_when: repo_priority_result.rc == 0
-  when: ansible_os_family == "RedHat"
+    - name: Set repo priorities
+      ansible.builtin.shell: |
+        dnf config-manager setopt fedora.priority={{ video_repo_priorities.fedora }} \
+        updates.priority={{ video_repo_priorities.updates }} \
+        cuda-fedora42-x86_64.priority={{ video_repo_priorities.cuda }} \
+        rpmfusion-free.priority={{ video_repo_priorities.rpmfusion }} \
+        rpmfusion-nonfree.priority={{ video_repo_priorities.rpmfusion }} \
+        rpmfusion-free-updates.priority={{ video_repo_priorities.rpmfusion }} \
+        rpmfusion-nonfree-updates.priority={{ video_repo_priorities.rpmfusion }} \
+        oneAPI.priority={{ video_repo_priorities.intel_oneapi }}
+      register: repo_priority_result
+      changed_when: repo_priority_result.rc == 0
+      when: ansible_os_family == "RedHat"
+  rescue:
+    - name: Log Intel setup failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to set up Intel drivers and oneAPI.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          This might be due to network connectivity issues or repository availability.
+      tags: ["intel_setup"]
+
+    - name: Mark Intel setup as failed
+      ansible.builtin.set_fact:
+        intel_setup_failed: true
+      tags: ["intel_setup"]

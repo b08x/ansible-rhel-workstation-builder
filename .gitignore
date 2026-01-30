@@ -9,3 +9,5 @@ test_suite_analysis
 # emacs projectile
 .projectile
 **/logs/
+
+.claude/settings.local.json

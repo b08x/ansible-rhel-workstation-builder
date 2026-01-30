@@ -54,6 +54,7 @@
 # ----------------------------------------------------------------------------
 
 - name: Set DNF Repository Priorities
+  become: true
   block:
     - name: Set repository priorities
       ansible.builtin.shell: |
@@ -82,19 +83,18 @@
   tags: ["dnf_configuration"]
 
 - name: Setup YADM
+  become: true
   block:
     - name: Add YADM repository
       ansible.builtin.get_url:
         url: "https://download.opensuse.org/repositories/home:TheLocehiliosan:yadm/Fedora_{{ ansible_distribution_major_version }}/home:TheLocehiliosan:yadm.repo"
         dest: /etc/yum.repos.d/home:TheLocehiliosan:yadm.repo
         mode: "0644"
-      become: true
 
     - name: Install yadm
       ansible.builtin.dnf:
         name: yadm
         state: present
-      become: true
 
   rescue:
     - name: Log YADM setup failure

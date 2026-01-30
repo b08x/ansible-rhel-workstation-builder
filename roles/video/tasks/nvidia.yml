@@ -11,6 +11,7 @@
 
 - name: NVIDIA Setup
   when: nvidia_gpu_detected.rc == 0
+  become: true
   block:
     - name: Add NVIDIA-related repositories
       block:

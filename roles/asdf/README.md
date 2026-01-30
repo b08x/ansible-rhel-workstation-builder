@@ -1,7 +1,9 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role installs and configures asdf, a version manager for command-line tools.
+
+
 
 Requirements
 ------------

@@ -7,6 +7,7 @@
   register: zsh_oh_my_zsh_stat
 
 - name: Oh-my-zsh installation
+  become: true
   block:
     - name: Download oh-my-zsh install script
       ansible.builtin.get_url:
@@ -40,6 +41,7 @@
     group: root
     mode: "0755"
     backup: false
+  become: true
   loop:
     - fd
     - ripgrep
@@ -59,10 +61,10 @@
       - "--omit-dir-times"
       - "--chown={{ user.name }}:{{ user.name }}"
   ignore_errors: "{{ ansible_check_mode }}"
-  become: false
   tags: ["zsh", "functions"]
 
 - name: Install zoxide from GitHub releases
+  become: true
   block:
     - name: Download zoxide binary
       ansible.builtin.get_url:

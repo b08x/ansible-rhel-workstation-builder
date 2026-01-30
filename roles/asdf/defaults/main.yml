@@ -5,8 +5,8 @@
 asdf_install_path: "/opt/asdf"
 
 # Default language versions
-asdf_ruby_version: "3.2.0"
-asdf_python_version: "3.11.7"
+asdf_ruby_version: "3.3.8"
+asdf_python_version: "3.13"
 asdf_nodejs_version: "18.19.0"
 
 # Plugins to install

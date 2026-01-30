@@ -20,7 +20,7 @@
       sudoers: true
       email: rwpannick@gmail.com
     ruby_version: "3.4.0"
-    asdf_ruby_version: "3.2.0"
+    asdf_ruby_version: "3.3.8"
   environment:
     PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path|join(':') }}"
   pre_tasks:

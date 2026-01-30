@@ -35,3 +35,7 @@ workstation_sway_packages:
 workstation_ide_packages:
   - code
   - antigravity
+
+workstation_flatpaks:
+  - md.obsidian.Obsidian
+  
