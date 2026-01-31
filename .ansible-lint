@@ -9,6 +9,10 @@ exclude_paths:
   - .tox
   - .git/
   - collections/*/tests/
+  - .venv/**
+  - .agent/**
+  - .claude/**
+  - .vscode/**
 
 parseable: true
 quiet: false

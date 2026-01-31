@@ -39,3 +39,6 @@ workstation_ide_packages:
 workstation_flatpaks:
   - md.obsidian.Obsidian
   
+workstation_pkgs_utils:
+  - tuned-switcher
+  - distrobox

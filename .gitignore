@@ -11,6 +11,9 @@ test_suite_analysis
 **/logs/
 
 
-.venv
+.venv/
+
+.ansible/.lock
+
 
 .claude/settings.local.json

@@ -62,6 +62,7 @@ common_kernel_packages:
 
 # Base utility packages
 common_utility_packages:
+  - aria2
   - bash-completion
   - cargo
   - curl
@@ -70,6 +71,7 @@ common_utility_packages:
   - ffmpeg-free-devel
   - git
   - gitui
+  - glslc
   - golang
   - grsync
   - htop
@@ -87,12 +89,15 @@ common_utility_packages:
   - wget
   - zoxide
   - zsh
-  - glslc
-  - aria2
 
 base_pkgs_dev:
-  - gpgme-devel
   - btrfs-progs-devel
+  - device-mapper-devel
+  - ffmpeg-free-devel
+  - go-rpm-macros
+  - gpgme-devel
+  - python3-docutils
+  - sdl2-compat-devel
 
 base_packages_cockpit:
   - cockpit

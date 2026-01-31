@@ -93,6 +93,40 @@
   ansible.builtin.import_tasks: packages.yml
   tags: ["packages", "builder", "base", "common"]
 
+- name: Install Rust packages
+  become: false
+  vars:
+    path:
+      - "{{ user.home }}/.cargo/bin"
+      - "{{ user.home }}/.local/bin"
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path | join(':') }}"
+  tags: ["cargo", "packages"]
+  block:
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check if 'cargo' is installed
+      ansible.builtin.debug:
+        msg: "'cargo' is installed"
+      when: "'cargo' in ansible_facts.packages"
+
+    - name: Install Rust packages with locked dependencies
+      community.general.cargo:
+        name: "{{ item }}"
+        locked: true
+      loop:
+        - bottom
+        - eza
+        - gping
+        - ripgrep_all
+        - sd
+      loop_control:
+        label: "{{ item }}"
+      when:
+        - "'cargo' in ansible_facts.packages"
 
 # - name: Install Bun shell script
 #   ansible.builtin.shell: "curl -fsSL https://bun.sh/install | bash"

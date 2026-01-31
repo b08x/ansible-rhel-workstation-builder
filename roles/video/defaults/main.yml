@@ -15,12 +15,12 @@ nvidia_install_container_toolkit: "{{ (install_docker | default(false) | bool) o
 
 # NVIDIA Package Lists
 nvidia_packages:
+  - cuda-toolkit
   - nvidia-driver
   - nvidia-driver-cuda
-  - nvidia-gpu-firmware
-  - cuda-toolkit
   - nvidia-driver-cuda-libs
   - nvidia-driver-libs
+  - nvidia-gpu-firmware
   - nvidia-persistenced
   - nvidia-settings
 
@@ -32,6 +32,7 @@ intel_oneapi_mkl_only: true # Set to false for full basekit if needed
 intel_packages:
   - libva-intel-media-driver
   - intel-oneapi-mkl-devel
+  - intel-oneapi-dpcpp-cpp-2025.3-2025.3.2-832
 
 # Repository Priorities
 video_repo_priorities:

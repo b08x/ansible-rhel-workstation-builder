@@ -8,17 +8,6 @@
     path:
       - "{{ lookup('env','HOME') }}/.cargo/bin"
       - "{{ lookup('env','HOME') }}/.local/bin"
-    user:
-      name: b08x
-      group: b08x
-      uid: 1000
-      gid: 1000
-      home: /home/b08x
-      shell: /usr/bin/zsh
-      secondary_groups: "input,video,audio,realtime"
-      realname: Robert Pannick
-      sudoers: true
-      email: rwpannick@gmail.com
     ruby_version: "3.4.0"
     asdf_ruby_version: "3.3.8"
   environment:
