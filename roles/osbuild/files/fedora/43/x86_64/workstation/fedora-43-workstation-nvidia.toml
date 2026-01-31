@@ -11,9 +11,11 @@ hostname = "syncopated"
 append = "rd.driver.blacklist=nouveau rd.driver.blacklist=nova-core modprobe.blacklist=nouveau nvidia-drm.modeset=1"
 
 [customizations.services]
-enabled = ["sshd", "nvidia-cdi-refresh", "NetworkManager", "firewalld", "gdm", "chronyd"]
+enabled = ["sshd", "nvidia-cdi-refresh", "NetworkManager", "firewalld", "gdm", "chronyd", "input-remapper"]
 
 [customizations.firewall]
+ports = ["24800:tcp"]
+
 [customizations.firewall.services]
 enabled = [ "ssh", "ntp", "samba-client", "rsyncd" ]
 
@@ -99,6 +101,51 @@ StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
+"""
+
+[[customizations.directories]]
+path = "/usr/share/wayland-sessions"
+mode = "0755"
+user = "root"
+group = "root"
+ensure_parents = false
+
+[[customizations.files]]
+path = "/usr/share/wayland-sessions/sway.desktop"
+data = """
+[Desktop Entry]
+Name=Sway
+Comment=An i3-compatible Wayland compositor
+Exec=sway
+Type=Application
+DesktopNames=sway
+"""
+
+[[customizations.directories]]
+path = "/etc/skel/.config/sway"
+mode = "0755"
+user = "root"
+group = "root"
+ensure_parents = false
+
+[[customizations.files]]
+path = "/etc/gdm/custom.conf"
+data = """
+# GDM configuration storage
+
+[daemon]
+# Uncomment the line below to force the login screen to use Xorg
+WaylandEnable=true
+
+[security]
+
+[xdmcp]
+
+[chooser]
+
+[debug]
+# Uncomment the line below to turn on debugging
+#Enable=true
 """
 
 [[customizations.repositories]]
@@ -365,6 +412,10 @@ name = "htop"
 version = "*"
 
 [[packages]]
+name = "input-remapper"
+version = "*"
+
+[[packages]]
 name = "ipxe-roms"
 version = "*"
 
@@ -528,6 +579,10 @@ version = "*"
 name = "rsync"
 version = "*"
 
+[[packages]]
+name = "ruby-devel"
+version = "*"
+
 # [[packages]]
 # name = "slurp"
 # version = "*"
@@ -568,6 +623,10 @@ version = "*"
 # name = "vagrant-registration"
 # version = "*"
 
+[[packages]]
+name = "vips-devel"
+version = "*"
+
 # [[packages]]
 # name = "waybar"
 # version = "*"
@@ -582,6 +641,10 @@ version = "*"
 
 [[packages]]
 name = "yadm"
+version = "*"
+
+[[packages]]
+name = "ydotool"
 version = "*"
 
 [[packages]]
