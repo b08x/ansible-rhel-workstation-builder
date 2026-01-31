@@ -2,15 +2,7 @@
 ---
 # NVIDIA driver and toolkit installation
 
-- name: Detect NVIDIA GPU
-  ansible.builtin.shell: lspci | grep -iq nvidia
-  register: nvidia_gpu_detected
-  failed_when: false
-  changed_when: false
-  check_mode: false
-
 - name: NVIDIA Setup
-  when: nvidia_gpu_detected.rc == 0
   become: true
   block:
     - name: Add NVIDIA-related repositories
@@ -34,6 +26,11 @@
             gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub"
             enabled: true
           when: ansible_distribution == "Fedora"
+
+        - name: Set NVIDIA repository priority
+          ansible.builtin.command: dnf config-manager setopt cuda-fedora42-x86_64.priority=80
+          changed_when: false
+          tags: ["dnf_priorities", "nvidia"]
 
     - name: Install NVIDIA packages
       ansible.builtin.dnf:

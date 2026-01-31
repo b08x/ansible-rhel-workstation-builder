@@ -3,7 +3,6 @@
 - name: Workstation Setup
   hosts: dev
   gather_facts: true
-  become: true
   vars:
     path:
       - "{{ lookup('env','HOME') }}/.cargo/bin"

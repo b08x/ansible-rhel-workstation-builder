@@ -2,6 +2,7 @@
 # tasks file for workstation
 
 - name: Setup Terra repository
+  become: true
   block:
     - name: Install terra-release for Fedora 42+
       ansible.builtin.shell:

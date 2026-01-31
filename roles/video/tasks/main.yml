@@ -2,9 +2,16 @@
 ---
 # Main task orchestration for video role
 
+- name: Detect NVIDIA GPU
+  ansible.builtin.shell: lspci | grep -iq nvidia
+  register: nvidia_gpu_detected
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
 - name: NVIDIA Driver Implementation
   ansible.builtin.import_tasks: nvidia.yml
-  when: use_nvidia | bool
+  when: use_nvidia | bool and nvidia_gpu_detected.rc == 0
   tags: [nvidia, video]
 
 - name: Intel Driver Implementation
