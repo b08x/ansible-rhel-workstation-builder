@@ -1,2 +1,7 @@
 ---
 # handlers file for workstation
+
+- name: Daemon reload
+  ansible.builtin.command: systemctl daemon-reload
+  listen: "Daemon reload"
+  become: true

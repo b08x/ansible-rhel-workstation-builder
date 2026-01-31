@@ -27,7 +27,8 @@
 - *(osbuild)* Update Fedora 43 sources and workstation blueprint
 - *(base)* Add git-cliff to cargo packages
 - *(osbuild)* Update fedora 43 nvidia blueprint packages and repo config
-
+- *(osbuild)* Update Fedora 43 workstation NVIDIA blueprint
+- *(base)* Enhance system configuration with dnf and cpupower settings
 
 ### 🐛 Bug Fixes
 
@@ -59,3 +60,5 @@
 
 - *(agents)* Consolidate architect agents and workflows
 - *(asdf)* Update plugin selection and dependency installation
+- Added ide config to gitignore and updated the changelog
+- Added gum package to role vars and base image template

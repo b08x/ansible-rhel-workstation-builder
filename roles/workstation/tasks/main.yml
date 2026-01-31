@@ -43,19 +43,68 @@
 
   tags: ["terra"]
 
+
+- name: Adjust ydotool socket permissions
+  become: true
+  block:
+    - name: Adjust Permissions for the ydotool Socket File
+      ansible.builtin.copy:
+        dest: /usr/lib/systemd/system/ydotool.service
+        content: |
+          [Unit]
+          Description=Starts ydotoold service
+
+          [Service]
+          Type=simple
+          Restart=always
+          Group=input
+          ExecStart=
+          ExecStart=/usr/bin/ydotoold --socket-perm 0660
+          ExecReload=/usr/bin/kill -HUP $MAINPID
+          KillMode=process
+          TimeoutSec=180
+
+          [Install]
+          WantedBy=default.target
+        mode: "0666"
+        backup: true
+      notify: Daemon reload
+  
+    - name: Trigger handlers
+      meta: flush_handlers
+
+    - name: Restart ydotool service
+      ansible.builtin.systemd:
+        name: ydotool
+        state: restarted    
+
+  rescue:
+    - name: Log ydotool installation failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to install ydotool.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          You may need to run 'systemctl restart ydotool' manually.
+
+    - name: Mark ydotool installation as failed
+      ansible.builtin.set_fact:
+        ydotool_installation_failed: true
+  
+  tags: ["ydotool"]
+
 - include_tasks: browser.yml
 - include_tasks: ide.yml
 
-- name: Install GNOME Desktop Environment
-  ansible.builtin.dnf:
-    name: "{{ workstation_gnome_packages }}"
-    state: present
-  become: true
-  tags: ["gnome", "workstation"]
+# - name: Install GNOME Desktop Environment
+#   ansible.builtin.dnf:
+#     name: "{{ workstation_gnome_packages }}"
+#     state: present
+#   become: true
+#   tags: ["gnome", "workstation"]
 
-- name: Install Sway Window Manager
-  ansible.builtin.dnf:
-    name: "{{ workstation_sway_packages }}"
-    state: present
-  become: true
-  tags: ["sway", "workstation"]
+# - name: Install Sway Window Manager
+#   ansible.builtin.dnf:
+#     name: "{{ workstation_sway_packages }}"
+#     state: present
+#   become: true
+#   tags: ["sway", "workstation"]
