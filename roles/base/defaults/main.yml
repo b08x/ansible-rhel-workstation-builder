@@ -98,6 +98,11 @@ base_pkgs_dev:
   - gpgme-devel
   - python3-docutils
   - sdl2-compat-devel
+  - ruby-devel
+  - vips-devel
+  - obs-studio-devel
+  - qt6-qtbase-private-devel
+  - ninja-build
 
 base_packages_cockpit:
   - cockpit

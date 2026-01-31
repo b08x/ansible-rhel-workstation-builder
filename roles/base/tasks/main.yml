@@ -6,6 +6,18 @@
 # ============================================================================
 
 # ----------------------------------------------------------------------------
+# System Configuration
+# ----------------------------------------------------------------------------
+
+- name: Set system timezone
+  become: true
+  ansible.builtin.command: "timedatectl set-timezone {{ timezone }}"
+  register: timezone_result
+  changed_when: timezone_result.rc == 0
+  failed_when: timezone_result.rc != 0
+  tags: ["timezone", "base", "common"]
+
+# ----------------------------------------------------------------------------
 # DNF Performance Optimization
 # ----------------------------------------------------------------------------
 
@@ -57,6 +69,7 @@
 # ----------------------------------------------------------------------------
 
 - name: Update package cache
+  become: true
   block:
     - name: Refresh DNF package cache
       ansible.builtin.dnf:
@@ -74,16 +87,6 @@
 
   tags: ["cache", "base", "repos"]
 
-# ----------------------------------------------------------------------------
-# System Configuration
-# ----------------------------------------------------------------------------
-
-- name: Set system timezone
-  ansible.builtin.command: "timedatectl set-timezone {{ timezone }}"
-  register: timezone_result
-  changed_when: timezone_result.rc == 0
-  failed_when: timezone_result.rc != 0
-  tags: ["timezone", "base", "common"]
 
 # ----------------------------------------------------------------------------
 # Package Installation
@@ -94,16 +97,7 @@
   tags: ["packages", "builder", "base", "common"]
 
 - name: Install Rust packages
-  become: false
-  vars:
-    path:
-      - "{{ user.home }}/.cargo/bin"
-      - "{{ user.home }}/.local/bin"
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path | join(':') }}"
-  tags: ["cargo", "packages"]
   block:
-
     - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
@@ -128,6 +122,22 @@
         label: "{{ item }}"
       when:
         - "'cargo' in ansible_facts.packages"
+
+  rescue:
+    - name: Log Rust package installation failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to install Rust packages.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          You may need to run 'cargo install <package_name>' manually.
+      tags: ["cargo_install"]
+
+    - name: Mark Rust package installation as failed
+      ansible.builtin.set_fact:
+        rust_package_installation_failed: true
+      tags: ["cargo_install"]
+
+  tags: ["cargo", "packages"]
 
 # - name: Install Bun shell script
 #   ansible.builtin.shell: "curl -fsSL https://bun.sh/install | bash"

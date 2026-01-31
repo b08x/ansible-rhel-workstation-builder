@@ -11,6 +11,7 @@
   loop:
     - python3-libdnf5
     - fedora-workstation-repositories
+  become: true
   tags: ["packages", "packages__repos"]
 
 # ----------------------------------------------------------------------------
@@ -18,6 +19,7 @@
 # ----------------------------------------------------------------------------
 
 - name: Configure third-party repositories
+  become: true
   block:
     - name: Install RPM Fusion Free repository
       ansible.builtin.dnf:
@@ -32,6 +34,19 @@
         state: present
         disable_gpg_check: true
       tags: ["rpmfusion"]
+
+    - name: Add YADM repository
+      ansible.builtin.get_url:
+        url: "https://download.opensuse.org/repositories/home:TheLocehiliosan:yadm/Fedora_{{ ansible_distribution_major_version }}/home:TheLocehiliosan:yadm.repo"
+        dest: /etc/yum.repos.d/home:TheLocehiliosan:yadm.repo
+        mode: "0644"
+      tags: ["yadm"]
+
+    - name: Set repository priorities
+      ansible.builtin.shell: |
+        dnf config-manager setopt fedora.priority=0 updates.priority=0 rpmfusion-*.priority=90
+      changed_when: false
+      tags: ["dnf_priorities"]
 
   rescue:
     - name: Log repository setup failure
@@ -49,56 +64,4 @@
 
   tags: ["repositories"]
 
-# ----------------------------------------------------------------------------
-# DNF Performance Optimization
-# ----------------------------------------------------------------------------
 
-- name: Set DNF Repository Priorities
-  become: true
-  block:
-    - name: Set repository priorities
-      ansible.builtin.shell: |
-        # dnf config-manager setopt "fedora.priority=10"
-        # dnf config-manager setopt "fedora-updates.priority=10"
-        # dnf config-manager setopt "fedora-cisco-openh264.priority=20"
-        # dnf config-manager setopt "rpmfusion-*.priority=40"
-        dnf config-manager setopt fedora.priority=0 updates.priority=0 rpmfusion-*.priority=90
-      changed_when: false
-      tags: ["dnf_priorities"]
-
-  rescue:
-    - name: Log DNF configuration failure
-      ansible.builtin.debug:
-        msg: >
-          Failed to configure DNF settings.
-          Error details: {{ ansible_failed_result | default('Unknown error') }}
-          DNF may still function with default settings.
-      tags: ["dnf_config"]
-
-    - name: Mark DNF configuration as failed
-      ansible.builtin.set_fact:
-        dnf_config_failed: true
-      tags: ["dnf_config"]
-
-  tags: ["dnf_configuration"]
-
-- name: Setup YADM
-  become: true
-  block:
-    - name: Add YADM repository
-      ansible.builtin.get_url:
-        url: "https://download.opensuse.org/repositories/home:TheLocehiliosan:yadm/Fedora_{{ ansible_distribution_major_version }}/home:TheLocehiliosan:yadm.repo"
-        dest: /etc/yum.repos.d/home:TheLocehiliosan:yadm.repo
-        mode: "0644"
-
-    - name: Install yadm
-      ansible.builtin.dnf:
-        name: yadm
-        state: present
-
-  rescue:
-    - name: Log YADM setup failure
-      ansible.builtin.debug:
-        msg: "Failed to set up YADM. It may need to be installed manually."
-
-  tags: ["yadm", "repos", "packages"]

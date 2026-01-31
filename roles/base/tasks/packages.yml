@@ -22,6 +22,12 @@
         state: present
       tags: ["packages", "kernel"]
 
+    - name: Install yadm
+      ansible.builtin.dnf:
+        name: yadm
+        state: present
+      tags: ["packages", "yadm"]
+
     - name: Install Utility Packages
       ansible.builtin.dnf:
         name: "{{ common_utility_packages }}"
