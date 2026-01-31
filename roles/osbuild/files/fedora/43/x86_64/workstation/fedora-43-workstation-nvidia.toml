@@ -1,330 +1,21 @@
 name = "fedora-43-workstation-nvidia"
 description = "Fedora 43 Workstation (NVIDIA)"
-version = "1.0.0"
+version = "1.3.0"
 distro = "fedora-43"
+modules = []
 
-# --- GROUPS (Environments) ---
-[[groups]]
-name = "c-development"
-[[groups]]
-name = "headless-management"
-[[groups]]
-name = "development-tools"
-[[groups]]
-name = "container-management"
-[[groups]]
-name = "system-tools"
-[[groups]]
-name = "admin-tools"
+[customizations]
+hostname = "syncopated"
 
-[[packages]]
-name = "bash"
-version = "*"
-[[packages]]
-name = "coreutils"
-version = "*"
-[[packages]]
-name = "bind-utils"
-version = "*"
-# --- PACKAGES ---
-[[packages]]
-name = "kernel"
-version = "*"
-[[packages]]
-name = "kernel-devel"
-version = "*"
-[[packages]]
-name = "kernel-headers"
-version = "*"
-[[packages]]
-name = "kernel-modules"
-version = "*"
-[[packages]]
-name = "kernel-modules-core"
-version = "*"
-[[packages]]
-name = "kernel-modules-extra"
-version = "*"
-[[packages]]
-name = "kernel-tools"
-version = "*"
-[[packages]]
-name = "kernel-tools-libs"
-version = "*"
-
-[[packages]]
-name = "anaconda"
-version = "*"
-[[packages]]
-name = "anaconda-gui"
-version = "*"
-[[packages]]
-name = "anaconda-dracut"
-version = "*"
-[[packages]]
-name = "dracut-live"
-version = "*"
-[[packages]]
-name = "dracut-network"
-version = "*"
-[[packages]]
-name = "dracut"
-version = "*"
-[[packages]]
-name = "ipxe-roms"
-version = "*"
-[[packages]]
-name = "ipxe-roms-qemu"
-version = "*"
-
-
-[[packages]]
-name = "erofs-utils"
-version = "*"
-[[packages]]
-name = "nbd"
-version = "*"
-[[packages]]
-name = "bluez"
-version = "*"
-
-# Vagrant & Virtualization Utilities
-[[packages]]
-name = "nfs-utils"
-version = "*"
-[[packages]]
-name = "rsync"
-version = "*"
-[[packages]]
-name = "tar"
-version = "*"
-[[packages]]
-name = "python3-libdnf5"
-version = "*"
-[[packages]]
-name = "fedora-workstation-repositories"
-version = "*"
-
-[[packages]]
-name = "gcc14"
-version = "*"
-[[packages]]
-name = "gcc14-c++"
-version = "*"
-[[packages]]
-name = "cuda-toolkit"
-version = "13.0.2-1"
-[[packages]]
-name = "nvidia-gpu-firmware"
-version = "*"
-[[packages]]
-name = "nvidia-driver"
-version = "*"
-[[packages]]
-name = "nvidia-driver-cuda"
-version = "*"
-
-
-# # Intel oneAPI & Compute
-[[packages]]
-name = "ansible"
-version = "*"
-[[packages]]
-name = "ansible-collection-ansible-posix"
-version = "*"
-[[packages]]
-name = "ansible-collection-community-docker"
-version = "*"
-[[packages]]
-name = "ansible-collection-community-library_inventory_filtering_v1"
-version = "*"
-[[packages]]
-name = "ansible-collection-community-libvirt"
-version = "*"
-[[packages]]
-name = "ansible-collection-community-postgresql"
-version = "*"
-[[packages]]
-name = "ansible-collection-containers-podman"
-version = "*"
-[[packages]]
-name = "linux-system-roles"
-version = "*"
-
-[[packages]]
-name = "libva-intel-media-driver"
-version = "*"
-
-[[packages]]
-name = "NetworkManager"
-version = "*"
-[[packages]]
-name = "NetworkManager-config-connectivity-fedora"
-version = "*"
-[[packages]]
-name = "firewalld"
-version = "*"
-[[packages]]
-name = "chrony"
-version = "*"
-
-# Containers
-[[packages]]
-name = "docker-ce"
-version = "*"
-[[packages]]
-name = "docker-ce-cli"
-version = "*"
-[[packages]]
-name = "docker-compose-plugin"
-version = "*"
-[[packages]]
-name = "docker-buildx-plugin"
-version = "*"
-[[packages]]
-name = "podman"
-version = "*"
-[[packages]]
-name = "podman-compose"
-version = "*"
-[[packages]]
-name = "nvidia-container-toolkit"
-version = "*"
-[[packages]]
-name = "libvirt-daemon"
-version = "*"
-[[packages]]
-name = "qemu-kvm"
-version = "*"
-[[packages]]
-name = "qemu-device-display-virtio-gpu"
-version = "*"
-[[packages]]
-name = "qemu-device-display-virtio-vga"
-version = "*"
-[[packages]]
-name = "qemu-guest-agent"
-version = "*"
-[[packages]]
-name = "vagrant-registration"
-version = "*"
-[[packages]]
-name = "vagrant-libvirt"
-version = "*"
-
-[[packages]]
-name = "gnome-shell"
-version = "*"
-[[packages]]
-name = "gnome-control-center"
-version = "*"
-[[packages]]
-name = "gnome-desktop4"
-version = "*"
-[[packages]]
-name = "gnome-initial-setup"
-version = "*"
-[[packages]]
-name = "gnome-session"
-version = "*"
-[[packages]]
-name = "gnome-session-wayland-session"
-version = "*"
-[[packages]]
-name = "gnome-software"
-version = "*"
-[[packages]]
-name = "gnome-software-fedora-langpacks"
-version = "*"
-[[packages]]
-name = "gnome-software-rpm-ostree"
-version = "*"
-[[packages]]
-name = "gnome-text-editor"
-version = "*"
-[[packages]]
-name = "gdm"
-version = "*"
-
-# Sway Window Manager & Wayland Utilities
-[[packages]]
-name = "sway"
-version = "*"
-[[packages]]
-name = "sway-config-fedora"
-version = "*"
-[[packages]]
-name = "swaybg"
-version = "*"
-[[packages]]
-name = "swayidle"
-version = "*"
-[[packages]]
-name = "swaylock"
-version = "*"
-[[packages]]
-name = "waybar"
-version = "*"
-[[packages]]
-name = "mako"
-version = "*"
-[[packages]]
-name = "wofi"
-version = "*"
-[[packages]]
-name = "alacritty"
-version = "*"
-[[packages]]
-name = "wl-clipboard"
-version = "*"
-[[packages]]
-name = "grim"
-version = "*"
-[[packages]]
-name = "slurp"
-version = "*"
-
-[[packages]]
-name = "code"
-version = "*"
-[[packages]]
-name = "google-chrome-stable"
-version = "*"
-[[packages]]
-name = "micro"
-version = "*"
-
-[[packages]]
-name = "zsh"
-version = "*"
-[[packages]]
-name = "zoxide"
-version = "*"
-[[packages]]
-name = "ranger"
-version = "*"
-[[packages]]
-name = "kitty"
-version = "*"
-[[packages]]
-name = "htop"
-version = "*"
-[[packages]]
-name = "lnav"
-version = "*"
-[[packages]]
-name = "lm_sensors-devel"
-version = "*"
-
-# 4. Kernel Args
 [customizations.kernel]
 append = "rd.driver.blacklist=nouveau rd.driver.blacklist=nova-core modprobe.blacklist=nouveau nvidia-drm.modeset=1"
 
 [customizations.services]
-enabled = ["custom-first-boot", "sshd", "nvidia-cdi-refresh", "NetworkManager", "firewalld", "gdm", "chronyd"]
+enabled = ["sshd", "nvidia-cdi-refresh", "NetworkManager", "firewalld", "gdm", "chronyd"]
 
+[customizations.firewall]
 [customizations.firewall.services]
-enabled = ["ssh", "ntp", "samba-client", "rsyncd"]
+enabled = [ "ssh", "ntp", "samba-client", "rsyncd" ]
 
 [customizations.timezone]
 timezone = "America/New_York"
@@ -337,15 +28,10 @@ keyboard = "us"
 [[customizations.user]]
 name = "b08x"
 description = "b08x Workstation User"
-password = "$6$J5OB1cn6FxTmoSgY$S2xD15eZitgl100OGyLi1VtYMiyiIvLzd3WF2MeU.MiCGvqVZT3/zq5LZsRJD2m/P3cVg3XnX.bYqXKQYHYNF."
-groups = ["wheel", "docker", "libvirt", "qemu", "audio", "video", "input", "render"]
+password = "$6$CwKesa938P1Lmjak$1f2OovSggypMwegO/VVYN1AxgN2g6ZvfhYFFr/kL6Kh82CobwmG2MZKDYGateLzTItqTUvoPsGYMgHikZzG181"
+groups = ["wheel", "audio", "video", "input", "render"]
 key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHHmjWwIbKqZ0TV+BxmHPVD3CV3eFdduB3JhYj2BzTAt rwpannick@gmail.com"
 shell = "/usr/bin/zsh"
-
-[[customizations.files]]
-path = "/etc/sudoers.d/99-user"
-data = "b08x ALL=(ALL) NOPASSWD: ALL"
-mode = "0440"
 
 [[customizations.files]]
 path = "/etc/dnf/dnf.conf"
@@ -357,86 +43,6 @@ data = """
 fastestmirror=1
 max_parallel_downloads=10
 clean_requirements_on_remove=True
-"""
-
-[[customizations.files]]
-path = "/usr/local/sbin/custom-first-boot"
-mode = "0774"
-data = """
-#!/usr/bin/ansible-playbook -i localhost
-
-- name: Install Intel oneAPI MKL
-  hosts: localhost
-  connection: local
-
-  tasks:
-    - name: Import Intel oneAPI GPG Key
-      rpm_key:
-        state: present
-        key: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-        validate_certs: true
-
-    - name: Add Intel openAPI Repository
-      yum_repository:
-        name: oneAPI
-        description: "Intel® oneAPI repository"
-        baseurl: https://yum.repos.intel.com/oneapi
-        enabled: true
-        gpgcheck: true
-        gpgkey: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-
-    - name: Update Package Cache
-      dnf:
-        update_cache: true
-
-    - name: Install Intel oneAPI MKL
-      dnf:
-        name: intel-oneapi-mkl-devel
-        state: present
-
-    - name: Create oneAPI Environment Profile Script
-      copy:
-        dest: /etc/profile.d/intel-oneapi.sh
-        content: |
-            #!/bin/bash
-            # Initialize Intel oneAPI environment variables on login
-            if [ -f /opt/intel/oneapi/setvars.sh ]; then
-                source /opt/intel/oneapi/setvars.sh --force > /dev/null 2>&1
-            fi
-        mode: '0755'
-        owner: root
-        group: root
-
-    - name: Set repo priorities
-      shell: |
-        dnf config-manager setopt fedora.priority=0 updates.priority=0 \
-        cuda-fedora42-x86_64.priority=99 \
-        rpmfusion-free.priority=100 \
-        rpmfusion-nonfree.priority=100 \
-        rpmfusion-free-updates.priority=100 \
-        rpmfusion-nonfree-updates.priority=100 \
-        rpmfusion-nonfree-nvidia-driver.priority=100
-
-    - name: Set Graphical Target
-      shell: systemctl set-default graphical.target
-"""
-
-[[customizations.files]]
-path = "/etc/systemd/system/custom-first-boot.service"
-data = """
-[Unit]
-ConditionPathExists=/usr/local/sbin/custom-first-boot
-Wants=network-online.target
-After=network-online.target
-After=osbuild-first-boot.service
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/sbin/custom-first-boot
-ExecStartPost=mv /usr/local/sbin/custom-first-boot /usr/local/sbin/custom-first-boot-done
-
-[Install]
-WantedBy=multi-user.target
 """
 
 [[customizations.files]]
@@ -498,32 +104,458 @@ WantedBy=multi-user.target
 [[customizations.repositories]]
 id = "nvidia-container-toolkit"
 name = "nvidia-container-toolkit"
-baseurls = [ "https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64" ]
+baseurls = ["https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"]
 gpgcheck = true
-gpgkeys = [ "https://nvidia.github.io/libnvidia-container/gpgkey" ]
+gpgkeys = ["https://nvidia.github.io/libnvidia-container/gpgkey"]
 enabled = true
-ssl_verify = true
 
 [[customizations.repositories]]
 id = "cuda-fedora42-x86_64"
-name = "cuda-fedora42-x86_64"
-baseurls = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64" ]
+name = "CUDA for Fedora 42"
+baseurls = ["https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64"]
 gpgcheck = true
-gpgkeys = [ "https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub" ]
-enabled = true
-
-[[customizations.repositories]]
-id = "code"
-name = "Visual Studio Code"
-baseurls = [ "https://packages.microsoft.com/yumrepos/vscode" ]
-gpgcheck = true
-gpgkeys = [ "https://packages.microsoft.com/keys/microsoft.asc" ]
+gpgkeys = ["https://developer.download.nvidia.com/compute/cuda/repos/fedora42/x86_64/D42D0685.pub"]
 enabled = true
 
 [[customizations.repositories]]
 id = "docker-ce-stable"
 name = "Docker CE Stable - x86_64"
-baseurls = [ "https://download.docker.com/linux/fedora/43/x86_64/stable" ]
+baseurls = ["https://download.docker.com/linux/fedora/43/x86_64/stable"]
 gpgcheck = true
-gpgkeys = [ "https://download.docker.com/linux/fedora/gpg" ]
+gpgkeys = ["https://download.docker.com/linux/fedora/gpg"]
 enabled = true
+
+[[customizations.repositories]]
+id = "rpmfusion-free"
+name = "RPM Fusion Free for Fedora 43"
+metalink = "https://mirrors.rpmfusion.org/metalink?repo=free-fedora-43&arch=x86_64"
+gpgcheck = true
+gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/free/fedora/RPM-GPG-KEY-rpmfusion-free-fedora-2020"]
+enabled = true
+
+[[customizations.repositories]]
+id = "rpmfusion-free-updates"
+name = "RPM Fusion Free Updates for Fedora 43"
+metalink = "https://mirrors.rpmfusion.org/metalink?repo=free-fedora-updates-released-43&arch=x86_64"
+gpgcheck = true
+gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/free/fedora/RPM-GPG-KEY-rpmfusion-free-fedora-2020"]
+enabled = true
+
+[[customizations.repositories]]
+id = "rpmfusion-nonfree"
+name = "RPM Fusion Nonfree for Fedora 43"
+metalink = "https://mirrors.rpmfusion.org/metalink?repo=nonfree-fedora-43&arch=x86_64"
+gpgcheck = true
+gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/nonfree/fedora/RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020"]
+enabled = true
+
+[[customizations.repositories]]
+id = "rpmfusion-nonfree-updates"
+name = "RPM Fusion Nonfree Updates for Fedora 43"
+metalink = "https://mirrors.rpmfusion.org/metalink?repo=nonfree-fedora-updates-released-43&arch=x86_64"
+gpgcheck = true
+gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/nonfree/fedora/RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020"]
+enabled = true
+
+# [[customizations.repositories]]
+# id = "code"
+# name = "Visual Studio Code"
+# baseurls = ["https://packages.microsoft.com/yumrepos/vscode"]
+# gpgcheck = true
+# gpgkeys = ["https://packages.microsoft.com/keys/microsoft.asc"]
+# enabled = true
+
+[[customizations.repositories]]
+id = "antigravity-rpm"
+name = "Antigravity RPM Repository"
+baseurls = ["https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm"]
+gpgcheck = false
+enabled = true
+
+[[customizations.repositories]]
+id = "home_TheLocehiliosan_yadm"
+name = "Yet Another Dotfiles Manager (Fedora_43)"
+baseurl = "https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_43/"
+check_gpg = true
+check_ssl = true
+gpgkey_urls = ["https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_43/repodata/repomd.xml.key"]
+
+[[groups]]
+name = "admin-tools"
+
+[[groups]]
+name = "c-development"
+
+[[groups]]
+name = "container-management"
+
+[[groups]]
+name = "custom-environment"
+
+[[groups]]
+name = "development-tools"
+
+[[groups]]
+name = "gnome-desktop"
+
+[[groups]]
+name = "headless-management"
+
+[[groups]]
+name = "system-tools"
+
+[[packages]]
+name = "NetworkManager"
+version = ""
+
+[[packages]]
+name = "NetworkManager-config-connectivity-fedora"
+version = ""
+
+[[packages]]
+name = "anaconda"
+version = "*"
+
+[[packages]]
+name = "anaconda-dracut"
+version = "*"
+
+[[packages]]
+name = "anaconda-gui"
+version = "*"
+
+[[packages]]
+name = "ansible"
+version = "*"
+
+[[packages]]
+name = "ansible-collection-ansible-posix"
+version = "*"
+
+[[packages]]
+name = "ansible-collection-community-docker"
+version = "*"
+
+[[packages]]
+name = "ansible-collection-community-libvirt"
+version = "*"
+
+[[packages]]
+name = "ansible-collection-community-postgresql"
+version = "*"
+
+[[packages]]
+name = "ansible-collection-containers-podman"
+version = "*"
+
+[[packages]]
+name = "antigravity"
+version = "*"
+
+[[packages]]
+name = "bash"
+version = "*"
+
+[[packages]]
+name = "bind-utils"
+version = "*"
+
+[[packages]]
+name = "bluez"
+version = "*"
+
+[[packages]]
+name = "chrony"
+version = "*"
+
+[[packages]]
+name = "coreutils"
+version = "*"
+
+[[packages]]
+name = "cuda-toolkit"
+version = "*"
+
+# [[packages]]
+# name = "docker-buildx-plugin"
+# version = "*"
+
+# [[packages]]
+# name = "docker-ce"
+# version = "*"
+
+# [[packages]]
+# name = "docker-ce-cli"
+# version = "*"
+
+# [[packages]]
+# name = "docker-compose-plugin"
+# version = "*"
+
+[[packages]]
+name = "dracut"
+version = ""
+
+[[packages]]
+name = "dracut-config-rescue"
+version = ""
+
+[[packages]]
+name = "dracut-live"
+version = ""
+
+[[packages]]
+name = "dracut-network"
+version = ""
+
+[[packages]]
+name = "erofs-utils"
+version = "*"
+
+[[packages]]
+name = "fedora-workstation-repositories"
+version = "*"
+
+[[packages]]
+name = "firewalld"
+version = ""
+
+[[packages]]
+name = "gcc"
+version = "*"
+
+[[packages]]
+name = "gcc-c++"
+version = "*"
+
+[[packages]]
+name = "google-chrome-stable"
+version = "*"
+
+# [[packages]]
+# name = "grim"
+# version = "*"
+
+[[packages]]
+name = "htop"
+version = "*"
+
+[[packages]]
+name = "ipxe-roms"
+version = "*"
+
+[[packages]]
+name = "ipxe-roms-qemu"
+version = "*"
+
+[[packages]]
+name = "kernel"
+version = "*"
+
+[[packages]]
+name = "kernel-devel"
+version = "*"
+
+[[packages]]
+name = "kernel-headers"
+version = "*"
+
+[[packages]]
+name = "kernel-modules"
+version = "*"
+
+[[packages]]
+name = "kernel-modules-core"
+version = "*"
+
+[[packages]]
+name = "kernel-modules-extra"
+version = "*"
+
+[[packages]]
+name = "kernel-tools"
+version = "*"
+
+[[packages]]
+name = "kernel-tools-libs"
+version = "*"
+
+[[packages]]
+name = "kitty"
+version = "*"
+
+[[packages]]
+name = "libva-intel-media-driver"
+version = ""
+
+[[packages]]
+name = "libvirt-daemon"
+version = "*"
+
+[[packages]]
+name = "linux-system-roles"
+version = "*"
+
+[[packages]]
+name = "lm_sensors-devel"
+version = "*"
+
+[[packages]]
+name = "lnav"
+version = "*"
+
+# [[packages]]
+# name = "mako"
+# version = "*"
+
+[[packages]]
+name = "micro"
+version = "*"
+
+[[packages]]
+name = "nbd"
+version = "*"
+
+[[packages]]
+name = "nfs-utils"
+version = "*"
+
+[[packages]]
+name = "nvidia-container-toolkit"
+version = "*"
+
+[[packages]]
+name = "nvidia-driver"
+version = "*"
+
+[[packages]]
+name = "nvidia-driver-cuda"
+version = "*"
+
+[[packages]]
+name = "nvidia-driver-cuda-libs"
+version = "*"
+
+[[packages]]
+name = "nvidia-driver-libs"
+version = "*"
+
+[[packages]]
+name = "nvidia-gpu-firmware"
+version = "*"
+
+[[packages]]
+name = "nvidia-persistenced"
+version = "*"
+
+[[packages]]
+name = "nvidia-settings"
+version = "*"
+
+[[packages]]
+name = "obs-studio"
+version = "*"
+
+[[packages]]
+name = "podman"
+version = "*"
+
+[[packages]]
+name = "podman-compose"
+version = "*"
+
+[[packages]]
+name = "podman-docker"
+version = "*"
+
+[[packages]]
+name = "python3-firewall"
+version = ""
+
+[[packages]]
+name = "python3-libdnf5"
+version = "*"
+
+# [[packages]]
+# name = "qemu-device-display-virtio-gpu"
+# version = "*"
+
+# [[packages]]
+# name = "qemu-device-display-virtio-vga"
+# version = "*"
+
+# [[packages]]
+# name = "qemu-guest-agent"
+# version = "*"
+
+[[packages]]
+name = "qemu-kvm"
+version = "*"
+
+[[packages]]
+name = "ranger"
+version = "*"
+
+[[packages]]
+name = "rsync"
+version = "*"
+
+# [[packages]]
+# name = "slurp"
+# version = "*"
+
+# [[packages]]
+# name = "sway"
+# version = "*"
+
+# [[packages]]
+# name = "sway-config-fedora"
+# version = "*"
+
+# [[packages]]
+# name = "swaybg"
+# version = "*"
+
+# [[packages]]
+# name = "swayidle"
+# version = "*"
+
+# [[packages]]
+# name = "swaylock"
+# version = "*"
+
+[[packages]]
+name = "tar"
+version = "*"
+
+# [[packages]]
+# name = "vagrant-libvirt"
+# version = "*"
+
+# [[packages]]
+# name = "vagrant-registration"
+# version = "*"
+
+# [[packages]]
+# name = "waybar"
+# version = "*"
+
+[[packages]]
+name = "wl-clipboard"
+version = "*"
+
+# [[packages]]
+# name = "wofi"
+# version = "*"
+
+[[packages]]
+name = "yadm"
+version = "*"
+
+[[packages]]
+name = "zoxide"
+version = "*"
+
+[[packages]]
+name = "zsh"
+version = "*"

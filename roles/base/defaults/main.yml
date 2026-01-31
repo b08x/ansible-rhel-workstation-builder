@@ -67,7 +67,9 @@ common_utility_packages:
   - curl
   - du-dust
   - fd-find
+  - ffmpeg-free-devel
   - git
+  - gitui
   - golang
   - grsync
   - htop
@@ -75,16 +77,22 @@ common_utility_packages:
   - lm_sensors-devel
   - lnav
   - micro
+  - nodejs
+  - nvtop
   - ranger
   - rsync
+  - sdl2-compat-devel
   - tmux
   - vim
   - wget
   - zoxide
   - zsh
-  - nvtop
-  - gitui
-  - nodejs
+  - glslc
+  - aria2
+
+base_pkgs_dev:
+  - gpgme-devel
+  - btrfs-progs-devel
 
 base_packages_cockpit:
   - cockpit
