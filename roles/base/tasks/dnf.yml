@@ -1,0 +1,41 @@
+---
+
+- name: Optimize DNF configuration
+  become: true
+  block:
+    - name: Configure DNF for better performance
+      ansible.builtin.copy:
+        dest: /etc/dnf/dnf.conf
+        content: |
+          [main]
+          gpgcheck=1
+          installonly_limit=3
+          clean_requirements_on_remove=True
+          best=True
+          skip_if_unavailable=False
+          fastestmirror=True
+          max_parallel_downloads=10
+        owner: root
+        group: root
+        mode: "0644"
+        backup: true
+      register: dnf_config_result
+  
+    - name: Clean DNF cache
+      ansible.builtin.command: dnf clean all
+      notify: Update DNF cache
+      when: dnf_config_result.changed
+      
+  rescue:
+    - name: Log DNF configuration failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to configure DNF settings.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          DNF may still function with default settings.
+      
+    - name: Mark DNF configuration as failed
+      ansible.builtin.set_fact:
+        dnf_config_failed: true
+
+  tags: ["dnf_configuration", "base", "repos"]

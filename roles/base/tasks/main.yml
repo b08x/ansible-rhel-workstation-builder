@@ -9,7 +9,7 @@
 # System Configuration
 # ----------------------------------------------------------------------------
 
-- name: Set system timezone
+- name: Set System Timezone
   become: true
   ansible.builtin.command: "timedatectl set-timezone {{ timezone }}"
   register: timezone_result
@@ -17,86 +17,97 @@
   failed_when: timezone_result.rc != 0
   tags: ["timezone", "base", "common"]
 
+- name: Disable Core Dumps
+  become: true
+  block:
+    - name: Create coredump directory
+      ansible.builtin.file:
+        path: /etc/systemd/coredump.conf.d
+        state: directory
+        mode: "0755"
+
+    - name: Disable core dumps
+      ansible.builtin.copy:
+        dest: /etc/systemd/coredump.conf.d/disable-coredumps.conf
+        content: |
+          [Coredump]
+          Storage=none
+          ProcessSizeMax=0
+        mode: "0644"
+  
+  notify: Daemon reload
+  tags: ["core_dumps", "base", "systemd"]
+
+- name: Set CPU Power Max Frequency
+  become: true
+  block:
+    - name: Ensure the Kernel Tools package is installed
+      ansible.builtin.package:
+        name: kernel-tools
+        state: present
+
+    - name: Deploy cpupower-service configuration
+      ansible.builtin.template:
+        src: etc/cpupower-service.conf.j2
+        dest: /etc/cpupower-service.conf
+        owner: root
+        group: root
+        mode: "0644"
+        backup: true
+
+    - name: Enable cpupower service
+      ansible.builtin.systemd:
+        name: cpupower
+        enabled: true
+        state: started
+
+  rescue:
+    - name: Log cpupower configuration failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to configure cpupower settings.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          CPU power management may need to be configured manually.
+
+    - name: Mark cpupower configuration as failed
+      ansible.builtin.set_fact:
+        cpupower_config_failed: true
+
+  notify: Restart cpupower service
+  tags: ["cpupower", "base", "systemd"]
+
+
 # ----------------------------------------------------------------------------
 # DNF Performance Optimization
 # ----------------------------------------------------------------------------
 
-- name: Optimize DNF configuration
-  become: true
-  block:
-    - name: Configure DNF for better performance
-      ansible.builtin.lineinfile:
-        path: /etc/dnf/dnf.conf
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-        backup: true
-      loop:
-        - regexp: "^fastestmirror="
-          line: "fastestmirror=1"
-        - regexp: "^max_parallel_downloads="
-          line: "max_parallel_downloads=10"
-        - regexp: "^clean_requirements_on_remove="
-          line: "clean_requirements_on_remove=True"
-      tags: ["dnf_config"]
-  rescue:
-    - name: Log DNF configuration failure
-      ansible.builtin.debug:
-        msg: >
-          Failed to configure DNF settings.
-          Error details: {{ ansible_failed_result | default('Unknown error') }}
-          DNF may still function with default settings.
-      tags: ["dnf_config"]
-
-    - name: Mark DNF configuration as failed
-      ansible.builtin.set_fact:
-        dnf_config_failed: true
-      tags: ["dnf_config"]
-
+- name: Include DNF configuration tasks
+  ansible.builtin.include_tasks: dnf.yml
   tags: ["dnf_configuration", "base", "repos"]
 
 # ----------------------------------------------------------------------------
 # Repository Configuration
 # ----------------------------------------------------------------------------
 
-- name: Include distribution-specific repository tasks
+- name: Include Distribution Specific Repository Tasks
   ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
   when:
     - enable_third_party_repos | default(true)
   tags: ["repos", "base"]
 
 # ----------------------------------------------------------------------------
-# Package Cache Management
+# RPM Package Installation
 # ----------------------------------------------------------------------------
 
-- name: Update package cache
-  become: true
-  block:
-    - name: Refresh DNF package cache
-      ansible.builtin.dnf:
-        update_cache: true
-      tags: ["cache_update"]
-
-  rescue:
-    - name: Log cache update failure
-      ansible.builtin.debug:
-        msg: >
-          Failed to update package cache.
-          Error details: {{ ansible_failed_result | default('Unknown error') }}
-          You may need to run 'dnf clean all && dnf makecache' manually.
-      tags: ["cache_update"]
-
-  tags: ["cache", "base", "repos"]
-
-
-# ----------------------------------------------------------------------------
-# Package Installation
-# ----------------------------------------------------------------------------
-
-- name: Include package installation tasks
+- name: Include Package Installation Tasks
   ansible.builtin.import_tasks: packages.yml
   tags: ["packages", "builder", "base", "common"]
 
-- name: Install Rust packages
+# ----------------------------------------------------------------------------
+# Rust Package Installation
+# ----------------------------------------------------------------------------
+
+- name: Install Rust Packages
   block:
     - name: Gather package facts
       ansible.builtin.package_facts:
@@ -107,7 +118,7 @@
         msg: "'cargo' is installed"
       when: "'cargo' in ansible_facts.packages"
 
-    - name: Install Rust packages with locked dependencies
+    - name: Install Rust Packages with locked dependencies
       community.general.cargo:
         name: "{{ item }}"
         locked: true
@@ -139,33 +150,55 @@
 
   tags: ["cargo", "packages"]
 
-# - name: Install Bun shell script
-#   ansible.builtin.shell: "curl -fsSL https://bun.sh/install | bash"
-#   args:
-#     executable: /bin/bash
-#   tags: ["bun", "base", "common"]
-  
+# ----------------------------------------------------------------------------
+# Bun Package Installation
+# ----------------------------------------------------------------------------
 
-# - name: Install Gemini CLI
-#   ansible.builtin.shell: "bun i -g @google/gemini-cli@latest"
-#   args:
-#     executable: /bin/bash
-#   tags: ["gemini", "base", "common"]
+- name: Install Bun
+  ansible.builtin.shell: "curl -fsSL https://bun.sh/install | bash"
+  tags: ["bun"]
 
-# - name: Install Claude CLI
-#   ansible.builtin.shell: "curl -fsSL https://claude.ai/install.sh | bash"
-#   args:
-#     executable: /bin/bash
-#   tags: ["claude", "base", "common"]
+# ----------------------------------------------------------------------------
+# Generative AI CLI Tool Installation
+# ----------------------------------------------------------------------------
 
-# - name: Install Opencode AI
-#   ansible.builtin.shell: "bun i -g opencode-ai@latest"
-#   args:
-#     executable: /bin/bash
-#   tags: ["opencode", "base", "common"]
+- name: Install Generative AI CLI Tools
+  block:
+    - name: Install Gemini CLI
+      ansible.builtin.shell: "bun add -g @google/gemini-cli@latest"
+      tags: ["gemini"]
 
-# - name: Install Oh My Opencode
-#   ansible.builtin.shell: "bunx oh-my-opencode install --no-tui --claude=yes --gemini=yes --copilot=no --openai=no --opencode-zen=yes --zai-coding-plan=no"
-#   args:
-#     executable: /bin/bash
-#   tags: ["opencode", "base", "common"]
+    - name: Install Claude CLI
+      ansible.builtin.shell: "curl -fsSL https://claude.ai/install.sh | bash"
+      tags: ["claude"]
+
+    - name: Install Opencode AI
+      ansible.builtin.shell: "bun add -g opencode-ai@latest"
+      tags: ["opencode"]
+
+    - name: Install Oh My Opencode
+      ansible.builtin.shell: |
+        bunx oh-my-opencode install --no-tui \
+        --claude=yes \
+        --gemini=yes \
+        --copilot=no \
+        --openai=no \
+        --opencode-zen=yes \
+        --zai-coding-plan=no
+      tags: ["opencode"]
+
+  rescue:
+    - name: Log Generative AI CLI Tool installation failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to install one or more of the Generative AI CLI tools
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          These tools may need to be installed manually.
+      tags: ["development_tools_error"]
+
+    - name: Mark Generative AI CLI Tool installation as failed
+      ansible.builtin.set_fact:
+        ai_tool_installation_failed: true
+      tags: ["development_tools_error"]
+
+  tags: ["development_tools", "gemini", "claude", "opencode", "genai"]

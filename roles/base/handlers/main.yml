@@ -2,10 +2,10 @@
 ---
 # handlers file for base role
 
-- name: Update cache
+- name: Update DNF cache
   ansible.builtin.dnf:
     update_cache: true
-  listen: "Update cache"
+  listen: "Update DNF cache"
 
 - name: Generate locales
   ansible.builtin.command: locale-gen
@@ -19,3 +19,13 @@
   ansible.builtin.command: grub2-mkconfig -o /boot/grub2/grub.cfg
   when: bootloader == "grub"
   listen: "Rebuild grub"
+
+- name: Daemon reload
+  ansible.builtin.command: systemctl daemon-reload
+  listen: "Daemon reload"
+
+- name: Restart cpupower service
+  ansible.builtin.systemd:
+    name: cpupower
+    state: restarted
+  listen: "Restart cpupower service"

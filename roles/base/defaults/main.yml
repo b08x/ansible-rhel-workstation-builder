@@ -38,6 +38,9 @@ kernel_parameters: "ipv6.disable=1 net.ifnames=0"
 grub_background: "/usr/share/backgrounds/syncopated/syncopated016.png"
 grub_enable_os_prober: false
 
+# cpupower_min_freq: "2.25GHz"
+cpupower_max_freq: "3.9GHz"
+
 # ----------------------------------------------------------------------------
 # System Packages and Groups
 # ----------------------------------------------------------------------------
@@ -68,7 +71,6 @@ common_utility_packages:
   - curl
   - du-dust
   - fd-find
-  - ffmpeg-free-devel
   - git
   - gitui
   - glslc
@@ -84,7 +86,6 @@ common_utility_packages:
   - nvtop
   - ranger
   - rsync
-  - sdl2-compat-devel
   - tmux
   - vim
   - wget
@@ -97,13 +98,13 @@ base_pkgs_dev:
   - ffmpeg-free-devel
   - go-rpm-macros
   - gpgme-devel
-  - python3-docutils
-  - sdl2-compat-devel
-  - ruby-devel
-  - vips-devel
-  - obs-studio-devel
-  - qt6-qtbase-private-devel
   - ninja-build
+  - obs-studio-devel
+  - python3-docutils
+  - qt6-qtbase-private-devel
+  - ruby-devel
+  - sdl2-compat-devel
+  - vips-devel
 
 base_packages_cockpit:
   - cockpit
