@@ -21,6 +21,10 @@
 - *(roles)* Add asdf version manager role
 - *(video)* Add new role for Intel and NVIDIA GPU configuration
 - *(podman)* Add podman role and update nvidia gpu configuration
+- Add Claude AI settings, update ASDF installation and ownership, adjust package defaults, and refine Fedora-specific configurations.
+- Enhance workstation roles with flatpaks, asdf updates, and AI tools
+- Add ramalama role and selinux playbook
+- *(osbuild)* Update Fedora 43 sources and workstation blueprint
 
 ### 🐛 Bug Fixes
 
@@ -30,6 +34,9 @@
 
 - *(repos)* Consolidate repository priority configuration
 - *(kiwi)* Update schema to 8.3 and refine config
+- *(video)* Wrap nvidia tasks in detection block
+- *(base)* Consolidate repos and common roles into base role
+- Move user vars to inventory and migrate rust utils to base role
 
 ### 📚 Documentation
 
@@ -39,6 +46,8 @@
 - Enhance README readability by adjusting table formatting, adding a KIWI documentation link, and specifying shell for a code block.
 - Add changelog and significantly update READMEs
 - *(agents)* Expand agent documentation and context files
+- *(changelog)* Update CHANGELOG.md with recent changes
+- Add AGENTS.md context files to roles
 
 ### ⚙️ Miscellaneous Tasks
 

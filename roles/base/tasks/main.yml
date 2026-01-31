@@ -120,6 +120,7 @@
       loop:
         - bottom
         - eza
+        - git-cliff
         - gping
         - ripgrep_all
         - sd
