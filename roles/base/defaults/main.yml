@@ -74,6 +74,7 @@ common_utility_packages:
   - glslc
   - golang
   - grsync
+  - gum
   - htop
   - kitty
   - lm_sensors-devel

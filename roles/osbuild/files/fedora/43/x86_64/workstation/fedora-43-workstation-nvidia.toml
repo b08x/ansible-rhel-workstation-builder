@@ -403,6 +403,10 @@ version = "*"
 name = "google-chrome-stable"
 version = "*"
 
+[[packages]]
+name = "gum"
+version = "*"
+
 # [[packages]]
 # name = "grim"
 # version = "*"
