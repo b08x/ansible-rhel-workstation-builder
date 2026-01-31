@@ -5,64 +5,105 @@
   ansible.builtin.stat:
     path: "{{ user.home }}/.local/bin/noisetorch"
   register: noisetorch_binary
-  become: false
 
-- name: Install NoiseTorch from source
+- name: Install Noisetorch
   when: not noisetorch_binary.stat.exists
-  become: false
   block:
-    - name: Create a temporary directory for the build
-      ansible.builtin.tempfile:
-        state: directory
-        suffix: noisetorch-build
-      register: build_dir
+    - name: Download NoiseTorch archive
+      retries: 5
+      delay: 20
+      register: result
+      until: result is success
+      ansible.builtin.get_url:
+        url: "https://github.com/noisetorch/NoiseTorch/releases/download/v0.12.2/NoiseTorch_x64_v0.12.2.tgz"
+        dest: "/tmp/NoiseTorch_x64_v0.12.2.tgz"
 
-    - name: Clone NoiseTorch repository
-      ansible.builtin.git:
-        repo: 'https://github.com/noisetorch/NoiseTorch.git'
-        dest: "{{ build_dir.path }}"
-        recursive: yes
-      register: git_clone
+    - name: Extract NoiseTorch archive
+      ansible.builtin.shell: |
+        tar -C {{ user.home }} -h -xzf NoiseTorch_x64_v0.12.2.tgz && \
+        gtk-update-icon-cache
+      args:
+        chdir: "/tmp"
 
-    - name: Build NoiseTorch
-      community.general.make:
-        chdir: "{{ build_dir.path }}"
-      when: git_clone.changed
+    - name: Set setcap for noisetorch
+      ansible.builtin.shell: |
+        setcap 'CAP_SYS_RESOURCE=+ep' {{ user.home }}/.local/bin/noisetorch
+      become: true
 
-    - name: Ensure destination directories exist
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        mode: '0755'
-      loop:
-        - "{{ user.home }}/.local/bin"
-        - "{{ user.home }}/.local/share/applications"
-        - "{{ user.home }}/.local/share/icons/hicolor/256x256/apps"
+  rescue:
+    - name: Log NoiseTorch installation failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to install NoiseTorch.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          You may need to run 'tar -C $HOME -h -xzf NoiseTorch_x64_v0.12.2.tgz && gtk-update-icon-cache' manually.
+      tags: ["noisetorch_install"]
 
-    - name: Copy noisetorch binary
-      ansible.builtin.copy:
-        src: "{{ build_dir.path }}/bin/noisetorch"
-        dest: "{{ user.home }}/.local/bin/noisetorch"
-        mode: '0755'
-        remote_src: yes
+    - name: Mark NoiseTorch installation as failed
+      ansible.builtin.set_fact:
+        noisetorch_installation_failed: true
+      tags: ["noisetorch_install"]
 
-    - name: Copy noisetorch desktop file
-      ansible.builtin.copy:
-        src: "{{ build_dir.path }}/assets/noisetorch.desktop"
-        dest: "{{ user.home }}/.local/share/applications/noisetorch.desktop"
-        mode: '0644'
-        remote_src: yes
+  tags: ["noisetorch", "audio", "common"]
 
-    - name: Copy noisetorch icon
-      ansible.builtin.copy:
-        src: "{{ build_dir.path }}/assets/icon/noisetorch.png"
-        dest: "{{ user.home }}/.local/share/icons/hicolor/256x256/apps/noisetorch.png"
-        mode: '0644'
-        remote_src: yes
 
-  always:
-    - name: Clean up build directory
-      ansible.builtin.file:
-        path: "{{ build_dir.path }}"
-        state: absent
-      when: build_dir.path is defined
+
+# - name: Install NoiseTorch from source
+#   when: not noisetorch_binary.stat.exists
+#   become: false
+#   block:
+#     - name: Create a temporary directory for the build
+#       ansible.builtin.tempfile:
+#         state: directory
+#         suffix: noisetorch-build
+#       register: build_dir
+
+#     - name: Clone NoiseTorch repository
+#       ansible.builtin.git:
+#         repo: 'https://github.com/noisetorch/NoiseTorch.git'
+#         dest: "{{ build_dir.path }}"
+#         recursive: yes
+#       register: git_clone
+
+#     - name: Build NoiseTorch
+#       community.general.make:
+#         chdir: "{{ build_dir.path }}"
+#       when: git_clone.changed
+
+#     - name: Ensure destination directories exist
+#       ansible.builtin.file:
+#         path: "{{ item }}"
+#         state: directory
+#         mode: '0755'
+#       loop:
+#         - "{{ user.home }}/.local/bin"
+#         - "{{ user.home }}/.local/share/applications"
+#         - "{{ user.home }}/.local/share/icons/hicolor/256x256/apps"
+
+#     - name: Copy noisetorch binary
+#       ansible.builtin.copy:
+#         src: "{{ build_dir.path }}/bin/noisetorch"
+#         dest: "{{ user.home }}/.local/bin/noisetorch"
+#         mode: '0755'
+#         remote_src: yes
+
+#     - name: Copy noisetorch desktop file
+#       ansible.builtin.copy:
+#         src: "{{ build_dir.path }}/assets/noisetorch.desktop"
+#         dest: "{{ user.home }}/.local/share/applications/noisetorch.desktop"
+#         mode: '0644'
+#         remote_src: yes
+
+#     - name: Copy noisetorch icon
+#       ansible.builtin.copy:
+#         src: "{{ build_dir.path }}/assets/icon/noisetorch.png"
+#         dest: "{{ user.home }}/.local/share/icons/hicolor/256x256/apps/noisetorch.png"
+#         mode: '0644'
+#         remote_src: yes
+
+#   always:
+#     - name: Clean up build directory
+#       ansible.builtin.file:
+#         path: "{{ build_dir.path }}"
+#         state: absent
+#       when: build_dir.path is defined
