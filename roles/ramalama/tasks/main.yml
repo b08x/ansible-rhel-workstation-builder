@@ -1,0 +1,26 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for ramalama
+
+- name: Install Ramalama
+  become: true
+  block:
+    - name: Install Ramalama
+      ansible.builtin.dnf:
+        name: ramalama
+        state: present
+      tags: ["packages", "ramalama"]
+  rescue:
+    - name: Log Ramalama installation failure
+      ansible.builtin.debug:
+        msg: >
+          Failed to install Ramalama.
+          Error details: {{ ansible_failed_result | default('Unknown error') }}
+          This might be due to network connectivity issues or repository availability.
+      tags: ["ramalama"]
+
+    - name: Mark Ramalama installation as failed
+      ansible.builtin.set_fact:
+        ramalama_install_failed: true
+      tags: ["ramalama"]
+  

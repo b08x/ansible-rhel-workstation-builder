@@ -60,6 +60,8 @@ osbuild_host_packages:
   - cockpit-composer
   - bash-completion
   - firewalld
+  - openscap-scanner 
+  - scap-security-guide
 
 # User group for composer-cli access
 osbuild_weldr_group: "weldr"

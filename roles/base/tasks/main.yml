@@ -94,33 +94,33 @@
   tags: ["packages", "builder", "base", "common"]
 
 
-- name: Install Bun shell script
-  ansible.builtin.shell: "curl -fsSL https://bun.sh/install | bash"
-  args:
-    executable: /bin/bash
-  tags: ["bun", "base", "common"]
+# - name: Install Bun shell script
+#   ansible.builtin.shell: "curl -fsSL https://bun.sh/install | bash"
+#   args:
+#     executable: /bin/bash
+#   tags: ["bun", "base", "common"]
   
 
-- name: Install Gemini CLI
-  ansible.builtin.shell: "bun i -g @google/gemini-cli@latest"
-  args:
-    executable: /bin/bash
-  tags: ["gemini", "base", "common"]
+# - name: Install Gemini CLI
+#   ansible.builtin.shell: "bun i -g @google/gemini-cli@latest"
+#   args:
+#     executable: /bin/bash
+#   tags: ["gemini", "base", "common"]
 
-- name: Install Claude CLI
-  ansible.builtin.shell: "curl -fsSL https://claude.ai/install.sh | bash"
-  args:
-    executable: /bin/bash
-  tags: ["claude", "base", "common"]
+# - name: Install Claude CLI
+#   ansible.builtin.shell: "curl -fsSL https://claude.ai/install.sh | bash"
+#   args:
+#     executable: /bin/bash
+#   tags: ["claude", "base", "common"]
 
-- name: Install Opencode AI
-  ansible.builtin.shell: "bun i -g opencode-ai@latest"
-  args:
-    executable: /bin/bash
-  tags: ["opencode", "base", "common"]
+# - name: Install Opencode AI
+#   ansible.builtin.shell: "bun i -g opencode-ai@latest"
+#   args:
+#     executable: /bin/bash
+#   tags: ["opencode", "base", "common"]
 
-- name: Install Oh My Opencode
-  ansible.builtin.shell: "bunx oh-my-opencode install --no-tui --claude=yes --gemini=yes --copilot=no --openai=no --opencode-zen=yes --zai-coding-plan=no"
-  args:
-    executable: /bin/bash
-  tags: ["opencode", "base", "common"]
+# - name: Install Oh My Opencode
+#   ansible.builtin.shell: "bunx oh-my-opencode install --no-tui --claude=yes --gemini=yes --copilot=no --openai=no --opencode-zen=yes --zai-coding-plan=no"
+#   args:
+#     executable: /bin/bash
+#   tags: ["opencode", "base", "common"]

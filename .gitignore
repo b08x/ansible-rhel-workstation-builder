@@ -10,4 +10,7 @@ test_suite_analysis
 .projectile
 **/logs/
 
+
+.venv
+
 .claude/settings.local.json

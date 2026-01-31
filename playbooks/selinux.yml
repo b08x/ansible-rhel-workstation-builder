@@ -1,0 +1,32 @@
+---
+- name: Set SELinux Polcies
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Set SELinux booleans
+      block:
+        - name: Allow virt to sandbox use all caps
+          command: semanage boolean -m --on virt_sandbox_use_all_caps
+
+        - name: Allow virt to use nfs
+          command: semanage boolean -m --on virt_use_nfs
+
+        - name: Allow portmap port 64432
+          command: semanage port "-a" "-t" portmap_port_t "-p" udp 64432
+
+        - name: Allow container to use devices
+          command: setsebool -P container_use_devices 1
+      rescue:
+        - name: Log SELinux policy failure
+          ansible.builtin.debug:
+            msg: >
+              Failed to set SELinux policies.
+              Error details: {{ ansible_failed_result | default('Unknown error') }}
+              This might be due to SELinux being disabled or not properly configured.
+          tags: ["selinux"]
+
+        - name: Mark SELinux policy as failed
+          ansible.builtin.set_fact:
+            selinux_policy_failed: true
+          tags: ["selinux"]
