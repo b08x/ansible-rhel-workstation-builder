@@ -10,10 +10,10 @@ test_suite_analysis
 .projectile
 **/logs/
 
-
 .venv/
 
 .ansible/.lock
 
-
 .claude/settings.local.json
+
+ansible-rhel-workstation-builder.code-workspace

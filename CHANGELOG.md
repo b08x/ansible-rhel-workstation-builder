@@ -25,6 +25,9 @@
 - Enhance workstation roles with flatpaks, asdf updates, and AI tools
 - Add ramalama role and selinux playbook
 - *(osbuild)* Update Fedora 43 sources and workstation blueprint
+- *(base)* Add git-cliff to cargo packages
+- *(osbuild)* Update fedora 43 nvidia blueprint packages and repo config
+
 
 ### 🐛 Bug Fixes
 
@@ -37,6 +40,9 @@
 - *(video)* Wrap nvidia tasks in detection block
 - *(base)* Consolidate repos and common roles into base role
 - Move user vars to inventory and migrate rust utils to base role
+- *(audio)* Switch NoiseTorch install to binary release
+- *(base)* Reorganize tasks and update package/repo configuration
+- *(workstation)* Improve NVIDIA detection and update repository settings
 
 ### 📚 Documentation
 
@@ -52,3 +58,4 @@
 ### ⚙️ Miscellaneous Tasks
 
 - *(agents)* Consolidate architect agents and workflows
+- *(asdf)* Update plugin selection and dependency installation
