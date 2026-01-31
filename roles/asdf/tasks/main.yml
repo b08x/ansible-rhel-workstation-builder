@@ -9,7 +9,6 @@
         name: "{{ asdf_dependencies }}"
         state: present
         update_cache: yes
-      when: ansible_os_family == "RedHat"
       tags: ["asdf_install", "dependencies"]
 
     - name: Clone asdf repository

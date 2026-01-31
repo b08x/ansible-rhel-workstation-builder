@@ -12,8 +12,8 @@ asdf_nodejs_version: "18.19.0"
 # Plugins to install
 asdf_plugins:
   - ruby
-  - python
-  - nodejs
+  # - python
+  # - nodejs
 
 # System dependencies for language environment management
 asdf_dependencies:
