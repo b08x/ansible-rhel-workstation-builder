@@ -43,7 +43,7 @@
 
   tags: ["terra"]
 
-
+# TODO: run ydotoold as a user service (systemctl --user enable ydotool.service), which creates the socket in your user's runtime directory (e.g., /run/user/1000/.ydotool_socket) 
 - name: Adjust ydotool socket permissions
   become: true
   block:

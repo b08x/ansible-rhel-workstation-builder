@@ -103,50 +103,50 @@ StandardError=journal
 WantedBy=multi-user.target
 """
 
-[[customizations.directories]]
-path = "/usr/share/wayland-sessions"
-mode = "0755"
-user = "root"
-group = "root"
-ensure_parents = false
+# [[customizations.directories]]
+# path = "/usr/share/wayland-sessions"
+# mode = "0755"
+# user = "root"
+# group = "root"
+# ensure_parents = false
 
-[[customizations.files]]
-path = "/usr/share/wayland-sessions/sway.desktop"
-data = """
-[Desktop Entry]
-Name=Sway
-Comment=An i3-compatible Wayland compositor
-Exec=sway
-Type=Application
-DesktopNames=sway
-"""
+# [[customizations.files]]
+# path = "/usr/share/wayland-sessions/sway.desktop"
+# data = """
+# [Desktop Entry]
+# Name=Sway
+# Comment=An i3-compatible Wayland compositor
+# Exec=sway
+# Type=Application
+# DesktopNames=sway
+# """
 
-[[customizations.directories]]
-path = "/etc/skel/.config/sway"
-mode = "0755"
-user = "root"
-group = "root"
-ensure_parents = false
+# [[customizations.directories]]
+# path = "/etc/skel/.config/sway"
+# mode = "0755"
+# user = "root"
+# group = "root"
+# ensure_parents = false
 
-[[customizations.files]]
-path = "/etc/gdm/custom.conf"
-data = """
-# GDM configuration storage
+# [[customizations.files]]
+# path = "/etc/gdm/custom.conf"
+# data = """
+# # GDM configuration storage
 
-[daemon]
-# Uncomment the line below to force the login screen to use Xorg
-WaylandEnable=true
+# [daemon]
+# # Uncomment the line below to force the login screen to use Xorg
+# WaylandEnable=true
 
-[security]
+# [security]
 
-[xdmcp]
+# [xdmcp]
 
-[chooser]
+# [chooser]
 
-[debug]
-# Uncomment the line below to turn on debugging
-#Enable=true
-"""
+# [debug]
+# # Uncomment the line below to turn on debugging
+# #Enable=true
+# """
 
 [[customizations.repositories]]
 id = "nvidia-container-toolkit"
