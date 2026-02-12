@@ -12,6 +12,14 @@
   environment:
     PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path|join(':') }}"
   pre_tasks:
+    - name: Verify OS Support
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family == "RedHat"
+          - ansible_distribution in ["Fedora", "Rocky", "CentOS", "RedHat"]
+        fail_msg: "This playbook is only supported on RedHat-family distributions (Fedora, Rocky, CentOS, RHEL)."
+      tags: ["always"]
+
     - name: Display ansible_distribution
       ansible.builtin.debug:
         msg: |

@@ -74,6 +74,7 @@ common_utility_packages:
   - git
   - gitui
   - glslc
+  - glow
   - golang
   - grsync
   - gum
@@ -82,6 +83,7 @@ common_utility_packages:
   - lm_sensors-devel
   - lnav
   - micro
+  - most
   - nodejs
   - nvtop
   - ranger
@@ -89,6 +91,7 @@ common_utility_packages:
   - tmux
   - vim
   - wget
+  - yazi
   - zoxide
   - zsh
 

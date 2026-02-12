@@ -127,6 +127,7 @@
         - eza
         - git-cliff
         - gping
+        - resvg
         - ripgrep_all
         - sd
       loop_control:

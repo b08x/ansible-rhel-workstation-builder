@@ -43,22 +43,15 @@
         group: root
         mode: "0644"
 
-    # For Red Hat family, tuned framework handles most optimizations
     - name: Additional audio sysctl settings for Red Hat family (supplemental to tuned)
+      ansible.posix.sysctl:
+        name: fs.inotify.max_user_watches
+        value: "524288"
+        state: present
+        sysctl_file: /etc/sysctl.d/99-audio-supplemental.conf
+        reload: true
       when: ansible_os_family == "RedHat"
       tags: ["sysctl"]
-      block:
-        - name: Create supplemental audio sysctl configuration
-          ansible.builtin.copy:
-            content: |
-              # Supplemental audio settings (tuned profile handles most optimizations)
-              # Managed by Ansible - do not edit manually
-              fs.inotify.max_user_watches = 524288
-            dest: /etc/sysctl.d/99-audio-supplemental.conf
-            owner: root
-            group: root
-            mode: "0644"
-          notify: reload sysctl
     - tags: ["tuned"]
       block:
         - name: Enable tuned service
@@ -67,11 +60,20 @@
             enabled: true
           ignore_errors: "{{ ansible_check_mode }}"
 
+        - name: Get active tuned profile
+          ansible.builtin.command: tuned-adm active
+          register: tuned_active_result
+          changed_when: false
+          ignore_errors: "{{ ansible_check_mode }}"
+
         - name: Set tuned profile
           ansible.builtin.command: tuned-adm profile {{ tuned_profile | default('realtime') }}
           register: tuned_profile_result
           changed_when: tuned_profile_result.rc == 0
           failed_when: tuned_profile_result.rc != 0 and 'not found' not in tuned_profile_result.stderr
+          when:
+            - tuned_active_result.stdout is defined
+            - "tuned_profile | default('realtime') not in tuned_active_result.stdout"
 
         - name: Create tuned profile folder
           ansible.builtin.file:
