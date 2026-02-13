@@ -27,6 +27,8 @@ docker_service_enabled: true
 docker_users:
   - "{{ user.name }}"
 
+docker_storage: "/var/lib/docker"
+
 # Dictionary of key-value pairs for /etc/docker/daemon.json.
 # Example: { "log-driver": "journald", "userns-remap": "default" }
 docker_daemon_config: {}

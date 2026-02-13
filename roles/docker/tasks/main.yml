@@ -39,6 +39,14 @@
     update_cache: true
   notify: Restart Docker
 
+- name: Add specified users to the docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  loop: "{{ docker_users }}"
+  when: docker_users | length > 0
+
 - name: Configure the Docker daemon (/etc/docker/daemon.json)
   ansible.builtin.template:
     src: daemon.json.j2
@@ -49,16 +57,26 @@
   when: docker_daemon_config | length > 0
   notify: Restart Docker
 
+- name: Set Docker Storage Location
+  ansible.builtin.lineinfile:
+    path: "/usr/lib/systemd/system/docker.service"
+    regexp: "^ExecStart=/usr/bin/dockerd -H fd://"
+    line: "ExecStart=/usr/bin/dockerd --data-root {{ docker_storage }} -H fd://"
+  when: docker_storage is defined
+
+- name: Disable Overlay Redirect
+  ansible.builtin.copy:
+    content: |
+      options overlay metacopy=off redirect_dir=off
+    dest: "/etc/modprobe.d/disable-overlay-redirect-dir.conf"
+    owner: root
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
 - name: Ensure Docker service is started and enabled
   ansible.builtin.service:
     name: "{{ docker_service_name }}"
     state: started
     enabled: "{{ docker_service_enabled }}"
-
-- name: Add specified users to the docker group
-  ansible.builtin.user:
-    name: "{{ item }}"
-    groups: docker
-    append: true
-  loop: "{{ docker_users }}"
-  when: docker_users | length > 0

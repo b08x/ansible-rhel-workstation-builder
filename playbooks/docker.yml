@@ -1,89 +1,18 @@
 ---
 
 - name: Docker Setup
-  hosts: localhost
+  hosts: ninjabot
   gather_facts: true
   become: true
   vars:
     path:
       - "{{ lookup('env','HOME') }}/.cargo/bin"
       - "{{ lookup('env','HOME') }}/.local/bin"
+    docker_users:
+      - b08x
+    docker_storage: /mnt/local_storage/docker
   environment:
     PATH: "{{ ansible_env.PATH }}:/sbin:/bin:{{ path|join(':') }}"
 
-  tasks:
-    - name: Update all packages
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
-        update_cache: true
-      tags:
-        - docker
-        - system-update
-
-    - name: Remove Podman and related packages
-      ansible.builtin.dnf:
-        name:
-          - podman
-          - podman-docker
-          - buildah
-          - skopeo
-        state: absent
-        autoremove: true
-      tags:
-        - docker
-        - cleanup
-
-    - name: Install dnf-plugins-core
-      ansible.builtin.dnf:
-        name: dnf-plugins-core
-        state: present
-      tags:
-        - docker
-        - prerequisites
-
-    - name: Add Docker CE repository
-      ansible.builtin.command:
-        cmd: dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-        creates: /etc/yum.repos.d/docker-ce.repo
-      tags:
-        - docker
-        - repository
-
-    - name: Install Docker CE and components
-      ansible.builtin.dnf:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
-        state: present
-      tags:
-        - docker
-        - installation
-
-    - name: Start and enable Docker service
-      ansible.builtin.systemd:
-        name: docker
-        state: started
-        enabled: true
-      tags:
-        - docker
-        - service
-
-    - name: Add current user to docker group
-      ansible.builtin.user:
-        name: "{{ ansible_user_id }}"
-        groups: docker
-        append: true
-      when: ansible_user_id != 'root'
-      tags:
-        - docker
-        - permissions
-      notify: Remind user to log out
-
-  handlers:
-    - name: Remind user to log out
-      ansible.builtin.debug:
-        msg: "Please log out and back in for docker group membership to take effect"
+  roles:
+    - { role: docker, tags: ["docker"] }
