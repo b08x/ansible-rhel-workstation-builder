@@ -1,0 +1,110 @@
+# {{ ansible_managed }}
+
+[Match]
+Name={{ item.interface }}
+
+{# --- DHCP Configuration --- #}
+{% if item.address is defined and (item.address | lower) == 'dhcp' %}
+[DHCP]
+UseDNS={{ (item.usedns | default(false) | bool) | ternary('yes', 'no') }}
+UseNTP=yes
+RouteMetric=20
+{% endif %}
+
+{# --- Address Parsing --- #}
+{%- if item.address is not defined %}{% set _addresses = [] %}
+{%- elif item.address is string and item.address != 'dhcp' %}{% set _addresses = [item.address] %}
+{%- elif item.address is iterable and item.address is not string %}{% set _addresses = item.address %}
+{%- else %}{% set _addresses = [] %}
+{%- endif %}
+
+[Network]
+{# --- Static Addresses --- #}
+{% for addr in _addresses %}
+{%   if '/' in addr %}
+Address={{ addr }}
+{%   else %}
+{# Fallback if netmask provided separately, though CIDR is preferred in modern systemd #}
+Address={{ addr }}/{{ item.netmask | default('24') | ansible.utils.ipaddr('prefix') }}
+{%   endif %}
+{% endfor %}
+
+{# --- Gateway --- #}
+{% if item.gateway is defined and item.gateway %}
+Gateway={{ item.gateway }}
+{% endif %}
+
+{# --- Bindings (Bridge, Bond, VLAN) --- #}
+{% if item.bridge is defined %}
+Bridge={{ item.bridge }}
+{% elif item.bond is defined %}
+Bond={{ item.bond }}
+{% else %}
+{%   if item.vlan is defined %}
+{%     if item.vlan is iterable and item.vlan is not string %}
+{%       for vlan in item.vlan %}
+VLAN={{ vlan }}
+{%       endfor %}
+{%     else %}
+VLAN={{ item.vlan }}
+{%     endif %}
+{%   endif %}
+{%   if item.macvlan is defined %}
+MACVLAN={{ item.macvlan }}
+{%   endif %}
+{%   if item.vxlan is defined %}
+VXLAN={{ item.vxlan }}
+{%   endif %}
+{% endif %}
+
+{% if item.ipforward is defined %}
+IPForward={{ (item.ipforward | bool) | ternary('yes', 'no') }}
+{% endif %}
+
+{# --- Link Section in Network file (MTU) --- #}
+[Link]
+{% if item.mtu is defined and item.mtu %}
+MTUBytes={{ item.mtu }}
+{% endif %}
+
+{# --- Static Routes (Inlined) --- #}
+{% if item.static_routes is defined %}
+{% for route in item.static_routes %}
+[Route]
+{%   if route.cidr is defined %}
+Destination={{ route.cidr }}
+{%   endif %}
+{%   if route.Destination is defined %}
+Destination={{ route.Destination }}
+{%   endif %}
+{%   if route.gateway is defined %}
+Gateway={{ route.gateway }}
+{%   endif %}
+{%   if route.Gateway is defined %}
+Gateway={{ route.Gateway }}
+{%   endif %}
+{%   for k, v in route.items() if k not in ['cidr', 'gateway', 'Destination', 'Gateway'] %}
+{{ k }}={{ v }}
+{%   endfor %}
+{% endfor %}
+{% endif %}
+
+{# --- Routing Policy Rules (Inlined) --- #}
+{% if item.routing_rules is defined %}
+{% for rule in item.routing_rules %}
+[RoutingPolicyRule]
+{%   for k, v in rule.items() %}
+{{ k }}={{ v }}
+{%   endfor %}
+{% endfor %}
+{% endif %}
+
+{# --- Generic Overrides (Appended Sections) --- #}
+{% if item.config_overrides is defined %}
+{%   for section, options in item.config_overrides.items() %}
+[{{ section }}]
+{%     for k, v in options.items() %}
+{{ k }}={{ v }}
+{%     endfor %}
+{%   endfor %}
+{% endif %}

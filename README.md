@@ -36,6 +36,7 @@ ansible-rhel-workstation-builder/
 ├── roles/              # Modular system components
 │   ├── kiwi/           # ⭐ KIWI NG ISO builder (live ISOs, akmods)
 │   ├── osbuild/        # ⭐ OSBuild Composer (blueprint-based images)
+│   ├── systemd-networkd/ # ⭐ Systemd-networkd & resolved configuration
 │   ├── audio/          # Low-latency audio workstation (PipeWire/JACK)
 │   ├── sway/           # Wayland compositor (i3-compatible)
 │   ├── common/         # Baseline system configuration
@@ -70,6 +71,7 @@ ansible-rhel-workstation-builder/
 | **repos**   | DNF/YUM repository management and optimization                   | None          |
 | **rpm-dev** | RPM development environment (Mock, rpm-build, rpmdevtools)       | common, repos |
 | **nas**     | Network-attached storage (NFS, Samba, Rsync)                     | None          |
+| **systemd-networkd** | systemd-networkd & resolved configuration               | None          |
 | **audio**   | Low-latency audio workstation (PipeWire, JACK, realtime tuning)  | None          |
 | **sway**    | Sway Wayland compositor for Fedora Workstation                   | None          |
 | **docker**  | Docker CE with NVIDIA Container Toolkit                          | None          |
@@ -253,6 +255,7 @@ ansible-playbook playbooks/audio.yml
   - [osbuild/README.md](roles/osbuild/README.md) - OSBuild Composer
   - [audio/README.md](roles/audio/README.md) - Low-latency audio workstation
   - [nas/README.md](roles/nas/README.md) - Network storage services
+  - [systemd-networkd/README.md](roles/systemd-networkd/README.md) - Systemd-networkd configuration
   - [docker/README.md](roles/docker/README.md) - Container runtime
   - [sway/README.md](roles/sway/README.md) - Wayland compositor
 

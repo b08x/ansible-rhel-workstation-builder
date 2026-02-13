@@ -42,6 +42,7 @@ Ansible collection automating RHEL-family workstation provisioning, NAS configur
 | **System Foundation** | `roles/base/` | **NEW**: Consolidated repos + common functionality |
 | **Repositories** | `roles/repos/` | DNF/YUM management (Fedora/RHEL-specific) |
 | **Baseline Config** | `roles/common/` | GRUB, timezone, locale, rc.local, YADM |
+| **Network Config** | `roles/systemd-networkd/` | systemd-networkd & resolved setup |
 | **Variables** | `vars/` | **CRITICAL**: Unencrypted secrets, distro-specific vars (140 lines Fedora.yml) |
 | **Custom Plugins** | `plugins/callback/llm_analyzer.py` | LLM-based playbook analysis callback |
 

@@ -1,0 +1,125 @@
+---
+
+- name: Set network/netdev filenames
+  ansible.builtin.set_fact:
+    _systemd_networks_named: >-
+      {%- set results = [] -%}
+      {%- for network in systemd_networks -%}
+        {%- if network.filename is not defined -%}
+          {%- set _ = network.update({'filename': [loop.index0, systemd_networkd_prefix, network.interface]|join('-')}) -%}
+        {%- endif -%}
+        {%- set _ = results.append(network) -%}
+      {%- endfor -%}
+      {{ results }}
+    _systemd_netdevs_named: >-
+      {%- set results = [] -%}
+      {%- for netdev in systemd_netdevs -%}
+        {%- if netdev.filename is not defined -%}
+          {%- set _ = netdev.update({'filename': [loop.index0, systemd_networkd_prefix, netdev.NetDev.Name]|join('-')}) -%}
+        {%- endif -%}
+        {%- set _ = results.append(netdev) -%}
+      {%- endfor -%}
+      {{ results }}
+  tags:
+    - always
+
+- name: Install systemd-networkd packages
+  ansible.builtin.package:
+    name: "{{ systemd_networkd_distro_packages }}"
+    state: present
+  notify: Restart systemd-networkd
+
+- name: Ensure systemd-networkd directory exists
+  ansible.builtin.file:
+    path: "/etc/systemd/network"
+    state: directory
+    mode: "0755"
+
+- name: Configure systemd-resolved
+  ansible.builtin.template:
+    src: "systemd-resolved.conf.j2"
+    dest: "/etc/systemd/resolved.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  when: systemd_resolved_available | bool
+  notify: Restart systemd-resolved
+
+- name: Cleanup unmanaged network files
+  block:
+    - name: Find prefixed files
+      ansible.builtin.find:
+        paths: "/etc/systemd/network"
+        patterns: "*{{ systemd_networkd_prefix }}*.netdev,*{{ systemd_networkd_prefix }}*.network"
+      register: _networkd_files
+    
+    - name: Remove unmanaged files
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ _networkd_files.files }}"
+      notify: Restart systemd-networkd
+  when: systemd_interface_cleanup | bool
+
+- name: Create NetDev files
+  ansible.builtin.template:
+    src: "systemd-netdev.j2"
+    dest: "/etc/systemd/network/{{ item.filename }}.netdev"
+    mode: "0644"
+  loop: "{{ _systemd_netdevs_named }}"
+  notify: Restart systemd-networkd
+
+- name: Create Link files
+  ansible.builtin.template:
+    src: "systemd-link.j2"
+    dest: "/etc/systemd/network/{{ item.filename }}.link"
+    mode: "0644"
+  loop: "{{ _systemd_networks_named }}"
+  notify:
+    - Update initramfs
+    - Restart systemd-networkd
+
+- name: Create Network files
+  ansible.builtin.template:
+    src: "systemd-network.j2"
+    dest: "/etc/systemd/network/{{ item.filename }}.network"
+    mode: "0644"
+  loop: "{{ _systemd_networks_named }}"
+  notify: Restart systemd-networkd
+
+- name: Enable IP Forwarding (Sysctl)
+  ansible.posix.sysctl:
+    name: "net.ipv4.conf.{{ item.interface }}.forwarding"
+    value: "1"
+    sysctl_set: true
+    state: present
+    reload: true
+  loop: "{{ _systemd_networks_named }}"
+  when: item.ipforward | default(false) | bool
+
+- name: Service Transition (Switch to systemd-networkd)
+  when: systemd_run_networkd | bool
+  block:
+    # Start networkd first to ensure it takes over as soon as NM stops
+    - name: Enable and Start systemd-networkd
+      ansible.builtin.systemd:
+        name: systemd-networkd
+        state: started
+        enabled: true
+
+    - name: Enable and Start systemd-resolved
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: started
+        enabled: true
+      when: systemd_resolved_available | bool
+
+    # Stop NM last to maintain connectivity as long as possible
+    - name: Stop and Disable NetworkManager
+      ansible.builtin.systemd:
+        name: NetworkManager
+        state: stopped
+        enabled: false
+      ignore_errors: true
+      register: _stop_nm
+      failed_when: "_stop_nm.failed and 'Could not find the requested service' not in _stop_nm.msg"

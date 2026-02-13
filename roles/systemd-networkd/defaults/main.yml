@@ -1,0 +1,41 @@
+---
+# Cleanup all known network interfaces not managed by this role.
+systemd_interface_cleanup: false
+
+# Prefix for all networkd files created by this role.
+systemd_networkd_prefix: "general"
+
+# Enable systemd-networkd and (re)start the service
+systemd_run_networkd: true
+
+# Systemd link configuration overrides (applied to .link files)
+systemd_link_config_overrides: {}
+
+# List of NetDevs (VLANs, Bonds, Bridges, etc.)
+# systemd_netdevs:
+#   - NetDev:
+#       Name: br0
+#       Kind: bridge
+systemd_netdevs: []
+
+# List of Networks (Interfaces, IP config, etc.)
+# systemd_networks:
+#   - interface: "eth0"
+#     dhcp: true
+#   - interface: "br0"
+#     address: "192.168.1.10/24"
+#     gateway: "192.168.1.1"
+systemd_networks: []
+
+# Systemd-resolved configuration
+systemd_resolved: {}
+systemd_resolved_available: true
+
+# Command to update initramfs (Fedora standard)
+systemd_networkd_update_initramfs: "dracut -f"
+
+# Packages to install
+systemd_networkd_distro_packages:
+  - systemd-networkd
+  - systemd-resolved
+  - iproute

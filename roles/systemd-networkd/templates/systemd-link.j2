@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+[Match]
+OriginalName={{ item.interface }}
+
+[Link]
+{% if item.mtu is defined %}
+MTUBytes={{ item.mtu }}
+{% endif %}
+
+{# Global Defaults #}
+{% for key, value in systemd_link_config_overrides.items() %}
+{{ key }}={{ value }}
+{% endfor %}
+
+{# Per-Interface Overrides #}
+{% if item.link_config_overrides is defined %}
+{%   for section, options in item.link_config_overrides.items() %}
+{# Note: Systemd merges sections. If we need a specific section not [Link] we handle it here #}
+{%     if section != 'Link' %}
+[{{ section }}]
+{%     endif %}
+{%     for k, v in options.items() %}
+{{ k }}={{ v }}
+{%     endfor %}
+{%   endfor %}
+{% endif %}

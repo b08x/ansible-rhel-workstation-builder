@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+
+{# Parse top level items first #}
+{% set _ignored_sections = ['filename'] %}
+
+{# Iterate over NetDev, Bond, VLAN, Bridge sections defined in YAML #}
+{% for section, options in item.items() %}
+{%   if section not in _ignored_sections %}
+[{{ section }}]
+{%     for k, v in options.items() %}
+{{ k }}={{ v }}
+{%     endfor %}
+{%   endif %}
+{% endfor %}

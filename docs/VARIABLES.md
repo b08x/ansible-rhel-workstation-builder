@@ -9,8 +9,10 @@
    - [common Role](#common-role-variables)
    - [repos Role](#repos-role-variables)
    - [rpm-dev Role](#rpm-dev-role-variables)
-   - [nas Role](#nas-role-variables)
-   - [zsh Role](#zsh-role-variables)
+    - [nas Role](#nas-role-variables)
+    - [systemd-networkd Role](#systemd-networkd-role-variables)
+    - [zsh Role](#zsh-role-variables)
+
    - [osbuild Role](#osbuild-role-variables)
 5. [Distribution-Specific Overrides](#distribution-specific-overrides)
 6. [Secrets Management](#secrets-management)
@@ -56,6 +58,7 @@ This documentation applies **Systemic Functional Linguistics (SFL)** principles:
 | Customize GRUB bootloader settings | [common Role Variables - GRUB Configuration](#grub-bootloader-configuration) |
 | Enable third-party repositories | [repos Role Variables](#repos-role-variables) |
 | Set up RPM development environment | [rpm-dev Role Variables](#rpm-dev-role-variables) |
+| Configure systemd-networkd/resolved | [systemd-networkd Role Variables](#systemd-networkd-role-variables) |
 | Configure NFS/Samba/Rsync | [nas Role Variables](#nas-role-variables) |
 | Customize shell configuration | [zsh Role Variables](#zsh-role-variables) |
 | Understand variable precedence | [Variable Precedence Hierarchy](#variable-precedence-hierarchy) |
@@ -602,6 +605,38 @@ nas_rsync_modules:
 | `nas_service_samba` | `"smb"` | String | **Participant**: Samba server service name (Fedora uses `smb`, not `smbd`). |
 | `nas_service_nmb` | `"nmb"` | String | **Participant**: NetBIOS name service. |
 | `nas_firewall_backend` | `"firewalld"` | String | **Participant**: Firewall management tool (Fedora uses firewalld). |
+
+---
+
+### systemd-networkd Role Variables
+
+**Role Path**: `/home/b08x/WorkspaceV2/RHEL/ansible/roles/systemd-networkd`
+
+This role **transforms** the target host's network configuration by **implementing systemd-networkd** and **systemd-resolved**, replacing NetworkManager where applicable.
+
+#### Global Configuration
+
+| Variable Name | Default Value | Type | SFL Analysis |
+|:--------------|:--------------|:-----|:-------------|
+| `systemd_run_networkd` | `true` | Boolean | **Control Flag**: When `true`, the role **starts** and **enables** the `systemd-networkd` service. |
+| `systemd_interface_cleanup` | `false` | Boolean | **Control Flag**: When `true`, the role **removes** unmanaged network files matching the defined prefix from `/etc/systemd/network/`. |
+| `systemd_networkd_prefix` | `"general"` | String | **Participant**: The filename prefix used to **identify** and **isolate** network configurations managed by this role. |
+| `systemd_networkd_update_initramfs` | `"dracut -f"` | String | **Participant**: The command used to **synchronize** network changes with the system's initial ramdisk. |
+
+#### Network Configuration
+
+| Variable Name | Default Value | Type | SFL Analysis |
+|:--------------|:--------------|:-----|:-------------|
+| `systemd_networks` | `[]` | List[Dict] | **Participants**: A list of network interface configurations. Each entry **generates** a corresponding `.network` file. |
+| `systemd_netdevs` | `[]` | List[Dict] | **Participants**: A list of virtual network devices (Bridges, Bonds, VLANs). Each entry **generates** a `.netdev` file. |
+| `systemd_link_config_overrides` | `{}` | Dict | **Participants**: Hardware-level configuration overrides (applied via `.link` files). |
+
+#### Resolved Configuration
+
+| Variable Name | Default Value | Type | SFL Analysis |
+|:--------------|:--------------|:-----|:-------------|
+| `systemd_resolved` | `{}` | Dict | **Participants**: Key-value pairs that **populate** `/etc/systemd/resolved.conf`. |
+| `systemd_resolved_available` | `true` | Boolean | **Control Flag**: When `true`, the role **manages** the `systemd-resolved` configuration and service. |
 
 ---
 
@@ -1379,6 +1414,7 @@ ansible-playbook playbooks/configure_nas.yml -i inventory/production/hosts.ini
 | `repos` | `enable_*` | `enable_epel`, `enable_powertools` |
 | `rpm-dev` | `rpm_dev_*`, `mock_*` | `rpm_dev_user`, `mock_config`, `mock_targets` |
 | `nas` | `nas_*` | `nas_enable_nfs`, `nas_nfs_exports`, `nas_samba_shares` |
+| `systemd-networkd` | `systemd_*` | `systemd_networks`, `systemd_netdevs`, `systemd_run_networkd` |
 | `zsh` | `zsh_*`, `zoxide_*`, `oh_my_zsh_*` | `zsh_theme`, `zoxide_install`, `oh_my_zsh_install` |
 
 **Exception**: Global configuration variables (e.g., `timezone`, `locale`) in the `common` role do not require prefixing as they represent system-wide settings.
@@ -1546,6 +1582,7 @@ mock_targets:
   - `/home/b08x/WorkspaceV2/RHEL/ansible/roles/repos/README.md`
   - `/home/b08x/WorkspaceV2/RHEL/ansible/roles/rpm-dev/README.md`
   - `/home/b08x/WorkspaceV2/RHEL/ansible/roles/nas/README.md`
+  - `/home/b08x/WorkspaceV2/RHEL/ansible/roles/systemd-networkd/README.md`
   - `/home/b08x/WorkspaceV2/RHEL/ansible/roles/zsh/README.md`
   - `/home/b08x/WorkspaceV2/RHEL/ansible/roles/osbuild/README.md`
 
@@ -1569,6 +1606,7 @@ mock_targets:
 | Setting up RPM development | [rpm-dev Role Variables](#rpm-dev-role-variables) |
 | Configuring NAS services | [nas Role Variables](#nas-role-variables) |
 | Customizing shell | [zsh Role Variables](#zsh-role-variables) |
+| Configure systemd-networkd/resolved | [systemd-networkd Role Variables](#systemd-networkd-role-variables) |
 | Managing secrets | [Secrets Management](#secrets-management) |
 | Overriding variables | [Customization Patterns](#customization-patterns) |
 | Variable naming | [Variable Naming Conventions](#variable-naming-conventions) |
