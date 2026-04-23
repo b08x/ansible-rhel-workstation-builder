@@ -34,7 +34,7 @@
       {{
         nas_packages_nfs
         | map('extract', ansible_facts.packages, [])
-        | select('length')
+        | select()
         | list
         | length == nas_packages_nfs | length
       }}
@@ -69,7 +69,7 @@
       {{
         nas_packages_samba
         | map('extract', ansible_facts.packages, [])
-        | select('length')
+        | select()
         | list
         | length == nas_packages_samba | length
       }}
@@ -104,7 +104,7 @@
       {{
         nas_packages_rsync
         | map('extract', ansible_facts.packages, [])
-        | select('length')
+        | select()
         | list
         | length == nas_packages_rsync | length
       }}
