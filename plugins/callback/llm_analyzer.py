@@ -6,11 +6,12 @@ from __future__ import absolute_import, division, print_function
 from ansible.plugins.callback import CallbackBase
 from ansible.module_utils._text import to_text
 import yaml
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 from pathlib import Path
 import os
 import json
 import datetime
+import re
 
 __metaclass__ = type
 
@@ -525,24 +526,416 @@ class CallbackModule(CallbackBase):
             f.write("## Analysis\n\n")
             f.write(content)
 
+    def _save_structured_suggestions(self, suggestions: str, analysis_type: str, name: str = None):
+        """Save structured suggestions for LLM processing."""
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        count = self.task_count if analysis_type == "task" else self.play_count
+        filename = f"{timestamp}_{analysis_type}_{count}"
+        if name:
+            safe_name = "".join(c if c.isalnum() else "_" for c in name)
+            filename = f"{filename}_{safe_name}"
+        filename = f"{filename}_suggestions.dspy"
+
+        filepath = self.analysis_dir / filename
+        with open(filepath, "w") as f:
+            f.write(suggestions)
+
     def v2_playbook_on_task_start(self, task, is_conditional):
         self.task_count += 1
-        task_text = yaml.dump([json.loads(json.dumps(task._ds))])
+
+        # Safely get task data using public API with error handling
+        try:
+            # Use public get_ds() method instead of private _ds attribute
+            task_data = task.get_ds()
+            task_text = yaml.dump([json.loads(json.dumps(task_data))])
+        except (AttributeError, TypeError) as e:
+            # Fallback: create task representation from available public attributes
+            print(f"Warning: Could not access task data structure: {e}")
+            task_dict = {
+                'name': str(getattr(task, 'name', 'Unknown Task')),
+                'action': str(getattr(task, 'action', 'Unknown Action')),
+            }
+            # Add args if available and serializable
+            try:
+                if hasattr(task, 'args') and task.args:
+                    # Only add args if they're serializable (not mock objects)
+                    args_data = dict(task.args) if hasattr(task.args, 'items') else task.args
+                    # Test if serializable
+                    json.dumps(args_data)
+                    task_dict.update(args_data)
+            except (TypeError, ValueError, AttributeError):
+                # Args not serializable, skip them
+                task_dict['args'] = 'Unable to serialize task arguments'
+
+            task_text = yaml.dump([task_dict])
+
+        # Perform AI-powered explanation
         explanation = self.ai_provider.get_description(task_text=task_text)
 
-        # Print to console
+        # Perform style analysis
+        style_violations = self.analyze_style(task_text)
+
+        # Print AI explanation to console
         print(f"Explanation: \n{explanation}")
 
-        # Save full analysis to markdown
-        self._save_to_markdown(explanation, "task", task.get_name())
+        # Print style analysis if violations found
+        if style_violations:
+            print(f"\n⚠️  Style Guide Violations Found:")
+            for violation in style_violations:
+                print(f"  • Line {violation['line']}: {violation['message']}")
+
+        # Save full analysis to markdown (includes both AI explanation and style analysis)
+        full_analysis = explanation
+        if style_violations:
+            full_analysis += "\n\n## Style Analysis\n\n"
+            for violation in style_violations:
+                full_analysis += f"- **Line {violation['line']}** ({violation['type']}): {violation['message']}\n"
+
+            # Also save structured suggestions for LLM processing
+            structured_suggestions = self.generate_structured_suggestions(
+                task_text, f"task_{self.task_count}_{task.get_name()}.yml"
+            )
+            self._save_structured_suggestions(structured_suggestions, "task", task.get_name())
+
+        self._save_to_markdown(full_analysis, "task", task.get_name())
 
     def v2_playbook_on_play_start(self, play):
         self.play_count += 1
-        play_text = yaml.dump(json.loads(json.dumps(play.get_ds())))
+
+        # Safely get play data using public API with error handling
+        try:
+            # Use public get_ds() method
+            play_data = play.get_ds()
+            play_text = yaml.dump(json.loads(json.dumps(play_data)))
+        except (AttributeError, TypeError) as e:
+            # Fallback: create play representation from available public attributes
+            print(f"Warning: Could not access play data structure: {e}")
+            play_dict = {
+                'name': str(getattr(play, 'name', 'Unknown Play')),
+                'hosts': list(getattr(play, 'hosts', [])) if hasattr(getattr(play, 'hosts', []), '__iter__') else ['Unknown'],
+                'gather_facts': bool(getattr(play, 'gather_facts', True)),
+            }
+            play_text = yaml.dump(play_dict)
+
+        # Perform AI-powered explanation
         explanation = self.ai_provider.get_description(play_text=play_text)
 
-        # Print to console
+        # Perform style analysis
+        style_violations = self.analyze_style(play_text)
+
+        # Print AI explanation to console
         print(f"Explanation: \n{explanation}")
 
-        # Save full analysis to markdown
-        self._save_to_markdown(explanation, "play", play.get_name())
+        # Print style analysis if violations found
+        if style_violations:
+            print(f"\n⚠️  Style Guide Violations Found:")
+            for violation in style_violations:
+                print(f"  • Line {violation['line']}: {violation['message']}")
+
+        # Save full analysis to markdown (includes both AI explanation and style analysis)
+        full_analysis = explanation
+        if style_violations:
+            full_analysis += "\n\n## Style Analysis\n\n"
+            for violation in style_violations:
+                full_analysis += f"- **Line {violation['line']}** ({violation['type']}): {violation['message']}\n"
+
+        self._save_to_markdown(full_analysis, "play", play.get_name())
+
+    def analyze_style(self, yaml_content: str) -> List[Dict[str, Any]]:
+        """Analyze YAML content for Ansible style guide violations.
+
+        Args:
+            yaml_content: The YAML content to analyze
+
+        Returns:
+            List of violation dictionaries with type, message, and line info
+        """
+        violations = []
+        lines = yaml_content.split('\n')
+
+        violations.extend(self._check_variable_naming(lines))
+        violations.extend(self._check_task_structure(lines))
+        violations.extend(self._check_tag_conventions(lines))
+
+        return violations
+
+    def generate_structured_suggestions(self, yaml_content: str, file_path: str = "ansible_file.yml") -> str:
+        """Generate structured suggestions for LLM processing in DSPy format.
+
+        Args:
+            yaml_content: The YAML content to analyze
+            file_path: Path to the file being analyzed
+
+        Returns:
+            Structured output with DSPy field markers and JSON suggestions
+        """
+        violations = self.analyze_style(yaml_content)
+        suggestions = []
+
+        for violation in violations:
+            suggestion = self._violation_to_suggestion(violation, yaml_content)
+            if suggestion:
+                suggestions.append(suggestion)
+
+        # Format in DSPy structured output format
+        output_parts = [
+            "[[ ## file_path ## ]]",
+            file_path,
+            "",
+            "[[ ## suggestions ## ]]",
+            json.dumps(suggestions, indent=2),
+            "",
+            "[[ ## completed ## ]]"
+        ]
+
+        return "\n".join(output_parts)
+
+    def _violation_to_suggestion(self, violation: Dict[str, Any], yaml_content: str) -> Optional[Dict[str, Any]]:
+        """Convert a style violation to an actionable suggestion."""
+        lines = yaml_content.split('\n')
+        if violation['line'] <= 0 or violation['line'] > len(lines):
+            return None
+
+        line_content = lines[violation['line'] - 1]
+
+        suggestion = {
+            "type": "replace",
+            "line_number": violation['line'],
+            "violation_type": violation['type'],
+            "reason": violation['message']
+        }
+
+        # Generate specific fixes based on violation type
+        if violation['type'] == 'variable_naming':
+            suggestion.update(self._generate_variable_naming_fix(line_content, violation))
+        elif violation['type'] == 'tag_naming':
+            suggestion.update(self._generate_tag_naming_fix(line_content, violation))
+        elif violation['type'] == 'task_structure':
+            suggestion.update(self._generate_task_structure_fix(line_content, violation))
+
+        return suggestion
+
+    def _generate_variable_naming_fix(self, line_content: str, violation: Dict[str, Any]) -> Dict[str, str]:
+        """Generate fix for variable naming violations."""
+        old_text = line_content.strip()
+        new_text = old_text
+
+        # Fix camelCase variables in Jinja templates
+        if 'snake_case' in violation['message']:
+            import re
+            camel_pattern = r'{{\s*([a-z][a-zA-Z]*[A-Z][a-zA-Z]*)\s*}}'
+            match = re.search(camel_pattern, old_text)
+            if match:
+                camel_var = match.group(1)
+                snake_var = self._to_snake_case(camel_var)
+                new_text = old_text.replace(f"{{{{ {camel_var} }}}}", f"{{{{ {snake_var} }}}}")
+
+        # Fix variables in vars sections
+        elif 'role prefix' in violation['message']:
+            var_pattern = r'^(\s*)([A-Z][a-zA-Z]*)\s*:'
+            match = re.match(var_pattern, old_text)
+            if match:
+                indent, var_name = match.groups()
+                snake_var = self._to_snake_case(var_name)
+                new_text = f"{indent}role_{snake_var}:"
+
+        return {
+            "old_text": old_text,
+            "new_text": new_text
+        }
+
+    def _generate_tag_naming_fix(self, line_content: str, violation: Dict[str, Any]) -> Dict[str, str]:
+        """Generate fix for tag naming violations."""
+        old_text = line_content.strip()
+        new_text = old_text
+
+        # Fix single string/unquoted tags to array format
+        if 'array format' in violation['message']:
+            if 'tags:' in old_text:
+                # Extract tag value
+                tag_match = re.search(r'tags:\s*([^\s#]+)', old_text)
+                if tag_match:
+                    tag_value = tag_match.group(1).strip('"\'')
+                    # Convert to snake_case if needed
+                    if re.match(r'[A-Z][a-zA-Z]*[A-Z][a-zA-Z]*', tag_value):
+                        tag_value = self._to_snake_case(tag_value)
+                    new_text = re.sub(r'tags:\s*[^\s#]+', f'tags: ["{tag_value}"]', old_text)
+
+        # Fix camelCase tags in arrays
+        elif 'snake_case' in violation['message']:
+            camel_tags = re.findall(r'([A-Z][a-zA-Z]*[A-Z][a-zA-Z]*)', old_text)
+            for camel_tag in camel_tags:
+                snake_tag = self._to_snake_case(camel_tag)
+                new_text = new_text.replace(camel_tag, f'"{snake_tag}"')
+
+        return {
+            "old_text": old_text,
+            "new_text": new_text
+        }
+
+    def _generate_task_structure_fix(self, line_content: str, violation: Dict[str, Any]) -> Dict[str, str]:
+        """Generate fix for task structure violations."""
+        return {
+            "old_text": line_content.strip(),
+            "new_text": "# TODO: Reorder task attributes - name, module, become, loop, when, tags, notify",
+            "note": "Task attribute reordering requires multi-line changes. Manual intervention recommended."
+        }
+
+    def _check_variable_naming(self, lines: List[str]) -> List[Dict[str, Any]]:
+        """Check for variable naming convention violations."""
+        violations = []
+
+        # Pattern for camelCase variables in Jinja templates
+        camel_case_pattern = r'{{\s*([a-z][a-zA-Z]*[A-Z][a-zA-Z]*)\s*}}'
+
+        # Pattern for variables in vars sections that start with capital letters
+        vars_pattern = r'^\s*([A-Z][a-zA-Z]*)\s*:'
+
+        for line_num, line in enumerate(lines, 1):
+            # Check for camelCase in Jinja templates
+            camel_matches = re.findall(camel_case_pattern, line)
+            for match in camel_matches:
+                violations.append({
+                    'type': 'variable_naming',
+                    'message': f'Variable "{match}" should use snake_case: "{self._to_snake_case(match)}"',
+                    'line': line_num
+                })
+
+            # Check for variables starting with capital letters
+            vars_match = re.match(vars_pattern, line)
+            if vars_match:
+                var_name = vars_match.group(1)
+                violations.append({
+                    'type': 'variable_naming',
+                    'message': f'Variable "{var_name}" should use snake_case with role prefix',
+                    'line': line_num
+                })
+
+        return violations
+
+    def _check_task_structure(self, lines: List[str]) -> List[Dict[str, Any]]:
+        """Check for task structure violations according to style guide.
+
+        Expected order: name, module, become, loop, when, tags, notify
+        """
+        violations = []
+        in_task = False
+        task_start_line = 0
+        task_attributes = []
+
+        for line_num, line in enumerate(lines, 1):
+            # Detect start of a task (starts with "- ")
+            if re.match(r'^\s*-\s+\w+:', line):
+                if in_task and task_attributes:
+                    # Check previous task structure
+                    violations.extend(self._validate_task_attribute_order(task_attributes, task_start_line))
+
+                in_task = True
+                task_start_line = line_num
+                task_attributes = []
+
+                # Extract first attribute
+                match = re.match(r'^\s*-\s+(\w+):', line)
+                if match:
+                    task_attributes.append(match.group(1))
+
+            # Collect other task attributes
+            elif in_task and re.match(r'^\s+(\w+):', line):
+                match = re.match(r'^\s+(\w+):', line)
+                if match:
+                    attr = match.group(1)
+                    # Skip ansible module attributes (they're not task-level attributes)
+                    if not line.strip().startswith('ansible.builtin.'):
+                        task_attributes.append(attr)
+
+            # End of task detection (empty line or new task/block)
+            elif in_task and (line.strip() == '' or re.match(r'^\s*-|^\w+:', line)):
+                if task_attributes:
+                    violations.extend(self._validate_task_attribute_order(task_attributes, task_start_line))
+                in_task = False
+                task_attributes = []
+
+        # Check last task if file ends while in task
+        if in_task and task_attributes:
+            violations.extend(self._validate_task_attribute_order(task_attributes, task_start_line))
+
+        return violations
+
+    def _validate_task_attribute_order(self, attributes: List[str], start_line: int) -> List[Dict[str, Any]]:
+        """Validate the order of task attributes against the style guide."""
+        violations = []
+        expected_order = ['name', 'become', 'loop', 'when', 'tags', 'notify']
+
+        # Filter attributes to only those in expected order
+        relevant_attrs = [attr for attr in attributes if attr in expected_order]
+
+        if len(relevant_attrs) > 1:
+            # Check if they're in the expected order
+            sorted_attrs = sorted(relevant_attrs, key=lambda x: expected_order.index(x))
+            if relevant_attrs != sorted_attrs:
+                violations.append({
+                    'type': 'task_structure',
+                    'message': 'Task attributes not in recommended order. Should be: name, module, become, loop, when, tags, notify',
+                    'line': start_line
+                })
+
+        return violations
+
+    def _check_tag_conventions(self, lines: List[str]) -> List[Dict[str, Any]]:
+        """Check for tag naming convention violations."""
+        violations = []
+
+        for line_num, line in enumerate(lines, 1):
+            # Check for string format tags (should be array)
+            if re.search(r'tags:\s*"[^"]*"', line):
+                violations.append({
+                    'type': 'tag_naming',
+                    'message': 'Tags should use square bracket array format',
+                    'line': line_num
+                })
+
+            # Check for single unquoted tags (should be array)
+            single_tag_match = re.search(r'tags:\s*([A-Za-z][A-Za-z0-9_]*)\s*(?:#|$)', line)
+            if single_tag_match:
+                tag_name = single_tag_match.group(1)
+                violations.append({
+                    'type': 'tag_naming',
+                    'message': f'Tags should use square bracket array format',
+                    'line': line_num
+                })
+                # Also check if the tag is camelCase
+                if re.match(r'[A-Z][a-zA-Z]*[A-Z][a-zA-Z]*', tag_name):
+                    violations.append({
+                        'type': 'tag_naming',
+                        'message': f'Tag "{tag_name}" should use snake_case',
+                        'line': line_num
+                    })
+
+            # Check for camelCase tags in arrays
+            tag_array_match = re.search(r'tags:\s*\[(.*)\]', line)
+            if tag_array_match:
+                tags_content = tag_array_match.group(1)
+                # Find unquoted camelCase tags
+                camel_tags = re.findall(r'([A-Z][a-zA-Z]*[A-Z][a-zA-Z]*)', tags_content)
+                for tag in camel_tags:
+                    violations.append({
+                        'type': 'tag_naming',
+                        'message': f'Tag "{tag}" should use snake_case',
+                        'line': line_num
+                    })
+
+        return violations
+
+    def _to_snake_case(self, camel_str: str) -> str:
+        """Convert camelCase to snake_case.
+
+        Args:
+            camel_str: String in camelCase format
+
+        Returns:
+            String in snake_case format
+        """
+        # Insert underscore before capital letters that follow lowercase letters
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_str)
+        # Insert underscore before capital letters that follow lowercase letters or digits
+        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
