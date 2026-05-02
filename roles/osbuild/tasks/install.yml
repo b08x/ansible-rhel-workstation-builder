@@ -16,49 +16,11 @@
   ansible.builtin.debug:
     msg: "Available disk space: {{ available_space.stdout }}GB (minimum required: {{ osbuild_min_disk_space }}GB)"
 
-- name: Install osbuild-composer and related packages
+- name: Install image-builder and related packages
   ansible.builtin.dnf:
     name: "{{ osbuild_host_packages }}"
     state: present
   become: true
-  notify: Restart osbuild-composer
-
-- name: Ensure osbuild-composer socket is enabled and started
-  ansible.builtin.systemd:
-    name: osbuild-composer.socket
-    state: started
-    enabled: true
-  become: true
-
-- name: Wait for osbuild-composer socket to be active
-  ansible.builtin.wait_for:
-    path: /run/weldr/api.socket
-    state: present
-    timeout: 60
-  become: true
-
-- name: Add current user to weldr group for composer-cli access
-  ansible.builtin.user:
-    name: "{{ ansible_user_id }}"
-    groups: "{{ osbuild_weldr_group }}"
-    append: true
-  become: true
-  register: user_group_added
-
-- name: Reset SSH connection to apply group membership
-  ansible.builtin.meta: reset_connection
-  when: user_group_added is changed
-
-- name: Verify composer-cli is functional
-  ansible.builtin.command: composer-cli status show
-  register: composer_status
-  changed_when: false
-  failed_when: composer_status.rc != 0
-
-- name: Display composer service status
-  ansible.builtin.debug:
-    msg: "{{ composer_status.stdout_lines }}"
-  when: osbuild_verbose | bool
 
 - name: Create output directories
   ansible.builtin.file:
@@ -69,7 +31,7 @@
     - "{{ osbuild_output_dir }}"
     - "{{ osbuild_log_dir }}"
 
-- name: Enable firewalld for Cockpit (optional)
+- name: Enable firewalld (optional)
   block:
     - name: Ensure firewalld is running
       ansible.builtin.systemd:
@@ -77,13 +39,4 @@
         state: started
         enabled: true
       become: true
-
-    - name: Allow Cockpit through firewall
-      ansible.posix.firewalld:
-        service: cockpit
-        permanent: true
-        state: enabled
-        immediate: true
-      become: true
-  when: "'cockpit-composer' in osbuild_host_packages"
   ignore_errors: true  # Don't fail if firewalld is not desired

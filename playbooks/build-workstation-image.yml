@@ -1,0 +1,75 @@
+---
+# Playbook: Build Fedora 43 AI Workstation Image with image-builder (OSBuild)
+#
+# Usage:
+#   ansible-playbook playbooks/build-workstation-image.yml
+#
+# This playbook replaces the legacy KIWI NG build process with the streamlined
+# image-builder toolchain.
+
+- name: Build Fedora 43 AI Workstation Image
+  hosts: builder
+  become: true
+  gather_facts: true
+
+  # ========================================================================
+  # Variables
+  # ========================================================================
+  vars:
+    # Feature toggles for OSBuild role
+    use_nvidia: true
+    use_sway: true
+    include_container_tools: true
+    include_oneapi_in_image: false
+
+    # Image configuration
+    blueprint_name: "fedora-43-ai-workstation"
+    osbuild_distro: "fedora-43"
+    osbuild_image_type: "workstation-live-installer"
+
+  # ========================================================================
+  # Pre-Tasks
+  # ========================================================================
+  pre_tasks:
+    - name: Display playbook information
+      ansible.builtin.debug:
+        msg:
+          - "============================================================================"
+          - "Modern Image Builder (OSBuild) Playbook"
+          - "============================================================================"
+          - "This playbook will build a custom Fedora {{ osbuild_distro }} Workstation Image"
+          - "using the modern 'image-builder' synchronous toolchain."
+          - ""
+          - "Features enabled in this build:"
+          - "  - Sway WM: {{ use_sway }}"
+          - "  - NVIDIA Drivers: {{ use_nvidia }}"
+          - "  - Container Tools: {{ include_container_tools }}"
+          - "  - Intel oneAPI: {{ include_oneapi_in_image }}"
+          - ""
+          - "Build executes synchronously. Progress will be polled every 30 seconds."
+          - "============================================================================"
+
+  # ========================================================================
+  # Roles
+  # ========================================================================
+  roles:
+    - role: osbuild
+      tags:
+        - osbuild
+        - image-builder
+
+  # ========================================================================
+  # Post-Tasks
+  # ========================================================================
+  post_tasks:
+    - name: Display build completion summary
+      ansible.builtin.debug:
+        msg:
+          - "============================================================================"
+          - "Image Build Process Complete"
+          - "============================================================================"
+          - "Artifact: {{ osbuild_output_dir }}/{{ osbuild_output_filename }}"
+          - ""
+          - "For verification steps and troubleshooting, see:"
+          - "roles/osbuild/README.md"
+          - "============================================================================"

@@ -55,16 +55,12 @@ include_container_tools: true
 
 # Packages to install on the build host
 osbuild_host_packages:
-  - osbuild-composer
-  - composer-cli
-  - cockpit-composer
+  - osbuild
+  - image-builder
   - bash-completion
   - firewalld
   - openscap-scanner 
   - scap-security-guide
-
-# User group for composer-cli access
-osbuild_weldr_group: "weldr"
 
 # Build timeout in seconds (default: 4 hours for oneAPI builds)
 osbuild_build_timeout: 14400

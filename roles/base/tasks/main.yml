@@ -90,7 +90,7 @@
 # ----------------------------------------------------------------------------
 
 - name: Include Distribution Specific Repository Tasks
-  ansible.builtin.include_tasks: "{{ ansible_distribution }}.yml"
+  ansible.builtin.include_tasks: "distro/{{ ansible_distribution }}.yml"
   when:
     - enable_third_party_repos | default(true)
   tags: ["repos", "base"]

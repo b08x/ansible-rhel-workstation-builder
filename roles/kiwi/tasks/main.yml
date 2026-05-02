@@ -3,6 +3,17 @@
 # Main entry point for KIWI NG image building
 
 # ============================================================================
+# Deprecation Warning
+# ============================================================================
+
+- name: Deprecation Warning
+  ansible.builtin.debug:
+    msg: |
+      WARNING: The 'kiwi' role is deprecated and scheduled for removal.
+      Please migrate to the 'osbuild' role, which has been refactored to use 'image-builder'
+      for a more modern and streamlined image creation process.
+
+# ============================================================================
 # Distribution Verification
 # ============================================================================
 

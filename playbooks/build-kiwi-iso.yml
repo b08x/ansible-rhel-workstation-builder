@@ -1,4 +1,6 @@
----
+# DEPRECATED: This playbook uses the KIWI NG builder which is scheduled for removal.
+# Please use playbooks/build-workstation-image.yml instead.
+#
 # Example playbook: Build Fedora 43 AI Workstation ISO with KIWI NG
 #
 # Usage:

@@ -1,6 +1,6 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# Build execution and monitoring for osbuild-composer
+# Build execution for image-builder
 
 - name: Display build configuration
   ansible.builtin.debug:
@@ -11,103 +11,76 @@
       Timeout: {{ osbuild_build_timeout }} seconds
       Output directory: {{ osbuild_output_dir }}
 
-- name: Check for running or queued composes
-  ansible.builtin.command: composer-cli compose status
-  register: compose_status_check
-  changed_when: false
-
-- name: Display current compose status
-  ansible.builtin.debug:
-    msg: "{{ compose_status_check.stdout_lines }}"
-  when: osbuild_verbose | bool
-
-- name: Start compose build
-  ansible.builtin.command: >
-    composer-cli compose start {{ blueprint_name }} {{ osbuild_image_type }}
-  register: compose_start
-  changed_when: true
-
-- name: Extract compose UUID
+- name: Initialize build status
   ansible.builtin.set_fact:
-    compose_uuid: "{{ compose_start.stdout | regex_search('Compose ([a-f0-9-]+) added', '\\1') | first }}"
-  failed_when: compose_uuid is not defined or compose_uuid == ""
-
-- name: Display compose UUID
-  ansible.builtin.debug:
-    msg: "Compose started with UUID: {{ compose_uuid }}"
-
-- name: Initialize build monitoring variables
-  ansible.builtin.set_fact:
-    build_elapsed_time: 0
     build_status: "RUNNING"
-    poll_count: 0
 
-- name: Monitor build progress
+- name: Execute image-builder build
   block:
-    - name: Poll compose status until completion or timeout
-      ansible.builtin.command: composer-cli compose info {{ compose_uuid }}
-      register: compose_info
-      changed_when: false
-      until: >
-        'FINISHED' in compose_info.stdout or
-        'FAILED' in compose_info.stdout
-      retries: "{{ (osbuild_build_timeout / osbuild_poll_interval) | int }}"
-      delay: "{{ osbuild_poll_interval }}"
-      failed_when: false
+    - name: Run image-builder (synchronous)
+      ansible.builtin.command: >
+        image-builder build {{ osbuild_image_type }} 
+        --distro {{ osbuild_distro }} 
+        --blueprint {{ osbuild_output_dir }}/{{ blueprint_name }}.toml
+      args:
+        chdir: "{{ osbuild_output_dir }}"
+      register: image_build_exec
+      become: true
+      async: "{{ osbuild_build_timeout }}"
+      poll: 30
 
-    - name: Extract final build status
+    - name: Set build status to finished
       ansible.builtin.set_fact:
-        build_status: "{{ compose_info.stdout | regex_search('Status: (\\w+)', '\\1') | first }}"
-
-    - name: Display build completion status
-      ansible.builtin.debug:
-        msg: |
-          Build completed with status: {{ build_status }}
-          Compose UUID: {{ compose_uuid }}
+        build_status: "FINISHED"
 
   rescue:
-    - name: Handle build timeout
-      ansible.builtin.debug:
-        msg: |
-          Build timed out after {{ osbuild_build_timeout }} seconds
-          Compose UUID: {{ compose_uuid }}
-          Last known status: {{ compose_info.stdout | default('Unknown') }}
-
-    - name: Set timeout status
+    - name: Set build status to failed
       ansible.builtin.set_fact:
-        build_status: "TIMEOUT"
+        build_status: "FAILED"
+
+    - name: Capture failure logs
+      ansible.builtin.copy:
+        content: |
+          Build Failure Report
+          ====================
+          Timestamp: {{ ansible_date_time.iso8601 }}
+          Blueprint: {{ blueprint_name }}
+          Image Type: {{ osbuild_image_type }}
+          Distribution: {{ osbuild_distro }}
+          Status: FAILED
+
+          STDOUT:
+          {{ image_build_exec.stdout | default('No stdout captured') }}
+
+          STDERR:
+          {{ image_build_exec.stderr | default('No stderr captured') }}
+        dest: "{{ osbuild_log_dir }}/build-failure-{{ ansible_date_time.epoch }}.log"
+        mode: '0644'
+      when: osbuild_keep_logs | bool
 
 - name: Handle successful build
   when: build_status == "FINISHED"
   block:
     - name: Display success message
       ansible.builtin.debug:
-        msg: "Build completed successfully. Downloading image..."
+        msg: "Build completed successfully."
 
-    - name: Download compose image
-      ansible.builtin.command: >
-        composer-cli compose image {{ compose_uuid }}
-      args:
-        chdir: "{{ osbuild_output_dir }}"
-      register: image_download
-
-    - name: Find downloaded image file
+    - name: Find generated image file
       ansible.builtin.find:
         paths: "{{ osbuild_output_dir }}"
-        patterns: "{{ compose_uuid }}*.iso,{{ compose_uuid }}*.qcow2,{{ compose_uuid }}*.img"
+        patterns: "composer-api-*.iso,composer-api-*.qcow2,composer-api-*.img,*.iso,*.qcow2,*.img"
         use_regex: false
       register: image_files
 
-    - name: Verify image was downloaded
+    - name: Verify image exists
       ansible.builtin.assert:
         that:
           - image_files.files | length > 0
-        fail_msg: "Image download failed - no image file found"
-        success_msg: "Image downloaded successfully"
+        fail_msg: "Image build reported success but no image file was found"
 
     - name: Rename image to friendly name
       ansible.builtin.copy:
-        src: "{{ image_files.files[0].path }}"
+        src: "{{ (image_files.files | sort(attribute='mtime', reverse=true) | first).path }}"
         dest: "{{ osbuild_output_dir }}/{{ osbuild_output_filename }}"
         mode: '0644'
         remote_src: true
@@ -126,128 +99,15 @@
           ╚════════════════════════════════════════════════════════════════╝
 
           Blueprint: {{ blueprint_name }}
-          Compose UUID: {{ compose_uuid }}
           Image Type: {{ osbuild_image_type }}
           Distribution: {{ osbuild_distro }}
 
           Output File: {{ osbuild_output_dir }}/{{ osbuild_output_filename }}
           Image Size: {{ (final_image.stat.size / 1024 / 1024 / 1024) | round(2) }} GB
 
-          Next Steps:
-          1. Test the image in a virtual machine
-          2. Verify boot process and desktop environments (GNOME/Sway)
-          3. Test NVIDIA drivers (if enabled): nvidia-smi
-          4. Test Podman GPU access (if enabled)
-          5. Flash to USB for physical hardware testing
-
-    - name: Download compose metadata
-      ansible.builtin.command: >
-        composer-cli compose metadata {{ compose_uuid }}
-      args:
-        chdir: "{{ osbuild_output_dir }}"
-      register: metadata_download
-      ignore_errors: true
-
-    - name: Download compose logs for reference
-      ansible.builtin.command: >
-        composer-cli compose log {{ compose_uuid }}
-      args:
-        chdir: "{{ osbuild_log_dir }}"
-      register: log_download
-      ignore_errors: true
-      when: osbuild_keep_logs | bool
-
-- name: Handle failed build
-  when: build_status == "FAILED" or build_status == "TIMEOUT"
-  block:
-    - name: Download compose logs
-      ansible.builtin.command: >
-        composer-cli compose log {{ compose_uuid }}
-      args:
-        chdir: "{{ osbuild_log_dir }}"
-      register: failure_logs
-      ignore_errors: true
-
-    - name: Save failure logs
-      ansible.builtin.copy:
-        content: |
-          Build Failure Report
-          ====================
-          Timestamp: {{ ansible_date_time.iso8601 }}
-          Blueprint: {{ blueprint_name }}
-          Compose UUID: {{ compose_uuid }}
-          Image Type: {{ osbuild_image_type }}
-          Distribution: {{ osbuild_distro }}
-          Status: {{ build_status }}
-
-          Compose Info:
-          {{ compose_info.stdout | default('No info available') }}
-
-          Common Failure Causes:
-          1. Dependency resolution errors (missing packages)
-          2. Repository connectivity issues
-          3. Insufficient disk space in {{ osbuild_work_dir }}
-          4. GPG key validation failures
-          5. Kernel/driver package conflicts
-
-          Troubleshooting Steps:
-          - Review logs at {{ osbuild_log_dir }}/{{ compose_uuid }}-logs.tar
-          - Check composer service: sudo systemctl status osbuild-composer
-          - Verify sources: composer-cli sources list
-          - Test blueprint: composer-cli blueprints depsolve {{ blueprint_name }}
-          - Check disk space: df -h {{ osbuild_work_dir }}
-        dest: "{{ osbuild_log_dir }}/build-failure-{{ ansible_date_time.epoch }}.log"
-        mode: '0644'
-      when: osbuild_keep_logs | bool
-
-    - name: Display failure information
-      ansible.builtin.debug:
-        msg: |
-          ╔════════════════════════════════════════════════════════════════╗
-          ║                    BUILD FAILED                                ║
-          ╚════════════════════════════════════════════════════════════════╝
-
-          Blueprint: {{ blueprint_name }}
-          Compose UUID: {{ compose_uuid }}
-          Status: {{ build_status }}
-
-          Logs saved to: {{ osbuild_log_dir }}/
-
-          Review the logs with:
-          tar -xzf {{ osbuild_log_dir }}/{{ compose_uuid }}-logs.tar
-          less {{ osbuild_log_dir }}/build-failure-{{ ansible_date_time.epoch }}.log
-
-    - name: Check if retry is configured
-      ansible.builtin.debug:
-        msg: "Build will be retried ({{ osbuild_build_retries }} retries remaining)"
-      when: osbuild_build_retries | int > 0
-
-    - name: Fail the build
-      ansible.builtin.fail:
-        msg: |
-          Image build failed with status: {{ build_status }}
-          Check logs at {{ osbuild_log_dir }} for details.
-          Compose UUID: {{ compose_uuid }}
-
-- name: Cleanup old composes (optional)
-  when: osbuild_cleanup_old_composes | bool and build_status == "FINISHED"
-  block:
-    - name: List all composes
-      ansible.builtin.command: composer-cli compose list
-      register: all_composes
-      changed_when: false
-
-    - name: Delete old finished composes
-      ansible.builtin.shell: |
-        set -o pipefail
-        composer-cli compose list | grep FINISHED | grep -v {{ compose_uuid }} | awk '{print $1}' | xargs -r -n1 composer-cli compose delete
-      args:
-        executable: /bin/bash
-      register: cleanup_result
-      changed_when: cleanup_result.stdout != ""
-      failed_when: false
-
-    - name: Display cleanup results
-      ansible.builtin.debug:
-        msg: "Cleaned up old composes"
-      when: cleanup_result.changed
+- name: Finalize build failure
+  when: build_status == "FAILED"
+  ansible.builtin.fail:
+    msg: |
+      Image build failed. 
+      Check logs at {{ osbuild_log_dir }}/build-failure-*.log for details.
