@@ -1,0 +1,36 @@
+---
+- name: Manage IDE repositories and packages
+  block:
+    - name: Add Antigravity repository
+      ansible.builtin.yum_repository:
+        name: antigravity-rpm
+        description: Antigravity RPM Repository
+        baseurl: https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm
+        enabled: true
+        gpgcheck: false
+        mode: "0644"
+      tags: ["antigravity"]
+
+  become: true
+  when: ansible_os_family == 'RedHat'
+  tags: ["repos"]
+
+- name: Install IDE packages
+  block:
+    - name: Install Antigravity
+      ansible.builtin.dnf:
+        name: antigravity
+        state: present
+      tags: ["antigravity"]
+  
+  become: true
+  tags: ["packages"]
+
+- name: Install Antigravity Extensions
+  block:
+    - name: Install Antigravity Extensions
+      ansible.builtin.command: "antigravity --install-extension {{ item }}"
+      loop: "{{ antigravity_extensions }}"
+  
+  become: false
+  tags: ["antigravity"]

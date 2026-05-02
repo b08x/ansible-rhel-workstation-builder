@@ -92,8 +92,17 @@
   
   tags: ["ydotool"]
 
-- include_tasks: browser.yml
-- include_tasks: ide.yml
+- name: include browser tasks
+  ansible.builtin.include_tasks: browser.yml
+  tags: ["browser"]
+
+- name: include antigravity tasks
+  ansible.builtin.include_tasks: ide/antigravity.yml
+  tags: ["antigravity"]
+
+- name: include vscode tasks
+  ansible.builtin.include_tasks: ide/vscode.yml
+  tags: ["vscode"]
 
 # - name: Install GNOME Desktop Environment
 #   ansible.builtin.dnf:
@@ -108,3 +117,6 @@
 #     state: present
 #   become: true
 #   tags: ["sway", "workstation"]
+
+
+#TODO: pip install trafilatura

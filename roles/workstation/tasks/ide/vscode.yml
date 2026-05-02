@@ -1,15 +1,7 @@
 ---
+
 - name: Manage IDE repositories and packages
   block:
-    - name: Add Antigravity repository
-      ansible.builtin.yum_repository:
-        name: antigravity-rpm
-        description: Antigravity RPM Repository
-        baseurl: https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm
-        enabled: true
-        gpgcheck: false
-        mode: "0644"
-
     - name: Add Visual Studio Code repository
       ansible.builtin.yum_repository:
         name: code
@@ -19,10 +11,34 @@
         gpgcheck: true
         gpgkey: https://packages.microsoft.com/keys/microsoft.asc
         mode: "0644"
+      tags: ["vscode"]
 
     - name: Install IDE packages
       ansible.builtin.dnf:
         name: "{{ workstation_ide_packages }}"
         state: present
+
+  become: true
   when: ansible_os_family == 'RedHat'
-  tags: ["ide", "packages"]
+  tags: ["repos"]
+
+
+- name: Install IDE packages
+  block:
+    - name: Install VSCode
+      ansible.builtin.dnf:
+        name: code
+        state: present
+      tags: ["vscode"]
+  
+  become: true
+  tags: ["packages"]
+
+- name: Install VS Code Extensions
+  block:
+    - name: Install VS Code Extensions
+      ansible.builtin.command: "code --install-extension {{ item }}"
+      loop: "{{ vscode_extensions }}"
+  
+  become: false
+  tags: ["vscode"]
