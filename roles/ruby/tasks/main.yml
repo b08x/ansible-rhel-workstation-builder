@@ -1,0 +1,25 @@
+#SPDX-License-Identifier: MIT-0
+---
+# TODO:
+
+# check if ruby is installed
+
+# install system deps
+
+# check if asdf is installed, if not then install it
+
+# install asdf plugin ruby
+
+# create .tool-versions && .default-gems
+# install 3.3.8 as default/global
+
+
+# install 3.4.4 with system ssl
+#
+# dnf install git-core zlib-devel libyaml-devel readline-devel \
+# libffi-devel openssl-devel make gcc autoconf patch
+#
+# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=/usr"
+# asdf install ruby 3.4.4
+
+

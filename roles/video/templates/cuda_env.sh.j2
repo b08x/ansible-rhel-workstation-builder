@@ -1,0 +1,15 @@
+if [ -d "/usr/local/cuda-13.1" ]; then
+
+  export CUDAHOSTCXX=/usr/bin/g++
+  export CPATH=/usr/include/openmpi-x86_64:$CPATH
+  export PATH=$PATH:/usr/lib64/openmpi/bin
+  export CC=/usr/bin/gcc
+  export CXX=/usr/bin/g++
+  export NVCC_CCBIN=/usr/bin/g++
+  export CUDACXX=/usr/local/cuda-13.1/bin/nvcc
+  
+  export LD_LIBRARY_PATH=/usr/local/cuda-13.1/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
+  export CPATH=/usr/local/cuda-13.1/targets/x86_64-linux/include:$CPATH
+  export PATH=/usr/local/cuda-13.1/bin:$PATH
+
+fi

@@ -1,0 +1,39 @@
+---
+# Tasks for whisper-stream
+- tags: ["packages"]
+  block:
+    - name: Install dependencies
+      aur:
+        use: auto
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - alsa-utils
+        - curl
+        - jq
+        - sox
+        - xclip
+        - xsel
+      become: false
+  rescue:
+    - name: Installing packages failed
+      ansible.builtin.debug:
+        msg: "Failed to install packages"
+
+- name: Clone whisper-stream repository
+  ansible.builtin.git:
+    repo: https://github.com/b08x/whisper-stream.git
+    dest: /tmp/whisper-stream
+    version: development
+
+- name: Move whisper-stream file to ~/.local/bin
+  ansible.builtin.shell: |
+    mkdir -pv {{ user.home }}/.local/bin
+    chmod +x whisper-stream && \
+    chown {{ user.name }}:{{ user.group }} whisper-stream && \
+    mv whisper-stream {{ user.home }}/.local/bin/whisper-stream
+  args:
+    chdir: /tmp/whisper-stream
+
+- name: Remove temp folder
+  ansible.builtin.command: rm -rf /tmp/whisper-stream
