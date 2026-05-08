@@ -18,6 +18,13 @@ name = "system-tools"
 name = "admin-tools"
 
 [[packages]]
+name = "net-tools"
+version = "*"
+[[packages]]
+name = "zram-generator"
+version = "*"
+
+[[packages]]
 name = "bash"
 version = "*"
 [[packages]]
@@ -113,16 +120,20 @@ name = "gcc14-c++"
 version = "*"
 [[packages]]
 name = "cuda-toolkit"
-version = "13.0.2-1"
+version = "*"
+#version = "13.0.2-1"
 [[packages]]
 name = "nvidia-gpu-firmware"
-version = "20251021-1.fc42"
+version = "*"
+#version = "20251021-1.fc42"
 [[packages]]
 name = "nvidia-driver"
-version = "3:580.105.08-1.fc42"
+version = "*"
+#version = "3:580.105.08-1.fc42"
 [[packages]]
 name = "nvidia-driver-cuda"
-version = "3:580.105.08-1.fc42"
+version = "*"
+#version = "3:580.105.08-1.fc42"
 
 
 # # Intel oneAPI & Compute
@@ -169,18 +180,18 @@ name = "chrony"
 version = "*"
 
 # Containers
-[[packages]]
-name = "docker-ce"
-version = "*"
-[[packages]]
-name = "docker-ce-cli"
-version = "*"
-[[packages]]
-name = "docker-compose-plugin"
-version = "*"
-[[packages]]
-name = "docker-buildx-plugin"
-version = "*"
+# [[packages]]
+# name = "docker-ce"
+# version = "*"
+# [[packages]]
+# name = "docker-ce-cli"
+# version = "*"
+# [[packages]]
+# name = "docker-compose-plugin"
+# version = "*"
+# [[packages]]
+# name = "docker-buildx-plugin"
+# version = "*"
 [[packages]]
 name = "podman"
 version = "*"
@@ -284,9 +295,9 @@ version = "*"
 name = "slurp"
 version = "*"
 
-[[packages]]
-name = "code"
-version = "*"
+#[[packages]]
+#name = "code"
+#version = "*"
 [[packages]]
 name = "google-chrome-stable"
 version = "*"
@@ -502,7 +513,6 @@ baseurls = [ "https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64" ]
 gpgcheck = true
 gpgkeys = [ "https://nvidia.github.io/libnvidia-container/gpgkey" ]
 enabled = true
-ssl_verify = true
 
 [[customizations.repositories]]
 id = "cuda-fedora42-x86_64"
@@ -526,4 +536,12 @@ name = "Docker CE Stable - x86_64"
 baseurls = [ "https://download.docker.com/linux/fedora/42/x86_64/stable" ]
 gpgcheck = true
 gpgkeys = [ "https://download.docker.com/linux/fedora/gpg" ]
+enabled = true
+
+[[customizations.repositories]]
+id = "home_TheLocehiliosan_yadm"
+name = "Yet Another Dotfiles Manager (Fedora_42)"
+baseurls = [ "https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_42/" ]
+gpgcheck = true
+gpgkeys = [ "https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_42/repodata/repomd.xml.key" ]
 enabled = true

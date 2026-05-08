@@ -172,38 +172,6 @@ gpgcheck = true
 gpgkeys = ["https://download.docker.com/linux/fedora/gpg"]
 enabled = true
 
-[[customizations.repositories]]
-id = "rpmfusion-free"
-name = "RPM Fusion Free for Fedora 43"
-metalink = "https://mirrors.rpmfusion.org/metalink?repo=free-fedora-43&arch=x86_64"
-gpgcheck = true
-gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/free/fedora/RPM-GPG-KEY-rpmfusion-free-fedora-2020"]
-enabled = true
-
-[[customizations.repositories]]
-id = "rpmfusion-free-updates"
-name = "RPM Fusion Free Updates for Fedora 43"
-metalink = "https://mirrors.rpmfusion.org/metalink?repo=free-fedora-updates-released-43&arch=x86_64"
-gpgcheck = true
-gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/free/fedora/RPM-GPG-KEY-rpmfusion-free-fedora-2020"]
-enabled = true
-
-[[customizations.repositories]]
-id = "rpmfusion-nonfree"
-name = "RPM Fusion Nonfree for Fedora 43"
-metalink = "https://mirrors.rpmfusion.org/metalink?repo=nonfree-fedora-43&arch=x86_64"
-gpgcheck = true
-gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/nonfree/fedora/RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020"]
-enabled = true
-
-[[customizations.repositories]]
-id = "rpmfusion-nonfree-updates"
-name = "RPM Fusion Nonfree Updates for Fedora 43"
-metalink = "https://mirrors.rpmfusion.org/metalink?repo=nonfree-fedora-updates-released-43&arch=x86_64"
-gpgcheck = true
-gpgkeys = ["https://us.mirrors.cicku.me/rpmfusion/nonfree/fedora/RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020"]
-enabled = true
-
 # [[customizations.repositories]]
 # id = "code"
 # name = "Visual Studio Code"
@@ -226,6 +194,14 @@ baseurls = ["https://download.opensuse.org/repositories/home:/TheLocehiliosan:/y
 gpgcheck = true
 gpgkeys = ["https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_43/repodata/repomd.xml.key"]
 enabled = true
+
+[[packages]]
+name = "rpmfusion-free-release"
+version = "*"
+
+[[packages]]
+name = "rpmfusion-nonfree-release"
+version = "*"
 
 [[groups]]
 name = "admin-tools"

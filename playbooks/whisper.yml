@@ -1,5 +1,8 @@
 ---
 
+
+# https://github.com/ggml-org/whisper.cpp
+
 # cmake -B build -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DWHISPER_FFMPEG=ON -DWHISPER_SDL2=ON -DGGML_VULKAN=1
 
 # cmake --build build -j --config Release

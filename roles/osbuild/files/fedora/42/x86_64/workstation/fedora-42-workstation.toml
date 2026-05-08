@@ -16,6 +16,12 @@ name = "container-management"
 name = "system-tools"
 [[groups]]
 name = "admin-tools"
+[[groups]]
+name = "swaywm-extended"
+[[groups]]
+name = "rpm-development-tools"
+[[groups]]
+name = "d-development"
 
 [[packages]]
 name = "kernel"
@@ -90,6 +96,9 @@ version = "*"
 name = "bluez"
 version = "*"
 
+[[packages]]
+name = "net-tools"
+version = "*"
 # Vagrant & Virtualization Utilities
 [[packages]]
 name = "nfs-utils"
@@ -236,6 +245,10 @@ name = "micro"
 version = "*"
 
 [[packages]]
+name = "yadm"
+version = "*"
+
+[[packages]]
 name = "zsh"
 version = "*"
 [[packages]]
@@ -255,6 +268,66 @@ name = "lnav"
 version = "*"
 [[packages]]
 name = "lm_sensors-devel"
+version = "*"
+
+[[packages]]
+name = "antigravity"
+version = "*"
+
+[[packages]]
+name = "aria2"
+version = "*"
+
+[[packages]]
+name = "bind-utils"
+version = "*"
+
+[[packages]]
+name = "du-dust"
+version = "*"
+
+[[packages]]
+name = "fd-find"
+version = "*"
+
+[[packages]]
+name = "firewalld"
+version = "*"
+
+[[packages]]
+name = "gitui"
+version = "*"
+
+[[packages]]
+name = "gum"
+version = "*"
+
+[[packages]]
+name = "input-remapper"
+version = "*"
+
+[[packages]]
+name = "ruby-devel"
+version = "*"
+
+[[packages]]
+name = "uv"
+version = "*"
+
+[[packages]]
+name = "vips-devel"
+version = "*"
+
+[[packages]]
+name = "wl-clipboard"
+version = "*"
+
+[[packages]]
+name = "rpmfusion-free-release"
+version = "*"
+
+[[packages]]
+name = "rpmfusion-nonfree-release"
 version = "*"
 
 [customizations.kernel]
@@ -391,4 +464,19 @@ name = "Docker CE Stable - x86_64"
 baseurls = [ "https://download.docker.com/linux/fedora/42/x86_64/stable" ]
 gpgcheck = true
 gpgkeys = [ "https://download.docker.com/linux/fedora/gpg" ]
+enabled = true
+
+[[customizations.repositories]]
+id = "home_TheLocehiliosan_yadm"
+name = "Yet Another Dotfiles Manager (Fedora_42)"
+baseurls = [ "https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_42/" ]
+gpgcheck = true
+gpgkeys = [ "https://download.opensuse.org/repositories/home:/TheLocehiliosan:/yadm/Fedora_42/repodata/repomd.xml.key" ]
+enabled = true
+
+[[customizations.repositories]]
+id = "antigravity-rpm"
+name = "Antigravity RPM Repository"
+baseurls = ["https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm"]
+gpgcheck = false
 enabled = true

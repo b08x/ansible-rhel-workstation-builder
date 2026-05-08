@@ -29,6 +29,10 @@
 - *(osbuild)* Update fedora 43 nvidia blueprint packages and repo config
 - *(osbuild)* Update Fedora 43 workstation NVIDIA blueprint
 - *(base)* Enhance system configuration with dnf and cpupower settings
+- *(workstation)* Configure ydotool service and socket permissions
+- *(workstation,base,audio)* Add OS verification and enhance system configurations
+- *(osbuild)* Update workstation config and add refactor todo
+- *(systemd-networkd)* Add role for systemd-networkd and resolved configuration
 
 ### 🐛 Bug Fixes
 
@@ -44,6 +48,7 @@
 - *(audio)* Switch NoiseTorch install to binary release
 - *(base)* Reorganize tasks and update package/repo configuration
 - *(workstation)* Improve NVIDIA detection and update repository settings
+- *(docker)* Migrate playbook to role and add storage configuration
 
 ### 📚 Documentation
 
