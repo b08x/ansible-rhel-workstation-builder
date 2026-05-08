@@ -52,5 +52,7 @@ cost.json
 .graphify_labels.json
 .graphify_semantic.json
 .graphify_all_semantic.txt
-
+.graphify_python
+.graphify_python_path
+.graphify_root
 *.iso
