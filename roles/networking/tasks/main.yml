@@ -1,0 +1,31 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for networking
+
+- name: Load distribution-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  tags: ["packages"]
+
+# iwd backend
+- name: Include iwd tasks
+  ansible.builtin.include_tasks: wireless/iwd.yml
+  when: wifi_backend == "iwd"
+
+- name: Include avahi tasks
+  ansible.builtin.include_tasks: dns/systemd-resolved.yml
+  when: enable_mdns | default(true)
+
+# Avahi/mDNS support
+- name: Include avahi tasks
+  ansible.builtin.include_tasks: dns/avahi.yml
+  when: enable_mdns | default(true)
+
+# NetworkManager backend
+- name: Include NetworkManager tasks
+  ansible.builtin.include_tasks: networkmanager/main.yml
+  when: network_interfaces is defined
+
+# systemd-networkd backend
+- name: Include systemd-networkd tasks
+  ansible.builtin.include_tasks: networkd/main.yml
+  when: systemd_network_networks is defined
