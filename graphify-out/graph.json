@@ -8,801 +8,801 @@
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/assign-cgroups.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_libexec_sway_systemd_assign_cgroups_py",
       "community": 2,
-      "norm_label": "assign-cgroups.py"
+      "norm_label": "assign-cgroups.py",
+      "id": "roles_sway_files_usr_libexec_sway_systemd_assign_cgroups_py"
     },
     {
       "label": "main()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/assign-cgroups.py",
       "source_location": "L17",
-      "id": "sway_systemd_assign_cgroups_main",
       "community": 2,
-      "norm_label": "main()"
+      "norm_label": "main()",
+      "id": "sway_systemd_assign_cgroups_main"
     },
     {
       "label": "__init__.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/__init__.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_init_py",
       "community": 1,
-      "norm_label": "__init__.py"
+      "norm_label": "__init__.py",
+      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_init_py"
     },
     {
       "label": "proc.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/proc.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_proc_py",
       "community": 1,
-      "norm_label": "proc.py"
+      "norm_label": "proc.py",
+      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_proc_py"
     },
     {
       "label": "get_cgroup()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/proc.py",
       "source_location": "L8",
-      "id": "sway_systemd_proc_get_cgroup",
       "community": 1,
-      "norm_label": "get_cgroup()"
+      "norm_label": "get_cgroup()",
+      "id": "sway_systemd_proc_get_cgroup"
     },
     {
       "label": "get_pid_by_socket()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/proc.py",
       "source_location": "L21",
-      "id": "sway_systemd_proc_get_pid_by_socket",
       "community": 1,
-      "norm_label": "get_pid_by_socket()"
+      "norm_label": "get_pid_by_socket()",
+      "id": "sway_systemd_proc_get_pid_by_socket"
     },
     {
       "label": "Get cgroup identifier for the process specified by pid.     Assumes cgroups v2 u",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/proc.py",
       "source_location": "L9",
-      "id": "sway_systemd_proc_rationale_9",
       "community": 1,
-      "norm_label": "get cgroup identifier for the process specified by pid.     assumes cgroups v2 u"
+      "norm_label": "get cgroup identifier for the process specified by pid.     assumes cgroups v2 u",
+      "id": "sway_systemd_proc_rationale_9"
     },
     {
       "label": "getsockopt (..., SO_PEERCRED, ...) returns the following structure     struct uc",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/proc.py",
       "source_location": "L22",
-      "id": "sway_systemd_proc_rationale_22",
       "community": 1,
-      "norm_label": "getsockopt (..., so_peercred, ...) returns the following structure     struct uc"
+      "norm_label": "getsockopt (..., so_peercred, ...) returns the following structure     struct uc",
+      "id": "sway_systemd_proc_rationale_22"
     },
     {
       "label": "systemd.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/systemd.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_systemd_py",
       "community": 1,
-      "norm_label": "systemd.py"
+      "norm_label": "systemd.py",
+      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_systemd_py"
     },
     {
       "label": "escape_app_id()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/systemd.py",
       "source_location": "L12",
-      "id": "sway_systemd_systemd_escape_app_id",
       "community": 1,
-      "norm_label": "escape_app_id()"
+      "norm_label": "escape_app_id()",
+      "id": "sway_systemd_systemd_escape_app_id"
     },
     {
       "label": "Escape app_id for systemd APIs.      The \"unit prefix\" must consist of one or mo",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/systemd.py",
       "source_location": "L13",
-      "id": "sway_systemd_systemd_rationale_13",
       "community": 1,
-      "norm_label": "escape app_id for systemd apis.      the \"unit prefix\" must consist of one or mo"
+      "norm_label": "escape app_id for systemd apis.      the \"unit prefix\" must consist of one or mo",
+      "id": "sway_systemd_systemd_rationale_13"
     },
     {
       "label": "sway_utils.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/sway_utils.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_sway_utils_py",
       "community": 1,
-      "norm_label": "sway_utils.py"
+      "norm_label": "sway_utils.py",
+      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_sway_utils_py"
     },
     {
       "label": "create_x11_pid_getter()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/sway_utils.py",
       "source_location": "L12",
-      "id": "sway_systemd_sway_utils_create_x11_pid_getter",
       "community": 1,
-      "norm_label": "create_x11_pid_getter()"
+      "norm_label": "create_x11_pid_getter()",
+      "id": "sway_systemd_sway_utils_create_x11_pid_getter"
     },
     {
       "label": "Create fallback X11 PID getter.      Sway 1.6.1/wlroots 0.14 can use XRes to get",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/sway_utils.py",
       "source_location": "L13",
-      "id": "sway_systemd_sway_utils_rationale_13",
       "community": 1,
-      "norm_label": "create fallback x11 pid getter.      sway 1.6.1/wlroots 0.14 can use xres to get"
+      "norm_label": "create fallback x11 pid getter.      sway 1.6.1/wlroots 0.14 can use xres to get",
+      "id": "sway_systemd_sway_utils_rationale_13"
     },
     {
       "label": "manager.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py",
       "community": 1,
-      "norm_label": "manager.py"
+      "norm_label": "manager.py",
+      "id": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py"
     },
     {
       "label": "CGroupHandler",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L28",
-      "id": "sway_systemd_manager_cgrouphandler",
       "community": 1,
-      "norm_label": "cgrouphandler"
+      "norm_label": "cgrouphandler",
+      "id": "sway_systemd_manager_cgrouphandler"
     },
     {
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L31",
-      "id": "sway_systemd_manager_cgrouphandler_init",
       "community": 1,
-      "norm_label": ".__init__()"
+      "norm_label": ".__init__()",
+      "id": "sway_systemd_manager_cgrouphandler_init"
     },
     {
       "label": "get_x11_window_pid()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L37",
-      "id": "sway_systemd_manager_get_x11_window_pid",
       "community": 1,
-      "norm_label": "get_x11_window_pid()"
+      "norm_label": "get_x11_window_pid()",
+      "id": "sway_systemd_manager_get_x11_window_pid"
     },
     {
       "label": ".connect()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L46",
-      "id": "sway_systemd_manager_cgrouphandler_connect",
       "community": 1,
-      "norm_label": ".connect()"
+      "norm_label": ".connect()",
+      "id": "sway_systemd_manager_cgrouphandler_connect"
     },
     {
       "label": ".get_pid()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L65",
-      "id": "sway_systemd_manager_cgrouphandler_get_pid",
       "community": 1,
-      "norm_label": ".get_pid()"
+      "norm_label": ".get_pid()",
+      "id": "sway_systemd_manager_cgrouphandler_get_pid"
     },
     {
       "label": ".cgroup_change_needed()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L75",
-      "id": "sway_systemd_manager_cgrouphandler_cgroup_change_needed",
       "community": 1,
-      "norm_label": ".cgroup_change_needed()"
+      "norm_label": ".cgroup_change_needed()",
+      "id": "sway_systemd_manager_cgrouphandler_cgroup_change_needed"
     },
     {
       "label": "assign_scope()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L89",
-      "id": "sway_systemd_manager_assign_scope",
       "community": 1,
-      "norm_label": "assign_scope()"
+      "norm_label": "assign_scope()",
+      "id": "sway_systemd_manager_assign_scope"
     },
     {
       "label": "._on_new_window()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L114",
-      "id": "sway_systemd_manager_cgrouphandler_on_new_window",
       "community": 1,
-      "norm_label": "._on_new_window()"
+      "norm_label": "._on_new_window()",
+      "id": "sway_systemd_manager_cgrouphandler_on_new_window"
     },
     {
       "label": "main_async()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L133",
-      "id": "sway_systemd_manager_main_async",
       "community": 2,
-      "norm_label": "main_async()"
+      "norm_label": "main_async()",
+      "id": "sway_systemd_manager_main_async"
     },
     {
       "label": "Main logic: handle i3/sway IPC events and start systemd transient units.",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L29",
-      "id": "sway_systemd_manager_rationale_29",
       "community": 1,
-      "norm_label": "main logic: handle i3/sway ipc events and start systemd transient units."
+      "norm_label": "main logic: handle i3/sway ipc events and start systemd transient units.",
+      "id": "sway_systemd_manager_rationale_29"
     },
     {
       "label": "On-demand initialization of X11 PID getter",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L38",
-      "id": "sway_systemd_manager_rationale_38",
       "community": 24,
-      "norm_label": "on-demand initialization of x11 pid getter"
+      "norm_label": "on-demand initialization of x11 pid getter",
+      "id": "sway_systemd_manager_rationale_38"
     },
     {
       "label": "asynchronous initialization code",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L47",
-      "id": "sway_systemd_manager_rationale_47",
       "community": 1,
-      "norm_label": "asynchronous initialization code"
+      "norm_label": "asynchronous initialization code",
+      "id": "sway_systemd_manager_rationale_47"
     },
     {
       "label": "Get PID from IPC response (sway), X-Resource or _NET_WM_PID (i3)",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L66",
-      "id": "sway_systemd_manager_rationale_66",
       "community": 1,
-      "norm_label": "get pid from ipc response (sway), x-resource or _net_wm_pid (i3)"
+      "norm_label": "get pid from ipc response (sway), x-resource or _net_wm_pid (i3)",
+      "id": "sway_systemd_manager_rationale_66"
     },
     {
       "label": "Check criteria for assigning current app into an isolated cgroup",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L76",
-      "id": "sway_systemd_manager_rationale_76",
       "community": 1,
-      "norm_label": "check criteria for assigning current app into an isolated cgroup"
+      "norm_label": "check criteria for assigning current app into an isolated cgroup",
+      "id": "sway_systemd_manager_rationale_76"
     },
     {
       "label": "Assign process (and all unassigned children) to the         app-{app_id}.slice/a",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L90",
-      "id": "sway_systemd_manager_rationale_90",
       "community": 25,
-      "norm_label": "assign process (and all unassigned children) to the         app-{app_id}.slice/a"
+      "norm_label": "assign process (and all unassigned children) to the         app-{app_id}.slice/a",
+      "id": "sway_systemd_manager_rationale_90"
     },
     {
       "label": "window:new IPC event handler",
       "file_type": "rationale",
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L115",
-      "id": "sway_systemd_manager_rationale_115",
       "community": 1,
-      "norm_label": "window:new ipc event handler"
+      "norm_label": "window:new ipc event handler",
+      "id": "sway_systemd_manager_rationale_115"
     },
     {
       "label": "first-empty-workspace.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/first-empty-workspace.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_share_sway_scripts_first_empty_workspace_py",
       "community": 26,
-      "norm_label": "first-empty-workspace.py"
+      "norm_label": "first-empty-workspace.py",
+      "id": "roles_sway_files_usr_share_sway_scripts_first_empty_workspace_py"
     },
     {
       "label": "sbdp.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_share_sway_scripts_sbdp_py",
       "community": 4,
-      "norm_label": "sbdp.py"
+      "norm_label": "sbdp.py",
+      "id": "roles_sway_files_usr_share_sway_scripts_sbdp_py"
     },
     {
       "label": "readFile()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L15",
-      "id": "scripts_sbdp_readfile",
       "community": 4,
-      "norm_label": "readfile()"
+      "norm_label": "readfile()",
+      "id": "scripts_sbdp_readfile"
     },
     {
       "label": "findKeybindingForLine()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L41",
-      "id": "scripts_sbdp_findkeybindingforline",
       "community": 4,
-      "norm_label": "findkeybindingforline()"
+      "norm_label": "findkeybindingforline()",
+      "id": "scripts_sbdp_findkeybindingforline"
     },
     {
       "label": "DocsConfig",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L45",
-      "id": "scripts_sbdp_docsconfig",
       "community": 4,
-      "norm_label": "docsconfig"
+      "norm_label": "docsconfig",
+      "id": "scripts_sbdp_docsconfig"
     },
     {
       "label": "getDocsConfig()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L51",
-      "id": "scripts_sbdp_getdocsconfig",
       "community": 4,
-      "norm_label": "getdocsconfig()"
+      "norm_label": "getdocsconfig()",
+      "id": "scripts_sbdp_getdocsconfig"
     },
     {
       "label": "getSymbolDict()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L67",
-      "id": "scripts_sbdp_getsymboldict",
       "community": 4,
-      "norm_label": "getsymboldict()"
+      "norm_label": "getsymboldict()",
+      "id": "scripts_sbdp_getsymboldict"
     },
     {
       "label": "translate()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L100",
-      "id": "scripts_sbdp_translate",
       "community": 4,
-      "norm_label": "translate()"
+      "norm_label": "translate()",
+      "id": "scripts_sbdp_translate"
     },
     {
       "label": "replaceBindingFromMap()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L107",
-      "id": "scripts_sbdp_replacebindingfrommap",
       "community": 4,
-      "norm_label": "replacebindingfrommap()"
+      "norm_label": "replacebindingfrommap()",
+      "id": "scripts_sbdp_replacebindingfrommap"
     },
     {
       "label": "sanitize()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L117",
-      "id": "scripts_sbdp_sanitize",
       "community": 4,
-      "norm_label": "sanitize()"
+      "norm_label": "sanitize()",
+      "id": "scripts_sbdp_sanitize"
     },
     {
       "label": "getDocsList()",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/sbdp.py",
       "source_location": "L125",
-      "id": "scripts_sbdp_getdocslist",
       "community": 4,
-      "norm_label": "getdocslist()"
+      "norm_label": "getdocslist()",
+      "id": "scripts_sbdp_getdocslist"
     },
     {
       "label": "valent.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/valent.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_share_sway_scripts_valent_py",
       "community": 27,
-      "norm_label": "valent.py"
+      "norm_label": "valent.py",
+      "id": "roles_sway_files_usr_share_sway_scripts_valent_py"
     },
     {
       "label": "weather.py",
       "file_type": "code",
       "source_file": "roles/sway/files/usr/share/sway/scripts/weather.py",
       "source_location": "L1",
-      "id": "roles_sway_files_usr_share_sway_scripts_weather_py",
       "community": 28,
-      "norm_label": "weather.py"
+      "norm_label": "weather.py",
+      "id": "roles_sway_files_usr_share_sway_scripts_weather_py"
     },
     {
       "label": "llm_analyzer.py",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L1",
-      "id": "plugins_callback_llm_analyzer_py",
       "community": 3,
-      "norm_label": "llm_analyzer.py"
+      "norm_label": "llm_analyzer.py",
+      "id": "plugins_callback_llm_analyzer_py"
     },
     {
       "label": "AIProvider",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L190",
-      "id": "callback_llm_analyzer_aiprovider",
       "community": 3,
-      "norm_label": "aiprovider"
+      "norm_label": "aiprovider",
+      "id": "callback_llm_analyzer_aiprovider"
     },
     {
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L191",
-      "id": "callback_llm_analyzer_aiprovider_init",
       "community": 3,
-      "norm_label": ".__init__()"
+      "norm_label": ".__init__()",
+      "id": "callback_llm_analyzer_aiprovider_init"
     },
     {
       "label": ".validate_api_key()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L208",
-      "id": "callback_llm_analyzer_aiprovider_validate_api_key",
       "community": 3,
-      "norm_label": ".validate_api_key()"
+      "norm_label": ".validate_api_key()",
+      "id": "callback_llm_analyzer_aiprovider_validate_api_key"
     },
     {
       "label": "._setup_client()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L271",
-      "id": "callback_llm_analyzer_aiprovider_setup_client",
       "community": 3,
-      "norm_label": "._setup_client()"
+      "norm_label": "._setup_client()",
+      "id": "callback_llm_analyzer_aiprovider_setup_client"
     },
     {
       "label": "._create_prompt()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L312",
-      "id": "callback_llm_analyzer_aiprovider_create_prompt",
       "community": 3,
-      "norm_label": "._create_prompt()"
+      "norm_label": "._create_prompt()",
+      "id": "callback_llm_analyzer_aiprovider_create_prompt"
     },
     {
       "label": "._call_openai_api()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L372",
-      "id": "callback_llm_analyzer_aiprovider_call_openai_api",
       "community": 3,
-      "norm_label": "._call_openai_api()"
+      "norm_label": "._call_openai_api()",
+      "id": "callback_llm_analyzer_aiprovider_call_openai_api"
     },
     {
       "label": "._call_gemini_api()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L398",
-      "id": "callback_llm_analyzer_aiprovider_call_gemini_api",
       "community": 3,
-      "norm_label": "._call_gemini_api()"
+      "norm_label": "._call_gemini_api()",
+      "id": "callback_llm_analyzer_aiprovider_call_gemini_api"
     },
     {
       "label": "._call_groq_api()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L402",
-      "id": "callback_llm_analyzer_aiprovider_call_groq_api",
       "community": 3,
-      "norm_label": "._call_groq_api()"
+      "norm_label": "._call_groq_api()",
+      "id": "callback_llm_analyzer_aiprovider_call_groq_api"
     },
     {
       "label": "._call_cohere_api()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L417",
-      "id": "callback_llm_analyzer_aiprovider_call_cohere_api",
       "community": 3,
-      "norm_label": "._call_cohere_api()"
+      "norm_label": "._call_cohere_api()",
+      "id": "callback_llm_analyzer_aiprovider_call_cohere_api"
     },
     {
       "label": "._call_anthropic_api()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L426",
-      "id": "callback_llm_analyzer_aiprovider_call_anthropic_api",
       "community": 3,
-      "norm_label": "._call_anthropic_api()"
+      "norm_label": "._call_anthropic_api()",
+      "id": "callback_llm_analyzer_aiprovider_call_anthropic_api"
     },
     {
       "label": ".get_description()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L436",
-      "id": "callback_llm_analyzer_aiprovider_get_description",
       "community": 3,
-      "norm_label": ".get_description()"
+      "norm_label": ".get_description()",
+      "id": "callback_llm_analyzer_aiprovider_get_description"
     },
     {
       "label": "CallbackModule",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L458",
-      "id": "callback_llm_analyzer_callbackmodule",
       "community": 0,
-      "norm_label": "callbackmodule"
+      "norm_label": "callbackmodule",
+      "id": "callback_llm_analyzer_callbackmodule"
     },
     {
       "label": "CallbackBase",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "callbackbase",
       "community": 0,
-      "norm_label": "callbackbase"
+      "norm_label": "callbackbase",
+      "id": "callbackbase"
     },
     {
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L464",
-      "id": "callback_llm_analyzer_callbackmodule_init",
       "community": 0,
-      "norm_label": ".__init__()"
+      "norm_label": ".__init__()",
+      "id": "callback_llm_analyzer_callbackmodule_init"
     },
     {
       "label": ".set_options()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L472",
-      "id": "callback_llm_analyzer_callbackmodule_set_options",
       "community": 3,
-      "norm_label": ".set_options()"
+      "norm_label": ".set_options()",
+      "id": "callback_llm_analyzer_callbackmodule_set_options"
     },
     {
       "label": "._save_to_markdown()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L507",
-      "id": "callback_llm_analyzer_callbackmodule_save_to_markdown",
       "community": 0,
-      "norm_label": "._save_to_markdown()"
+      "norm_label": "._save_to_markdown()",
+      "id": "callback_llm_analyzer_callbackmodule_save_to_markdown"
     },
     {
       "label": "._save_structured_suggestions()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L529",
-      "id": "callback_llm_analyzer_callbackmodule_save_structured_suggestions",
       "community": 0,
-      "norm_label": "._save_structured_suggestions()"
+      "norm_label": "._save_structured_suggestions()",
+      "id": "callback_llm_analyzer_callbackmodule_save_structured_suggestions"
     },
     {
       "label": ".v2_playbook_on_task_start()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L543",
-      "id": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start",
       "community": 0,
-      "norm_label": ".v2_playbook_on_task_start()"
+      "norm_label": ".v2_playbook_on_task_start()",
+      "id": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start"
     },
     {
       "label": ".v2_playbook_on_play_start()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L602",
-      "id": "callback_llm_analyzer_callbackmodule_v2_playbook_on_play_start",
       "community": 0,
-      "norm_label": ".v2_playbook_on_play_start()"
+      "norm_label": ".v2_playbook_on_play_start()",
+      "id": "callback_llm_analyzer_callbackmodule_v2_playbook_on_play_start"
     },
     {
       "label": ".analyze_style()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L644",
-      "id": "callback_llm_analyzer_callbackmodule_analyze_style",
       "community": 0,
-      "norm_label": ".analyze_style()"
+      "norm_label": ".analyze_style()",
+      "id": "callback_llm_analyzer_callbackmodule_analyze_style"
     },
     {
       "label": ".generate_structured_suggestions()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L662",
-      "id": "callback_llm_analyzer_callbackmodule_generate_structured_suggestions",
       "community": 0,
-      "norm_label": ".generate_structured_suggestions()"
+      "norm_label": ".generate_structured_suggestions()",
+      "id": "callback_llm_analyzer_callbackmodule_generate_structured_suggestions"
     },
     {
       "label": "._violation_to_suggestion()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L693",
-      "id": "callback_llm_analyzer_callbackmodule_violation_to_suggestion",
       "community": 0,
-      "norm_label": "._violation_to_suggestion()"
+      "norm_label": "._violation_to_suggestion()",
+      "id": "callback_llm_analyzer_callbackmodule_violation_to_suggestion"
     },
     {
       "label": "._generate_variable_naming_fix()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L718",
-      "id": "callback_llm_analyzer_callbackmodule_generate_variable_naming_fix",
       "community": 0,
-      "norm_label": "._generate_variable_naming_fix()"
+      "norm_label": "._generate_variable_naming_fix()",
+      "id": "callback_llm_analyzer_callbackmodule_generate_variable_naming_fix"
     },
     {
       "label": "._generate_tag_naming_fix()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L747",
-      "id": "callback_llm_analyzer_callbackmodule_generate_tag_naming_fix",
       "community": 0,
-      "norm_label": "._generate_tag_naming_fix()"
+      "norm_label": "._generate_tag_naming_fix()",
+      "id": "callback_llm_analyzer_callbackmodule_generate_tag_naming_fix"
     },
     {
       "label": "._generate_task_structure_fix()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L776",
-      "id": "callback_llm_analyzer_callbackmodule_generate_task_structure_fix",
       "community": 0,
-      "norm_label": "._generate_task_structure_fix()"
+      "norm_label": "._generate_task_structure_fix()",
+      "id": "callback_llm_analyzer_callbackmodule_generate_task_structure_fix"
     },
     {
       "label": "._check_variable_naming()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L784",
-      "id": "callback_llm_analyzer_callbackmodule_check_variable_naming",
       "community": 0,
-      "norm_label": "._check_variable_naming()"
+      "norm_label": "._check_variable_naming()",
+      "id": "callback_llm_analyzer_callbackmodule_check_variable_naming"
     },
     {
       "label": "._check_task_structure()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L816",
-      "id": "callback_llm_analyzer_callbackmodule_check_task_structure",
       "community": 0,
-      "norm_label": "._check_task_structure()"
+      "norm_label": "._check_task_structure()",
+      "id": "callback_llm_analyzer_callbackmodule_check_task_structure"
     },
     {
       "label": "._validate_task_attribute_order()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L864",
-      "id": "callback_llm_analyzer_callbackmodule_validate_task_attribute_order",
       "community": 0,
-      "norm_label": "._validate_task_attribute_order()"
+      "norm_label": "._validate_task_attribute_order()",
+      "id": "callback_llm_analyzer_callbackmodule_validate_task_attribute_order"
     },
     {
       "label": "._check_tag_conventions()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L884",
-      "id": "callback_llm_analyzer_callbackmodule_check_tag_conventions",
       "community": 0,
-      "norm_label": "._check_tag_conventions()"
+      "norm_label": "._check_tag_conventions()",
+      "id": "callback_llm_analyzer_callbackmodule_check_tag_conventions"
     },
     {
       "label": "._to_snake_case()",
       "file_type": "code",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L929",
-      "id": "callback_llm_analyzer_callbackmodule_to_snake_case",
       "community": 0,
-      "norm_label": "._to_snake_case()"
+      "norm_label": "._to_snake_case()",
+      "id": "callback_llm_analyzer_callbackmodule_to_snake_case"
     },
     {
       "label": "Validate the API key for the chosen provider.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L209",
-      "id": "callback_llm_analyzer_rationale_209",
       "community": 3,
-      "norm_label": "validate the api key for the chosen provider."
+      "norm_label": "validate the api key for the chosen provider.",
+      "id": "callback_llm_analyzer_rationale_209"
     },
     {
       "label": "Save analysis to a markdown file.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L508",
-      "id": "callback_llm_analyzer_rationale_508",
       "community": 0,
-      "norm_label": "save analysis to a markdown file."
+      "norm_label": "save analysis to a markdown file.",
+      "id": "callback_llm_analyzer_rationale_508"
     },
     {
       "label": "Save structured suggestions for LLM processing.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L530",
-      "id": "callback_llm_analyzer_rationale_530",
       "community": 0,
-      "norm_label": "save structured suggestions for llm processing."
+      "norm_label": "save structured suggestions for llm processing.",
+      "id": "callback_llm_analyzer_rationale_530"
     },
     {
       "label": "Analyze YAML content for Ansible style guide violations.          Args:",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L645",
-      "id": "callback_llm_analyzer_rationale_645",
       "community": 0,
-      "norm_label": "analyze yaml content for ansible style guide violations.          args:"
+      "norm_label": "analyze yaml content for ansible style guide violations.          args:",
+      "id": "callback_llm_analyzer_rationale_645"
     },
     {
       "label": "Generate structured suggestions for LLM processing in DSPy format.          Args",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L663",
-      "id": "callback_llm_analyzer_rationale_663",
       "community": 0,
-      "norm_label": "generate structured suggestions for llm processing in dspy format.          args"
+      "norm_label": "generate structured suggestions for llm processing in dspy format.          args",
+      "id": "callback_llm_analyzer_rationale_663"
     },
     {
       "label": "Convert a style violation to an actionable suggestion.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L694",
-      "id": "callback_llm_analyzer_rationale_694",
       "community": 0,
-      "norm_label": "convert a style violation to an actionable suggestion."
+      "norm_label": "convert a style violation to an actionable suggestion.",
+      "id": "callback_llm_analyzer_rationale_694"
     },
     {
       "label": "Generate fix for variable naming violations.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L719",
-      "id": "callback_llm_analyzer_rationale_719",
       "community": 0,
-      "norm_label": "generate fix for variable naming violations."
+      "norm_label": "generate fix for variable naming violations.",
+      "id": "callback_llm_analyzer_rationale_719"
     },
     {
       "label": "Generate fix for tag naming violations.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L748",
-      "id": "callback_llm_analyzer_rationale_748",
       "community": 0,
-      "norm_label": "generate fix for tag naming violations."
+      "norm_label": "generate fix for tag naming violations.",
+      "id": "callback_llm_analyzer_rationale_748"
     },
     {
       "label": "Generate fix for task structure violations.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L777",
-      "id": "callback_llm_analyzer_rationale_777",
       "community": 0,
-      "norm_label": "generate fix for task structure violations."
+      "norm_label": "generate fix for task structure violations.",
+      "id": "callback_llm_analyzer_rationale_777"
     },
     {
       "label": "Check for variable naming convention violations.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L785",
-      "id": "callback_llm_analyzer_rationale_785",
       "community": 0,
-      "norm_label": "check for variable naming convention violations."
+      "norm_label": "check for variable naming convention violations.",
+      "id": "callback_llm_analyzer_rationale_785"
     },
     {
       "label": "Check for task structure violations according to style guide.          Expected",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L817",
-      "id": "callback_llm_analyzer_rationale_817",
       "community": 0,
-      "norm_label": "check for task structure violations according to style guide.          expected"
+      "norm_label": "check for task structure violations according to style guide.          expected",
+      "id": "callback_llm_analyzer_rationale_817"
     },
     {
       "label": "Validate the order of task attributes against the style guide.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L865",
-      "id": "callback_llm_analyzer_rationale_865",
       "community": 0,
-      "norm_label": "validate the order of task attributes against the style guide."
+      "norm_label": "validate the order of task attributes against the style guide.",
+      "id": "callback_llm_analyzer_rationale_865"
     },
     {
       "label": "Check for tag naming convention violations.",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L885",
-      "id": "callback_llm_analyzer_rationale_885",
       "community": 0,
-      "norm_label": "check for tag naming convention violations."
+      "norm_label": "check for tag naming convention violations.",
+      "id": "callback_llm_analyzer_rationale_885"
     },
     {
       "label": "Convert camelCase to snake_case.          Args:             camel_str: String in",
       "file_type": "rationale",
       "source_file": "plugins/callback/llm_analyzer.py",
       "source_location": "L930",
-      "id": "callback_llm_analyzer_rationale_930",
       "community": 0,
-      "norm_label": "convert camelcase to snake_case.          args:             camel_str: string in"
+      "norm_label": "convert camelcase to snake_case.          args:             camel_str: string in",
+      "id": "callback_llm_analyzer_rationale_930"
     },
     {
       "label": "escape_app_id()",
@@ -1798,8 +1798,8 @@
       "source_location": "L14",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py",
-      "target": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_proc_py"
+      "source": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_proc_py",
+      "target": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py"
     },
     {
       "relation": "rationale_for",
@@ -1808,8 +1808,8 @@
       "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_proc_rationale_9",
-      "target": "sway_systemd_proc_get_cgroup"
+      "source": "sway_systemd_proc_get_cgroup",
+      "target": "sway_systemd_proc_rationale_9"
     },
     {
       "relation": "calls",
@@ -1819,8 +1819,8 @@
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L57",
       "weight": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_connect",
-      "target": "sway_systemd_proc_get_cgroup"
+      "source": "sway_systemd_proc_get_cgroup",
+      "target": "sway_systemd_manager_cgrouphandler_connect"
     },
     {
       "relation": "calls",
@@ -1830,8 +1830,8 @@
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L101",
       "weight": 1.0,
-      "source": "sway_systemd_manager_assign_scope",
-      "target": "sway_systemd_proc_get_cgroup"
+      "source": "sway_systemd_proc_get_cgroup",
+      "target": "sway_systemd_manager_assign_scope"
     },
     {
       "relation": "calls",
@@ -1841,8 +1841,8 @@
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L124",
       "weight": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_on_new_window",
-      "target": "sway_systemd_proc_get_cgroup"
+      "source": "sway_systemd_proc_get_cgroup",
+      "target": "sway_systemd_manager_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -1851,8 +1851,8 @@
       "source_location": "L22",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_proc_rationale_22",
-      "target": "sway_systemd_proc_get_pid_by_socket"
+      "source": "sway_systemd_proc_get_pid_by_socket",
+      "target": "sway_systemd_proc_rationale_22"
     },
     {
       "relation": "calls",
@@ -1862,8 +1862,8 @@
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L56",
       "weight": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_connect",
-      "target": "sway_systemd_proc_get_pid_by_socket"
+      "source": "sway_systemd_proc_get_pid_by_socket",
+      "target": "sway_systemd_manager_cgrouphandler_connect"
     },
     {
       "relation": "contains",
@@ -1883,8 +1883,8 @@
       "source_location": "L15",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py",
-      "target": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_systemd_py"
+      "source": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_systemd_py",
+      "target": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py"
     },
     {
       "relation": "rationale_for",
@@ -1893,8 +1893,8 @@
       "source_location": "L13",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_systemd_rationale_13",
-      "target": "sway_systemd_systemd_escape_app_id"
+      "source": "sway_systemd_systemd_escape_app_id",
+      "target": "sway_systemd_systemd_rationale_13"
     },
     {
       "relation": "calls",
@@ -1904,8 +1904,8 @@
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L94",
       "weight": 1.0,
-      "source": "sway_systemd_manager_assign_scope",
-      "target": "sway_systemd_systemd_escape_app_id"
+      "source": "sway_systemd_systemd_escape_app_id",
+      "target": "sway_systemd_manager_assign_scope"
     },
     {
       "relation": "contains",
@@ -1925,8 +1925,8 @@
       "source_location": "L21",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py",
-      "target": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_sway_utils_py"
+      "source": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_sway_utils_py",
+      "target": "roles_sway_files_usr_libexec_sway_systemd_lib_sway_systemd_manager_py"
     },
     {
       "relation": "rationale_for",
@@ -1935,8 +1935,8 @@
       "source_location": "L13",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_sway_utils_rationale_13",
-      "target": "sway_systemd_sway_utils_create_x11_pid_getter"
+      "source": "sway_systemd_sway_utils_create_x11_pid_getter",
+      "target": "sway_systemd_sway_utils_rationale_13"
     },
     {
       "relation": "calls",
@@ -1946,8 +1946,8 @@
       "source_file": "roles/sway/files/usr/libexec/sway-systemd/lib/sway_systemd/manager.py",
       "source_location": "L40",
       "weight": 1.0,
-      "source": "sway_systemd_manager_get_x11_window_pid",
-      "target": "sway_systemd_sway_utils_create_x11_pid_getter"
+      "source": "sway_systemd_sway_utils_create_x11_pid_getter",
+      "target": "sway_systemd_manager_get_x11_window_pid"
     },
     {
       "relation": "contains",
@@ -2047,8 +2047,8 @@
       "source_location": "L138",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_main_async",
-      "target": "sway_systemd_manager_cgrouphandler"
+      "source": "sway_systemd_manager_cgrouphandler",
+      "target": "sway_systemd_manager_main_async"
     },
     {
       "relation": "rationale_for",
@@ -2057,8 +2057,8 @@
       "source_location": "L29",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_rationale_29",
-      "target": "sway_systemd_manager_cgrouphandler"
+      "source": "sway_systemd_manager_cgrouphandler",
+      "target": "sway_systemd_manager_rationale_29"
     },
     {
       "relation": "calls",
@@ -2068,8 +2068,8 @@
       "source_location": "L71",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_get_pid",
-      "target": "sway_systemd_manager_get_x11_window_pid"
+      "source": "sway_systemd_manager_get_x11_window_pid",
+      "target": "sway_systemd_manager_cgrouphandler_get_pid"
     },
     {
       "relation": "calls",
@@ -2079,8 +2079,8 @@
       "source_location": "L136",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_main_async",
-      "target": "sway_systemd_manager_cgrouphandler_connect"
+      "source": "sway_systemd_manager_cgrouphandler_connect",
+      "target": "sway_systemd_manager_main_async"
     },
     {
       "relation": "rationale_for",
@@ -2089,8 +2089,8 @@
       "source_location": "L47",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_rationale_47",
-      "target": "sway_systemd_manager_cgrouphandler_connect"
+      "source": "sway_systemd_manager_cgrouphandler_connect",
+      "target": "sway_systemd_manager_rationale_47"
     },
     {
       "relation": "calls",
@@ -2100,8 +2100,8 @@
       "source_location": "L119",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_on_new_window",
-      "target": "sway_systemd_manager_cgrouphandler_get_pid"
+      "source": "sway_systemd_manager_cgrouphandler_get_pid",
+      "target": "sway_systemd_manager_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -2110,8 +2110,8 @@
       "source_location": "L66",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_rationale_66",
-      "target": "sway_systemd_manager_cgrouphandler_get_pid"
+      "source": "sway_systemd_manager_cgrouphandler_get_pid",
+      "target": "sway_systemd_manager_rationale_66"
     },
     {
       "relation": "calls",
@@ -2121,8 +2121,8 @@
       "source_location": "L101",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_assign_scope",
-      "target": "sway_systemd_manager_cgrouphandler_cgroup_change_needed"
+      "source": "sway_systemd_manager_cgrouphandler_cgroup_change_needed",
+      "target": "sway_systemd_manager_assign_scope"
     },
     {
       "relation": "calls",
@@ -2132,8 +2132,8 @@
       "source_location": "L128",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_on_new_window",
-      "target": "sway_systemd_manager_cgrouphandler_cgroup_change_needed"
+      "source": "sway_systemd_manager_cgrouphandler_cgroup_change_needed",
+      "target": "sway_systemd_manager_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -2142,8 +2142,8 @@
       "source_location": "L76",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_rationale_76",
-      "target": "sway_systemd_manager_cgrouphandler_cgroup_change_needed"
+      "source": "sway_systemd_manager_cgrouphandler_cgroup_change_needed",
+      "target": "sway_systemd_manager_rationale_76"
     },
     {
       "relation": "calls",
@@ -2153,8 +2153,8 @@
       "source_location": "L129",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_cgrouphandler_on_new_window",
-      "target": "sway_systemd_manager_assign_scope"
+      "source": "sway_systemd_manager_assign_scope",
+      "target": "sway_systemd_manager_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -2163,8 +2163,8 @@
       "source_location": "L115",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_manager_rationale_115",
-      "target": "sway_systemd_manager_cgrouphandler_on_new_window"
+      "source": "sway_systemd_manager_cgrouphandler_on_new_window",
+      "target": "sway_systemd_manager_rationale_115"
     },
     {
       "relation": "contains",
@@ -2264,8 +2264,8 @@
       "source_location": "L62",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_getdocsconfig",
-      "target": "scripts_sbdp_findkeybindingforline"
+      "source": "scripts_sbdp_findkeybindingforline",
+      "target": "scripts_sbdp_getdocsconfig"
     },
     {
       "relation": "calls",
@@ -2275,8 +2275,8 @@
       "source_location": "L57",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_getdocsconfig",
-      "target": "scripts_sbdp_docsconfig"
+      "source": "scripts_sbdp_docsconfig",
+      "target": "scripts_sbdp_getdocsconfig"
     },
     {
       "relation": "calls",
@@ -2286,8 +2286,8 @@
       "source_location": "L126",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_getdocslist",
-      "target": "scripts_sbdp_getdocsconfig"
+      "source": "scripts_sbdp_getdocsconfig",
+      "target": "scripts_sbdp_getdocslist"
     },
     {
       "relation": "calls",
@@ -2297,8 +2297,8 @@
       "source_location": "L127",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_getdocslist",
-      "target": "scripts_sbdp_getsymboldict"
+      "source": "scripts_sbdp_getsymboldict",
+      "target": "scripts_sbdp_getdocslist"
     },
     {
       "relation": "calls",
@@ -2308,8 +2308,8 @@
       "source_location": "L111",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_replacebindingfrommap",
-      "target": "scripts_sbdp_translate"
+      "source": "scripts_sbdp_translate",
+      "target": "scripts_sbdp_replacebindingfrommap"
     },
     {
       "relation": "calls",
@@ -2319,8 +2319,8 @@
       "source_location": "L119",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_sanitize",
-      "target": "scripts_sbdp_replacebindingfrommap"
+      "source": "scripts_sbdp_replacebindingfrommap",
+      "target": "scripts_sbdp_sanitize"
     },
     {
       "relation": "calls",
@@ -2330,8 +2330,8 @@
       "source_location": "L128",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "scripts_sbdp_getdocslist",
-      "target": "scripts_sbdp_sanitize"
+      "source": "scripts_sbdp_sanitize",
+      "target": "scripts_sbdp_getdocslist"
     },
     {
       "relation": "contains",
@@ -2461,8 +2461,8 @@
       "source_location": "L487",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_set_options",
-      "target": "callback_llm_analyzer_aiprovider"
+      "source": "callback_llm_analyzer_aiprovider",
+      "target": "callback_llm_analyzer_callbackmodule_set_options"
     },
     {
       "relation": "calls",
@@ -2483,8 +2483,8 @@
       "source_location": "L495",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_set_options",
-      "target": "callback_llm_analyzer_aiprovider_validate_api_key"
+      "source": "callback_llm_analyzer_aiprovider_validate_api_key",
+      "target": "callback_llm_analyzer_callbackmodule_set_options"
     },
     {
       "relation": "rationale_for",
@@ -2493,8 +2493,8 @@
       "source_location": "L209",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_209",
-      "target": "callback_llm_analyzer_aiprovider_validate_api_key"
+      "source": "callback_llm_analyzer_aiprovider_validate_api_key",
+      "target": "callback_llm_analyzer_rationale_209"
     },
     {
       "relation": "calls",
@@ -2504,8 +2504,8 @@
       "source_location": "L445",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_aiprovider_get_description",
-      "target": "callback_llm_analyzer_aiprovider_create_prompt"
+      "source": "callback_llm_analyzer_aiprovider_create_prompt",
+      "target": "callback_llm_analyzer_aiprovider_get_description"
     },
     {
       "relation": "calls",
@@ -2515,8 +2515,8 @@
       "source_location": "L573",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start",
-      "target": "callback_llm_analyzer_aiprovider_get_description"
+      "source": "callback_llm_analyzer_aiprovider_get_description",
+      "target": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start"
     },
     {
       "relation": "calls",
@@ -2526,8 +2526,8 @@
       "source_location": "L621",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_v2_playbook_on_play_start",
-      "target": "callback_llm_analyzer_aiprovider_get_description"
+      "source": "callback_llm_analyzer_aiprovider_get_description",
+      "target": "callback_llm_analyzer_callbackmodule_v2_playbook_on_play_start"
     },
     {
       "relation": "inherits",
@@ -2717,8 +2717,8 @@
       "source_location": "L600",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start",
-      "target": "callback_llm_analyzer_callbackmodule_save_to_markdown"
+      "source": "callback_llm_analyzer_callbackmodule_save_to_markdown",
+      "target": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start"
     },
     {
       "relation": "calls",
@@ -2728,8 +2728,8 @@
       "source_location": "L642",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_v2_playbook_on_play_start",
-      "target": "callback_llm_analyzer_callbackmodule_save_to_markdown"
+      "source": "callback_llm_analyzer_callbackmodule_save_to_markdown",
+      "target": "callback_llm_analyzer_callbackmodule_v2_playbook_on_play_start"
     },
     {
       "relation": "rationale_for",
@@ -2738,8 +2738,8 @@
       "source_location": "L508",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_508",
-      "target": "callback_llm_analyzer_callbackmodule_save_to_markdown"
+      "source": "callback_llm_analyzer_callbackmodule_save_to_markdown",
+      "target": "callback_llm_analyzer_rationale_508"
     },
     {
       "relation": "calls",
@@ -2749,8 +2749,8 @@
       "source_location": "L598",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start",
-      "target": "callback_llm_analyzer_callbackmodule_save_structured_suggestions"
+      "source": "callback_llm_analyzer_callbackmodule_save_structured_suggestions",
+      "target": "callback_llm_analyzer_callbackmodule_v2_playbook_on_task_start"
     },
     {
       "relation": "rationale_for",
@@ -2759,8 +2759,8 @@
       "source_location": "L530",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_530",
-      "target": "callback_llm_analyzer_callbackmodule_save_structured_suggestions"
+      "source": "callback_llm_analyzer_callbackmodule_save_structured_suggestions",
+      "target": "callback_llm_analyzer_rationale_530"
     },
     {
       "relation": "calls",
@@ -2836,8 +2836,8 @@
       "source_location": "L672",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_callbackmodule_generate_structured_suggestions",
-      "target": "callback_llm_analyzer_callbackmodule_analyze_style"
+      "source": "callback_llm_analyzer_callbackmodule_analyze_style",
+      "target": "callback_llm_analyzer_callbackmodule_generate_structured_suggestions"
     },
     {
       "relation": "rationale_for",
@@ -2846,8 +2846,8 @@
       "source_location": "L645",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_645",
-      "target": "callback_llm_analyzer_callbackmodule_analyze_style"
+      "source": "callback_llm_analyzer_callbackmodule_analyze_style",
+      "target": "callback_llm_analyzer_rationale_645"
     },
     {
       "relation": "calls",
@@ -2867,8 +2867,8 @@
       "source_location": "L663",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_663",
-      "target": "callback_llm_analyzer_callbackmodule_generate_structured_suggestions"
+      "source": "callback_llm_analyzer_callbackmodule_generate_structured_suggestions",
+      "target": "callback_llm_analyzer_rationale_663"
     },
     {
       "relation": "calls",
@@ -2910,8 +2910,8 @@
       "source_location": "L694",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_694",
-      "target": "callback_llm_analyzer_callbackmodule_violation_to_suggestion"
+      "source": "callback_llm_analyzer_callbackmodule_violation_to_suggestion",
+      "target": "callback_llm_analyzer_rationale_694"
     },
     {
       "relation": "calls",
@@ -2931,8 +2931,8 @@
       "source_location": "L719",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_719",
-      "target": "callback_llm_analyzer_callbackmodule_generate_variable_naming_fix"
+      "source": "callback_llm_analyzer_callbackmodule_generate_variable_naming_fix",
+      "target": "callback_llm_analyzer_rationale_719"
     },
     {
       "relation": "calls",
@@ -2952,8 +2952,8 @@
       "source_location": "L748",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_748",
-      "target": "callback_llm_analyzer_callbackmodule_generate_tag_naming_fix"
+      "source": "callback_llm_analyzer_callbackmodule_generate_tag_naming_fix",
+      "target": "callback_llm_analyzer_rationale_748"
     },
     {
       "relation": "rationale_for",
@@ -2962,8 +2962,8 @@
       "source_location": "L777",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_777",
-      "target": "callback_llm_analyzer_callbackmodule_generate_task_structure_fix"
+      "source": "callback_llm_analyzer_callbackmodule_generate_task_structure_fix",
+      "target": "callback_llm_analyzer_rationale_777"
     },
     {
       "relation": "calls",
@@ -2983,8 +2983,8 @@
       "source_location": "L785",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_785",
-      "target": "callback_llm_analyzer_callbackmodule_check_variable_naming"
+      "source": "callback_llm_analyzer_callbackmodule_check_variable_naming",
+      "target": "callback_llm_analyzer_rationale_785"
     },
     {
       "relation": "calls",
@@ -3004,8 +3004,8 @@
       "source_location": "L817",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_817",
-      "target": "callback_llm_analyzer_callbackmodule_check_task_structure"
+      "source": "callback_llm_analyzer_callbackmodule_check_task_structure",
+      "target": "callback_llm_analyzer_rationale_817"
     },
     {
       "relation": "rationale_for",
@@ -3014,8 +3014,8 @@
       "source_location": "L865",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_865",
-      "target": "callback_llm_analyzer_callbackmodule_validate_task_attribute_order"
+      "source": "callback_llm_analyzer_callbackmodule_validate_task_attribute_order",
+      "target": "callback_llm_analyzer_rationale_865"
     },
     {
       "relation": "rationale_for",
@@ -3024,8 +3024,8 @@
       "source_location": "L885",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_885",
-      "target": "callback_llm_analyzer_callbackmodule_check_tag_conventions"
+      "source": "callback_llm_analyzer_callbackmodule_check_tag_conventions",
+      "target": "callback_llm_analyzer_rationale_885"
     },
     {
       "relation": "rationale_for",
@@ -3034,8 +3034,8 @@
       "source_location": "L930",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "callback_llm_analyzer_rationale_930",
-      "target": "callback_llm_analyzer_callbackmodule_to_snake_case"
+      "source": "callback_llm_analyzer_callbackmodule_to_snake_case",
+      "target": "callback_llm_analyzer_rationale_930"
     },
     {
       "relation": "calls",
@@ -3045,8 +3045,8 @@
       "source_location": "L233",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_assign_scope",
-      "target": "sway_systemd_assign_cgroups_escape_app_id"
+      "source": "sway_systemd_assign_cgroups_escape_app_id",
+      "target": "sway_systemd_assign_cgroups_assign_scope"
     },
     {
       "relation": "rationale_for",
@@ -3055,8 +3055,8 @@
       "source_location": "L53",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_53",
-      "target": "sway_systemd_assign_cgroups_escape_app_id"
+      "source": "sway_systemd_assign_cgroups_escape_app_id",
+      "target": "sway_systemd_assign_cgroups_rationale_53"
     },
     {
       "relation": "calls",
@@ -3066,8 +3066,8 @@
       "source_location": "L196",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_connect",
-      "target": "sway_systemd_assign_cgroups_get_cgroup"
+      "source": "sway_systemd_assign_cgroups_get_cgroup",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_connect"
     },
     {
       "relation": "calls",
@@ -3077,8 +3077,8 @@
       "source_location": "L243",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_assign_scope",
-      "target": "sway_systemd_assign_cgroups_get_cgroup"
+      "source": "sway_systemd_assign_cgroups_get_cgroup",
+      "target": "sway_systemd_assign_cgroups_assign_scope"
     },
     {
       "relation": "calls",
@@ -3088,8 +3088,8 @@
       "source_location": "L266",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window",
-      "target": "sway_systemd_assign_cgroups_get_cgroup"
+      "source": "sway_systemd_assign_cgroups_get_cgroup",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -3098,8 +3098,8 @@
       "source_location": "L74",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_74",
-      "target": "sway_systemd_assign_cgroups_get_cgroup"
+      "source": "sway_systemd_assign_cgroups_get_cgroup",
+      "target": "sway_systemd_assign_cgroups_rationale_74"
     },
     {
       "relation": "calls",
@@ -3109,8 +3109,8 @@
       "source_location": "L195",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_connect",
-      "target": "sway_systemd_assign_cgroups_get_pid_by_socket"
+      "source": "sway_systemd_assign_cgroups_get_pid_by_socket",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_connect"
     },
     {
       "relation": "rationale_for",
@@ -3119,8 +3119,8 @@
       "source_location": "L88",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_88",
-      "target": "sway_systemd_assign_cgroups_get_pid_by_socket"
+      "source": "sway_systemd_assign_cgroups_get_pid_by_socket",
+      "target": "sway_systemd_assign_cgroups_rationale_88"
     },
     {
       "relation": "calls",
@@ -3130,8 +3130,8 @@
       "source_location": "L179",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_get_x11_window_pid",
-      "target": "sway_systemd_assign_cgroups_create_x11_pid_getter"
+      "source": "sway_systemd_assign_cgroups_create_x11_pid_getter",
+      "target": "sway_systemd_assign_cgroups_get_x11_window_pid"
     },
     {
       "relation": "rationale_for",
@@ -3140,8 +3140,8 @@
       "source_location": "L108",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_108",
-      "target": "sway_systemd_assign_cgroups_create_x11_pid_getter"
+      "source": "sway_systemd_assign_cgroups_create_x11_pid_getter",
+      "target": "sway_systemd_assign_cgroups_rationale_108"
     },
     {
       "relation": "method",
@@ -3200,8 +3200,8 @@
       "source_location": "L168",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_168",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler",
+      "target": "sway_systemd_assign_cgroups_rationale_168"
     },
     {
       "relation": "calls",
@@ -3211,8 +3211,8 @@
       "source_location": "L210",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_get_pid",
-      "target": "sway_systemd_assign_cgroups_get_x11_window_pid"
+      "source": "sway_systemd_assign_cgroups_get_x11_window_pid",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_get_pid"
     },
     {
       "relation": "rationale_for",
@@ -3221,8 +3221,8 @@
       "source_location": "L186",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_186",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_connect"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_connect",
+      "target": "sway_systemd_assign_cgroups_rationale_186"
     },
     {
       "relation": "calls",
@@ -3232,8 +3232,8 @@
       "source_location": "L261",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_get_pid"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_get_pid",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -3242,8 +3242,8 @@
       "source_location": "L205",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_205",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_get_pid"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_get_pid",
+      "target": "sway_systemd_assign_cgroups_rationale_205"
     },
     {
       "relation": "calls",
@@ -3253,8 +3253,8 @@
       "source_location": "L243",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_assign_scope",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_cgroup_change_needed"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_cgroup_change_needed",
+      "target": "sway_systemd_assign_cgroups_assign_scope"
     },
     {
       "relation": "calls",
@@ -3264,8 +3264,8 @@
       "source_location": "L271",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_cgroup_change_needed"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_cgroup_change_needed",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -3274,8 +3274,8 @@
       "source_location": "L215",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_215",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_cgroup_change_needed"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_cgroup_change_needed",
+      "target": "sway_systemd_assign_cgroups_rationale_215"
     },
     {
       "relation": "calls",
@@ -3285,8 +3285,8 @@
       "source_location": "L272",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window",
-      "target": "sway_systemd_assign_cgroups_assign_scope"
+      "source": "sway_systemd_assign_cgroups_assign_scope",
+      "target": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window"
     },
     {
       "relation": "rationale_for",
@@ -3295,8 +3295,8 @@
       "source_location": "L257",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "sway_systemd_assign_cgroups_rationale_257",
-      "target": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window"
+      "source": "sway_systemd_assign_cgroups_cgrouphandler_on_new_window",
+      "target": "sway_systemd_assign_cgroups_rationale_257"
     },
     {
       "relation": "calls",
@@ -3319,16 +3319,16 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "roles/audio/files/usr/local/bin/tp-norm",
-      "source": "tp_norm",
-      "target": "ebu_scan"
+      "source": "ebu_scan",
+      "target": "tp_norm"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "roles/audio/files/usr/local/bin/tp-normv2",
-      "source": "tp_normv2",
-      "target": "ebu_scan"
+      "source": "ebu_scan",
+      "target": "tp_normv2"
     },
     {
       "relation": "calls",
@@ -3343,16 +3343,16 @@
       "confidence": "INFERRED",
       "confidence_score": 0.7,
       "source_file": "roles/sway/files/usr/share/sway/scripts/valent.py",
-      "source": "valent_waybar",
-      "target": "waybar_signal"
+      "source": "waybar_signal",
+      "target": "valent_waybar"
     },
     {
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.7,
       "source_file": "roles/sway/files/usr/share/sway/scripts/weather.py",
-      "source": "weather_waybar",
-      "target": "waybar_signal"
+      "source": "waybar_signal",
+      "target": "weather_waybar"
     },
     {
       "relation": "implements",
@@ -3439,16 +3439,16 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "roles/ramalama/tasks/main.yml",
-      "source": "ramalama_tasks",
-      "target": "concept_ai_code_analysis"
+      "source": "concept_ai_code_analysis",
+      "target": "ramalama_tasks"
     },
     {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.6,
       "source_file": "meta/execution-environment.yml",
-      "source": "execution_environment",
-      "target": "concept_ai_code_analysis"
+      "source": "concept_ai_code_analysis",
+      "target": "execution_environment"
     },
     {
       "relation": "cites",
@@ -3471,8 +3471,8 @@
       "confidence": "INFERRED",
       "confidence_score": 0.75,
       "source_file": "roles/zsh/tasks/main.yml",
-      "source": "zsh_tasks_main",
-      "target": "asdf_tasks_main"
+      "source": "asdf_tasks_main",
+      "target": "zsh_tasks_main"
     },
     {
       "relation": "implements",
@@ -3487,24 +3487,24 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "playbooks/build-workstation-image.yml",
-      "source": "build_workstation_image_playbook",
-      "target": "osbuild_tasks_main"
+      "source": "osbuild_tasks_main",
+      "target": "build_workstation_image_playbook"
     },
     {
       "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "source_file": "roles/osbuild/defaults/main.yml",
-      "source": "video_tasks_main",
-      "target": "osbuild_defaults"
+      "source": "osbuild_defaults",
+      "target": "video_tasks_main"
     },
     {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "source_file": "playbooks/oneAPI.yml",
-      "source": "playbook_oneapi",
-      "target": "video_tasks_main"
+      "source": "video_tasks_main",
+      "target": "playbook_oneapi"
     },
     {
       "relation": "implements",
@@ -3519,8 +3519,8 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "playbooks/jacktrip-pi.yml",
-      "source": "playbook_jacktrip",
-      "target": "audio_defaults"
+      "source": "audio_defaults",
+      "target": "playbook_jacktrip"
     },
     {
       "relation": "implements",
@@ -3551,8 +3551,8 @@
       "confidence": "INFERRED",
       "confidence_score": 0.75,
       "source_file": "roles/display-manager/tasks/main.yml",
-      "source": "display_manager_tasks",
-      "target": "sway_tasks_main"
+      "source": "sway_tasks_main",
+      "target": "display_manager_tasks"
     },
     {
       "relation": "implements",
@@ -3604,5 +3604,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ba6692b5801c41acfb007001721a4107ec44cd15"
+  "built_at_commit": "bd1405091af9a88be5c9b57791787275950b10ac"
 }
